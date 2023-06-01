@@ -1,0 +1,44 @@
+# DATATYPES
+
+
+
+# FUNCTIONS
+
+cowpi_stdio_setup	KEYWORD2
+cowpi_set_display_dialect	KEYWORD2
+cowpi_get_display_dialect	KEYWORD2
+cowpi_is_spi_lsbfirst	KEYWORD2
+cowpi_set_display_i2c_address	KEYWORD2
+cowpi_get_display_i2c_address	KEYWORD2
+cowpi_max7219_send	KEYWORD2
+cowpi_max7219_shutdown()	KEYWORD2
+cowpi_max7219_startup()	KEYWORD2
+cowpi_max7219_no_decode()	KEYWORD2
+cowpi_max7219_bcd_decode()	KEYWORD2
+cowpi_max7219_set_intensity	KEYWORD2
+cowpi_lcd1602_place_character	KEYWORD2
+cowpi_lcd1602_place_cursor	KEYWORD2
+cowpi_lcd1602_send_command	KEYWORD2
+cowpi_lcd1602_send_character	KEYWORD2
+cowpi_lcd1602_create_character	KEYWORD2
+cowpi_lcd1602_clear_display	KEYWORD2
+cowpi_lcd1602_return_home	KEYWORD2
+cowpi_lcd1602_set_backlight	KEYWORD2
+cowpi_lcd1602_set_send_halfbyte_function	KEYWORD2
+cowpi_font_ascii_to_7segment	KEYWORD2
+cowpi_font_string_to_7segment	KEYWORD2
+cowpi_font_get_dotmatrix_width	KEYWORD2
+cowpi_font_ascii_to_narrow_dotmatrix	KEYWORD2
+cowpi_font_ascii_to_5wide_dotmatrix	KEYWORD2
+cowpi_font_ascii_to_8wide_dotmatrix	KEYWORD2
+cowpi_font_transpose_dotmatrix	KEYWORD2
+cowpi_font_string_to_horizontal_dotmatrix	KEYWORD2
+cowpi_font_string_to_vertical_dotmatrix	KEYWORD2
+
+
+# CODE STRUCTURES
+
+
+
+# CONSTANTS
+
