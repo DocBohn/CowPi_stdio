@@ -22,38 +22,91 @@
  */
 
 #include "CowPi_stdio.h"
-#ifdef ARDUINO
+
+#if defined(ARDUINO)
 #include <Arduino.h>
 
-#ifdef __AVR__
-static FILE serial_terminal;
 
-static int cowpi_stdin_getc(FILE *stream);
-static int cowpi_stdout_putc(char c, FILE *stream);
+#if defined (__AVR__)
+static FILE serial_monitor_allocation;
+static int cowpi_stdin_getc(FILE *filestream);
+static int cowpi_stdout_putc(char c, FILE *filestream);
 #endif //__AVR__
 
+static int cowpi_arduinostream_get(void *cookie, char *buffer, int size);
+static int cowpi_arduinostream_put(void *cookie, const char *buffer, int size);
 
 void cowpi_stdio_setup(unsigned long bitrate) {
-    // stdin, stdout
     Serial.begin(bitrate);
-    while (!Serial) {}
-#ifdef __AVR__
-    fdev_setup_stream(&serial_terminal, cowpi_stdout_putc, cowpi_stdin_getc, _FDEV_SETUP_RW);
-    stdin = &serial_terminal;
-    stdout = &serial_terminal;
+    do {
+        delay(10);
+    } while (!Serial);
+    delay(10);
+    FILE *serial_monitor;
+#if defined (__AVR__)
+    // use `fdev_setup_stream` instead of `fdevopen` to avoid `malloc`
+    serial_monitor = &serial_monitor_allocation;
+    fdev_setup_stream(serial_monitor, cowpi_stdout_putc, cowpi_stdin_getc, _FDEV_SETUP_RW);
+#elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__)
+    serial_monitor = funopen(&Serial, cowpi_arduinostream_get, cowpi_arduinostream_put, NULL, NULL);
+    setlinebuf(serial_monitor);
+#endif //architecture
+    stdin = serial_monitor;
+    stdout = serial_monitor;
 }
 
-static int cowpi_stdin_getc(__attribute__((unused)) FILE *stream) {
-    while (!Serial.available()) {}
-    return Serial.read();
+/*
+ * NOTES:
+ * glibc and newlib expect the `get` function to return the number of characters read.
+ * avr-libc expects the `getc` function to return the character read.
+ * 
+ * glibc and newlib expect the `put` function to return the number of characters written.
+ * avr-libc expects the `putc` function to return 0 for success.
+ * 
+ * (https://www.gnu.org/software/libc/manual/html_node/Hook-Functions.html)
+ * (https://sourceware.org/newlib/docs.html)
+ * (https://www.nongnu.org/avr-libc/user-manual/group__avr__stdio.html)
+ */
+
+#if defined (__AVR__)
+
+static int cowpi_stdin_getc(__attribute__((unused)) FILE *filestream) {
+    char c;
+    cowpi_arduinostream_get(&Serial, &c, 1);
+    return (int)c;
 }
 
-static int cowpi_stdout_putc(char c, __attribute__((unused)) FILE *stream) {
-    Serial.write(c);
-    if (c == '\n') {
-        Serial.write('\r');
-    }
-    return c;
+static int cowpi_stdout_putc(char c, __attribute__((unused)) FILE *filestream) {
+    return !cowpi_arduinostream_put(&Serial, &c, 1);
+}
+
 #endif //__AVR__
+
+
+static int cowpi_arduinostream_get(void *cookie, char *buffer, int size) {
+    int number_of_available_bytes;
+    while (!(number_of_available_bytes = ((Stream *)(cookie))->available())) {}
+    int i = 0;
+    while (i < size && i < number_of_available_bytes) {
+        buffer[i] = ((Stream *)(cookie))->read();
+        // ((Stream *)(cookie))->print(buffer[i]);      // maybe we'll add an "echo" option later
+        i++;
+    }
+    return i; 
 }
+
+static int cowpi_arduinostream_put(void *cookie, const char *buffer, int size) {
+  int i = 0;
+  // we could just print the whole buffer at once,
+  // but we want to insert CR with each LF
+  while (i < size) {
+    ((Stream *)(cookie))->print(buffer[i]);
+    if (buffer[i] == '\n') {
+        ((Stream *)(cookie))->print('\r');
+    }
+    i++;
+  }
+  return i;
+}
+
 #endif //ARDUINO

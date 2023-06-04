@@ -28,6 +28,12 @@ and this project adheres to
 - `Security` in case of vulnerabilities.
 -->
 
+## [0.4.3] - 2023-06-04
+
+### Added
+
+- ARM (SAMD, MBED) `printf`/`scanf` code
+
 ## [0.4.2] - 2023-06-01
 
 ### Added
@@ -36,7 +42,7 @@ and this project adheres to
 
 ### Changed
 
-- Migrated `printf`/`scanf` code from CowPi library to CowPi_stdio library
+- Migrated AVR `printf`/`scanf` code from CowPi library to CowPi_stdio library
 
 ## [0.4.0] - 2023-01-26
 

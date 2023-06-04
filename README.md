@@ -1,19 +1,16 @@
 # CowPi_stdio Library
 
-version 0.4.2
+version 0.4.3
 
 ## What the CowPi_stdio library has to offer
 
 This library brings `printf` and `scanf`, familiar to any C programmer, to Arduino boards with AVR microcontrollers.
-Specifically, the library is known to work with Arduino Uno, Arduino Mega 2560, Arduino Nano, and Arduino Nano Every. 
-(It should also work with Arduino Uno Wifi Rev 2.)
 
 Specifically, the library defines the `stdout` and `stdin` file streams, which are then used by `printf` and `scanf` provided by avr-libc
 
 ## What the CowPi_stdio library will have to offer
 
 Our plans for the v0.5 release include:
-- `printf` and `scanf` for Arduino boards with ARM microcontrollers
 - File streams for assorted display modules to use with `fprintf`
 
 Our plans for the v0.6 release include:
@@ -105,11 +102,9 @@ There are other limitations that cannot be.
 
 ### Floating point conversions
 
-Like most microcontroller environments, the default implementation does not support floating point conversions.
+Like most microcontroller environments, the default implementation does not support floating point conversions (except for Raspberry Pi Pico).
 Instead, the output will be `?` on AVR architectures.
-<!--
-***On ARM architectures...***
--->
+On ARM (SAMD) architectures, the output is an unprintable character.
 
 Another implementation is available that will support floating point conversions.
 - For AVR architectures, the richer implementation is available through a compiler (linker) option:
@@ -119,26 +114,29 @@ Another implementation is available that will support floating point conversions
   If you're using the Arduino IDE, you'll need to set up a `platform.local.txt` file;
   if you're using PlatformIO, you can add the build flags to your `platform.ini` file.
   ***Note**: the richer implementation will add about 1.4KB to your executable.*
+
+- We're still determining how to get the richer implementation for ARM (SAMD).
 <!--
-- ***For ARM architectures...***
-  - Well, I'm going to have to experiment a little.
-    Wokwi just let a float print just fine.
-    Otherwise I was going to suggest:
+    I was going to suggest:
     ```
     #undef printf
     ```
+    but that didn't seem to work
 -->
 
 ### Other limitations
 
 On AVR architectures:
-- The specified width and precision can be at most 255.
+- The specified width and precision can be at most 255 on AVR architectures.
   This is unlikely to be a practical limitation.
+  (Untested, undocumented(?) on ARM.)
 - `long long` conversions (*i.e.*, 64-bit integers) are not supported.
-  The `%ll` conversion specifier will abort the output.
-  This also is unlikely to be a practical limitation on the 8-bit AVR architecture.
-- Variable width or precision fields is not supported.
+  The `%lld` conversion specifier will abort the output on AVR architectures.
+  On ARM architectures, `ld` is output.
+  This also is unlikely to be a practical limitation.
+- Variable width or precision fields is not supported on AVR architectures.
   Using `*` to specify the width or precision will abort the output.
+  (Untested, undocumented(?) on ARM.)
 
 ## Compatability
 
@@ -147,9 +145,9 @@ MCU                         | `printf`/`scanf`  | Notes
 ATmega328P                  | works             |
 ATmega2560                  | works             | 
 ATmega4809                  | works             | Arduino Nano Every tested but not Arduino Uno Wifi Rev 2
-nRF52840                    | does not work     | tested enough to determine that `printf` does not work, then board disconnected -- preliminarily, it may have the same Serial problem as RP2040 (mbed issue?)
-RP2040 (Arduino framework)  | does not work     | on hardware, `Serial.println` seems to require an extra 1.1ms after (Serial) returns true; `println`/`scanf` do not yet work; Raspberry Pi Pico tested but not Arduino Nano RP2040 Connect
-SAM D21                     | does not work     | Arduino Nano 33 IoT tested but not Arduino Zero
+nRF52840                    | does not work     | Locks up USB -- problem with waiting for Serial?
+RP2040 (Arduino framework)  | works             | Raspberry Pi Pico tested but not Arduino Nano RP2040 Connect
+SAM D21                     | works             | Arduino Nano 33 IoT tested but not Arduino Zero
 <!--
 RA4M1                       | not yet tested    | Arduino Uno R4 not yet released
 -->

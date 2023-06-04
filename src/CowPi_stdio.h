@@ -59,7 +59,6 @@
 #ifndef COWPI_STDIO_H
 #define COWPI_STDIO_H
 
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -78,7 +77,7 @@ extern "C" {
  *
  * @ingroup configuration
  *
- * @param bitrate the UART bit rate
+ * @param bitrate the serial interface's bit rate
  */
 void cowpi_stdio_setup(unsigned long bitrate);
 
