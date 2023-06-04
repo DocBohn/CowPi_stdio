@@ -65,7 +65,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "fonts/cowpi_fonts.h"
+#include "fonts/fonts.h"
 
 /* Public-facing function prototypes */
 
