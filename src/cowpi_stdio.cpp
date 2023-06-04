@@ -24,16 +24,21 @@
 #include "CowPi_stdio.h"
 
 #if defined(ARDUINO)
+
 #include <Arduino.h>
 
 
 #if defined (__AVR__)
 static FILE serial_monitor_allocation;
+
 static int cowpi_stdin_getc(FILE *filestream);
+
 static int cowpi_stdout_putc(char c, FILE *filestream);
+
 #endif //__AVR__
 
 static int cowpi_arduinostream_get(void *cookie, char *buffer, int size);
+
 static int cowpi_arduinostream_put(void *cookie, const char *buffer, int size);
 
 void cowpi_stdio_setup(unsigned long bitrate) {
@@ -73,7 +78,7 @@ void cowpi_stdio_setup(unsigned long bitrate) {
 static int cowpi_stdin_getc(__attribute__((unused)) FILE *filestream) {
     char c;
     cowpi_arduinostream_get(&Serial, &c, 1);
-    return (int)c;
+    return (int) c;
 }
 
 static int cowpi_stdout_putc(char c, __attribute__((unused)) FILE *filestream) {
@@ -85,28 +90,28 @@ static int cowpi_stdout_putc(char c, __attribute__((unused)) FILE *filestream) {
 
 static int cowpi_arduinostream_get(void *cookie, char *buffer, int size) {
     int number_of_available_bytes;
-    while (!(number_of_available_bytes = ((Stream *)(cookie))->available())) {}
+    while (!(number_of_available_bytes = ((Stream *) (cookie))->available())) {}
     int i = 0;
     while (i < size && i < number_of_available_bytes) {
-        buffer[i] = ((Stream *)(cookie))->read();
+        buffer[i] = ((Stream *) (cookie))->read();
         // ((Stream *)(cookie))->print(buffer[i]);      // maybe we'll add an "echo" option later
         i++;
     }
-    return i; 
+    return i;
 }
 
 static int cowpi_arduinostream_put(void *cookie, const char *buffer, int size) {
-  int i = 0;
-  // we could just print the whole buffer at once,
-  // but we want to insert CR with each LF
-  while (i < size) {
-    ((Stream *)(cookie))->print(buffer[i]);
-    if (buffer[i] == '\n') {
-        ((Stream *)(cookie))->print('\r');
+    int i = 0;
+    // we could just print the whole buffer at once,
+    // but we want to insert CR with each LF
+    while (i < size) {
+        ((Stream *) (cookie))->print(buffer[i]);
+        if (buffer[i] == '\n') {
+            ((Stream *) (cookie))->print('\r');
+        }
+        i++;
     }
-    i++;
-  }
-  return i;
+    return i;
 }
 
 #endif //ARDUINO

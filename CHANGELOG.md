@@ -49,27 +49,27 @@ and this project adheres to
 ### Added
 
 - Part of CowPi library
-  - LCD1602 default dialect for SPI
+    - LCD1602 default dialect for SPI
 
 ## [0.3.0] - 2022-08-01
 
 ### Added
 
 - Part of CowPi library
-  - Setup code to enable `printf`/`scanf` for AVR microcontrollers
-  - 7-segment and dot-matrix fonts
-  - Framework to control HD44780-based display module
+    - Setup code to enable `printf`/`scanf` for AVR microcontrollers
+    - 7-segment and dot-matrix fonts
+    - Framework to control HD44780-based display module
 
 ## [0.2.1] - 2022-04-26
 
 ### Added
 
 - Part of CowPi library
-  - Default implementation to send data to MAX7219-based display module
+    - Default implementation to send data to MAX7219-based display module
 
 ## [0.2.0] - 2-22-04-01
 
 ### Added
 
 - Part of CowPi library
-  - Setup code to configure MAX7219
+    - Setup code to configure MAX7219

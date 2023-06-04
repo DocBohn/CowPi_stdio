@@ -1,7 +1,7 @@
 /*!
  * @mainpage CowPi_stdio Library
  *
- * @version 0.4.2
+ * @version 0.4.3
  *
  * @copyright (c) 2022-23 Christopher A. Bohn
  *
@@ -14,9 +14,12 @@
  *
  * The current version supports:
  *  - Microcontrollers
- *      - ATmega328P (Arduino Uno, Arduino Nano)
- *      - ATmega2560 (Arduino Mega 2560)
- *      - ATmega4809 (Arduino Uno Wifi Rev 2, Arduino Nano Every)
+ *      - ATmega328P    (Arduino Uno, Arduino Nano)
+ *      - ATmega2560    (Arduino Mega 2560)
+ *      - ATmega4809    (Arduino Uno Wifi Rev 2, Arduino Nano Every)
+ *      - RP2040        (Raspberry Pi Pico (Arduino Framework),
+ *                       Arduino Nano RP2040 Connect)
+ *      - SAM D21       (Arduino Zero, Arduino Nano 33 IoT)
  *
  * @section license License
  *
@@ -61,6 +64,8 @@
 
 #include <stdint.h>
 #include <stdio.h>
+
+#include "fonts/cowpi_fonts.h"
 
 /* Public-facing function prototypes */
 
