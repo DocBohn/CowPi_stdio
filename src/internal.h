@@ -25,11 +25,11 @@
 #ifndef COWPI_STDIO_INTERNAL_H
 #define COWPI_STDIO_INTERNAL_H
 
-#include "typedefs.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "typedefs.h"
 
 void cowpi_setup_max7219(const cowpi_display_module_protocol_t *configuration);
 

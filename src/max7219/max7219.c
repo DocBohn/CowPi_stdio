@@ -24,6 +24,7 @@
 #include <Arduino.h>
 #include <assert.h>
 #include "max7219.h"
+#include "../communication/spi.h"
 #include "../internal.h"
 
 /** @private */
@@ -46,10 +47,12 @@ void cowpi_setup_max7219(const cowpi_display_module_protocol_t *configuration) {
 }
 
 void cowpi_max7219_send(const cowpi_display_module_protocol_t *configuration, uint8_t address, uint8_t data) {
+    cowpi_spi_initialize(configuration, MSB_FIRST);
     digitalWrite(configuration->select_pin, LOW);
-    shiftOut(configuration->data_pin, configuration->clock_pin, MSBFIRST, address);
-    shiftOut(configuration->data_pin, configuration->clock_pin, MSBFIRST, data);
+    cowpi_spi_transmit(address);
+    cowpi_spi_transmit(data);
     digitalWrite(configuration->select_pin, HIGH);
+    cowpi_spi_finalize();
 }
 
 void cowpi_max7219_no_decode(const cowpi_display_module_protocol_t *configuration) {

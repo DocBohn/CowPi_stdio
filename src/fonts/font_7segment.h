@@ -43,11 +43,11 @@
 #ifndef COWPI_STDIO_FONT_7SEGMENT_H
 #define COWPI_STDIO_FONT_7SEGMENT_H
 
-#include <stdint.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdint.h>
 
 /**
  * @brief Provides the 7-segment bit vector for an ASCII character or for a

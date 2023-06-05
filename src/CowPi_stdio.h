@@ -62,16 +62,17 @@
 #ifndef COWPI_STDIO_H
 #define COWPI_STDIO_H
 
-#include <stdint.h>
-#include <stdio.h>
-
-#include "fonts/fonts.h"
-
 /* Public-facing function prototypes */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdint.h>
+#include <stdio.h>
+    
+#include "communication/communication.h"
+#include "fonts/fonts.h"
 
 /**
  * @brief Configures the CowPi library to use `stdio.h` functions.

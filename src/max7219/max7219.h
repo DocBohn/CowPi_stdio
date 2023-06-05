@@ -33,12 +33,12 @@
 #ifndef COWPI_STDIO_MAX7219_H
 #define COWPI_STDIO_MAX7219_H
 
-#include <stdint.h>
-#include "../typedefs.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdint.h>
+#include "../typedefs.h"
 
 /** @addtogroup display
  *  @{

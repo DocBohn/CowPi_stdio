@@ -25,11 +25,11 @@
 #ifndef COWPI_STDIO_TYPEDEFS_H
 #define COWPI_STDIO_TYPEDEFS_H
 
-#include <stdint.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdint.h>
 
 /**
  * Structure that consolidates all information needed to determine how data

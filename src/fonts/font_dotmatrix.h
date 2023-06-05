@@ -28,12 +28,12 @@
 #ifndef COWPI_STDIO_FONT_DOTMATRIX_H
 #define COWPI_STDIO_FONT_DOTMATRIX_H
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdbool.h>
+#include <stdint.h>
 
 /**
  * @brief Provides the minimum number of columns needed to represent a character

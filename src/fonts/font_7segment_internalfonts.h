@@ -26,6 +26,10 @@
 #ifndef COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H
 #define COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #ifdef __AVR__
@@ -37,7 +41,7 @@
  *  @{
  */
 
-const uint8_t cowpi_font_7segment[0x80]
+static const uint8_t cowpi_font_7segment[0x80]
 #ifdef __AVR__
                                         PROGMEM
 #endif //__AVR__
@@ -61,5 +65,9 @@ const uint8_t cowpi_font_7segment[0x80]
 };
 
 /** @} */
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif //COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H

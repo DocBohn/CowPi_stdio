@@ -38,7 +38,7 @@ uint8_t cowpi_font_ascii_to_7segment(char c) {
 #ifdef __AVR__
     return pgm_read_byte(cowpi_font_7segment + c);
 #else
-    return cowpi_font_7segment[(int)c];
+    return cowpi_font_7segment[(int) c];
 #endif //__AVR__
 }
 
@@ -56,7 +56,7 @@ int8_t cowpi_font_get_dotmatrix_width(char c) {
 #ifdef __AVR__
     return pgm_read_byte(cowpi_font_dotmatrix_widths + c);
 #else
-    return cowpi_font_dotmatrix_widths[(int)c];
+    return cowpi_font_dotmatrix_widths[(int) c];
 #endif //__AVR__
 }
 
@@ -64,7 +64,7 @@ uint8_t *cowpi_font_ascii_to_narrow_dotmatrix(uint8_t *destination, char c) {
 #ifdef __AVR__
     memcpy_P(destination, (const uint8_t *)pgm_read_word(cowpi_font_dotmatrix + c), 8);
 #else
-    memcpy(destination, cowpi_font_dotmatrix[(int)c], 8);
+    memcpy(destination, cowpi_font_dotmatrix[(int) c], 8);
 #endif //__AVR__
     return destination;
 }
