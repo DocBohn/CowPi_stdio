@@ -6,8 +6,7 @@ version 0.4.3
 
 This library brings `printf` and `scanf`, familiar to any C programmer, to Arduino boards with AVR microcontrollers.
 
-Specifically, the library defines the `stdout` and `stdin` file streams, which are then used by `printf` and `scanf`
-provided by avr-libc
+Specifically, the library defines the `stdout` and `stdin` file streams, which are then used by `printf` and `scanf`.
 
 ## What the CowPi_stdio library will have to offer
 
@@ -142,42 +141,55 @@ On AVR architectures:
 
 - The specified width and precision can be at most 255 on AVR architectures.
   This is unlikely to be a practical limitation.
-  (Untested, undocumented(?) on ARM.)
 - `long long` conversions (*i.e.*, 64-bit integers) are not supported.
   The `%lld` conversion specifier will abort the output on AVR architectures.
   On ARM architectures, `ld` is output.
   This also is unlikely to be a practical limitation.
 - Variable width or precision fields is not supported on AVR architectures.
   Using `*` to specify the width or precision will abort the output.
-  (Untested, undocumented(?) on ARM.)
 
 ## Compatability
 
-| MCU                        | `printf`/`scanf` | Notes                                                                                                                             |
-|:---------------------------|:----------------:|:----------------------------------------------------------------------------------------------------------------------------------|
-| ATmega328P                 |      works       |                                                                                                                                   |
-| ATmega2560                 |      works       |                                                                                                                                   |
-| ATmega4809                 |      works       | Arduino Nano Every tested but not Arduino Uno Wifi Rev 2                                                                          |
-| nRF52840                   |  does not work   | Locks up USB -- problem with waiting for Serial? <!-- https://forum.arduino.cc/t/nano-33-ble-sense-serial-workaround/884962/7 --> |
-| RP2040 (Arduino framework) |      works       | Raspberry Pi Pico tested but not Arduino Nano RP2040 Connect                                                                      |
-| SAM D21                    |      works       | Arduino Nano 33 IoT tested but not Arduino Zero                                                                                   |
+| MCU                        | `printf`/`scanf` | Display Modules | Notes                                                                                                                             |
+|:---------------------------|:----------------:|:---------------:|:----------------------------------------------------------------------------------------------------------------------------------|
+| ATmega328P                 |        ✅         |        ✅        |                                                                                                                                   |
+| ATmega2560                 |        ✅         |        ⁇        |                                                                                                                                   |
+| ATmega4809                 |        ✅         |        ⁇        |                                                                                                                                   |
+| nRF52840                   |        ❌         |        ⁇        | Locks up USB -- problem with waiting for Serial? <!-- https://forum.arduino.cc/t/nano-33-ble-sense-serial-workaround/884962/7 --> |
+| RP2040 (Arduino framework) |        ✅         |        ⁇        | Still need to resolve floating point conversions                                                                                  |
+| SAM D21                    |        ✅         |        ⁇        | Still need to resolve floating point conversions                                                                                  |
 
 <!--
 RA4M1                       | not yet tested    | Arduino Uno R4 not yet released
 -->
 
+| Display Module                       | AVR | megaAVR | MBED | SAMD |
+|:-------------------------------------|:---:|:-------:|:----:|:----:|
+| 8-digit, 7-segment display (MAX7219) |  ✅  |    ⁇    |  ⁇   |  ⁇   |
+
+### Tested on...
 - AVR
-    - AVR
-        - Atmel ATmega328P: Arduino Uno R3, Arduino Nano
-        - Atmel ATmega2560: Arduino Mega 2560
-    - megaAVR
-        - Atmel ATmega4809: Arduino Uno Wifi Rev 2, Arduino Nano Every
+  - AVR
+    - Atmel ATmega328P
+      - [x] Arduino Uno R3
+      - [x] Arduino Nano
+    - Atmel ATmega2560:
+      - [x] Arduino Mega 2560
+  - megaAVR
+    - Atmel ATmega4809
+      - [ ] Arduino Uno Wifi Rev 2
+      - [x] Arduino Nano Every
 - ARM
-    - Mbed OS
-        - Nordic nRF52840: Arduino Nano 33 BLE
-        - Raspberry Pi RP2040: Raspberry Pi Pico, Arduino Nano RP2040 Connect
-    - SAMD
-        - Atmel SAM D21: Arduino Zero, Arduino Nano 33 IoT
+  - Mbed OS
+    - Nordic nRF52840
+      - [x] Arduino Nano 33 BLE (see notes, above)
+    - Raspberry Pi RP2040
+      - [ ] Arduino Nano RP2040 Connect
+      - [x] Raspberry Pi Pico (Arduino platform)
+  - SAMD
+    - Atmel SAM D21:
+      - [x] Arduino Nano 33 IoT
+      - [ ] Arduino Zero
 
 <!--
   - TBD

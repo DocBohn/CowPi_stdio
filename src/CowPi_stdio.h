@@ -20,6 +20,8 @@
  *      - RP2040        (Raspberry Pi Pico (Arduino Framework),
  *                       Arduino Nano RP2040 Connect)
  *      - SAM D21       (Arduino Zero, Arduino Nano 33 IoT)
+ *  - Display modules
+ *      - MAX7219-based 8-digit, 7-segment display
  *
  * @section license License
  *
@@ -36,13 +38,15 @@
 
 /**************************************************************************//**
  *
- * @file cowpi_stdio.h
+ * @file CowPi_stdio.h
  *
  * @author Christopher A. Bohn
  *
- * @brief @copybrief cowpi_stdio_setup
+ * @brief Functions to configure file streams for `stdio.h` functions.
  *
- * @copydetails cowpi_stdio_setup
+ * Configures the `stdin` and `stdout` streams to work with the Arduino Serial
+ * Monitor. Configures display modules and provides file streams to display text
+ * on those display modules using `fprintf()`.
  *
  ******************************************************************************/
 
@@ -71,11 +75,13 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
     
+#include "typedefs.h"
 #include "communication/communication.h"
 #include "fonts/fonts.h"
+#include "max7219/max7219.h"
 
 /**
- * @brief Configures the CowPi library to use `stdio.h` functions.
+ * @brief Configures the "Serial Monitor" for `printf()` and `scanf()`.
  *
  * Configures `stdout` and `stdin`, allowing programmers to use `printf()` to
  * write to, and `scanf()` to read from, the USB-based serial interface between
@@ -86,6 +92,15 @@ extern "C" {
  * @param bitrate the serial interface's bit rate
  */
 void cowpi_stdio_setup(unsigned long bitrate);
+
+/**
+ * @brief Configures a display module for `fprintf()`.
+ * 
+ * @param display_module the display module's details
+ * @param configuration the communication protocol's details
+ * @return a pointer to a `FILE` stream for the display module
+ */
+FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_display_module_protocol_t configuration);
 
 #ifdef __cplusplus
 } // extern "C"

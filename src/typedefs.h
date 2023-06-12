@@ -31,16 +31,40 @@ extern "C" {
 
 #include <stdint.h>
 
+enum display_modules {
+    NO_MODULE = 0,
+    SEVEN_SEGMENT,
+    LED_MATRIX,
+    LCD_CHARACTER,
+    OLED_MATRIX
+};
+
+enum orientations {
+    EAST = 0,
+    NORTH,
+    WEST,
+    SOUTH
+};
+
+enum protocols {
+    NO_PROTOCOL = 0,
+    I2C,
+    SPI
+};
+
+typedef struct {
+    enum display_modules display_module;
+    enum orientations orientation;
+    uint8_t width;
+    uint8_t height;
+} cowpi_display_module_t;
+
 /**
  * Structure that consolidates all information needed to determine how data
  * should be sent to a display module.
  */
 typedef struct {
-    enum {
-        UNSPECIFIED = 0,
-        I2C,
-        SPI
-    } protocol;
+    enum protocols protocol;
     uint8_t data_pin;
     uint8_t clock_pin;
     uint8_t select_pin;

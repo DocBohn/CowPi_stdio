@@ -31,7 +31,7 @@ extern "C" {
 
 #include "typedefs.h"
 
-void cowpi_setup_max7219(const cowpi_display_module_protocol_t *configuration);
+uint8_t cowpi_reverse_byte(uint8_t byte);
 
 #ifdef __cplusplus
 } // extern "C"

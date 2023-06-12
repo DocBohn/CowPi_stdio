@@ -44,6 +44,14 @@ extern "C" {
  *  @{
  */
 
+
+/**
+ * @brief .....
+ * 
+ * @param configuration the pins used for SPI
+ */
+void cowpi_setup_max7219(const cowpi_display_module_protocol_t *configuration);
+
 /**
  * @brief Sends a byte of data to be placed in the specified MAX7219 register.
  *

@@ -10,8 +10,8 @@ void setup(void) {
     long long n = 42;
 
 #ifndef ARDUINO_RASPBERRY_PI_PICO
-    printf("The default `printf` won't convert floating point values such as %f.\n", f);
-#endif ARDUINO_RASPBERRY_PI_PICO
+
+#endif //ARDUINO_RASPBERRY_PI_PICO
 #ifdef __AVR__
     printf("If you need to print floats, use the additional build arguments\n");
     printf("        -Wl,-u,vfprintf -lprintf_flt -lm        (see the `extras/` directory)\n\n");
@@ -24,6 +24,13 @@ void setup(void) {
     printf("will abort the output for that `printf` statement.\n");
 #else
     printf("won't result in a conversion.\n");
+#endif //__AVR__
+
+    printf("Trying to use a variable-width conversion, such as \"%*s\"\n", 3, "\%*s");
+#ifdef __AVR__
+    printf("will abort the output for that `printf` statement.\n");
+#else
+    printf("won't be a problem on your microcontroller.\n");
 #endif //__AVR__
 }
 

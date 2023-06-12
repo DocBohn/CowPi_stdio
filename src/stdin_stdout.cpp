@@ -1,10 +1,10 @@
 /**************************************************************************//**
  *
- * @file cowpi_stdio.cpp
+ * @file stdin_stdout.cpp
  *
- * @brief @copybrief cowpi_stdio.h
+ * @brief @copybrief cowpi_stdio_setup
  *
- * @copydetails cowpi_stdio.h
+ * @copydetails cowpi_stdio_setup
  *
  ******************************************************************************/
 
@@ -93,7 +93,7 @@ static int cowpi_arduinostream_get(void *cookie, char *buffer, int size) {
     while (!(number_of_available_bytes = ((Stream *) (cookie))->available())) {}
     int i = 0;
     while (i < size && i < number_of_available_bytes) {
-        buffer[i] = ((Stream *) (cookie))->read();
+        buffer[i] = (char) ((Stream *) (cookie))->read();
         // ((Stream *)(cookie))->print(buffer[i]);      // maybe we'll add an "echo" option later
         i++;
     }

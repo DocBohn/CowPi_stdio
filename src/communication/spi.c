@@ -26,40 +26,6 @@
 #include "spi.h"
 
 
-/** @private */
-uint8_t cowpi_reverse_byte(uint8_t byte) {
-    uint8_t reversed_byte = 0;
-    // strike a balance:
-    // - one bit at a time requires 1 case, 8 iterations
-    // - two bits at a time requires 4 cases, 4 iterations
-    // - four bits at a time requires 16 cases, 2 iterations
-    // - eight bits at a time requires 256 cases, 1 iteration
-    for (int i = 0; i < 4; i++) {
-        uint8_t quarter_byte = byte & 0x03;
-        byte >>= 2;
-        reversed_byte >>= 2;
-        switch (quarter_byte) {
-            case 0x0:
-                reversed_byte |= 0x00;
-                break;
-            case 0x1:
-                reversed_byte |= 0x80;
-                break;
-            case 0x2:
-                reversed_byte |= 0x40;
-                break;
-            case 0x3:
-                reversed_byte |= 0xC0;
-                break;
-            default:
-//                unreachable();              // C23
-                __builtin_unreachable();    // gcc
-//                assert(false);              // better than nothing
-        }
-    }
-    return reversed_byte;
-}
-
 static uint8_t data_pin;
 static uint8_t clock_pin;
 static bit_order_t data_order;
@@ -89,7 +55,6 @@ void cowpi_spi_initialize_hardware(__attribute__((unused)) const cowpi_display_m
     uint8_t bit_order_bit = ((bit_order == LSB_FIRST) << DORD);
     /* Enable SPI, data order, Controller, set clock rate fck/16 [1MHz] */
     SPCR = (1 << SPE) | bit_order_bit | (1 << MSTR) | (1 << SPR0);
-    /* By repeating myself, both constants will be generated at compile time */
 #endif //__AVR__
 }
 
