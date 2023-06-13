@@ -46,7 +46,7 @@ extern "C" {
 
 
 /**
- * @brief .....
+ * @brief Configures the MAX7219 to nominal settings
  * 
  * @param configuration the pins used for SPI
  */

@@ -24,10 +24,8 @@
 #include <Arduino.h>
 #include <assert.h>
 #include "max7219.h"
-#include "../communication/spi.h"
-#include "../internal.h"
+#include "../communication/communication.h"
 
-/** @private */
 void cowpi_setup_max7219(const cowpi_display_module_protocol_t *configuration) {
     assert(configuration->protocol == SPI);
     /* Clear all digit registers */

@@ -52,6 +52,11 @@ enum protocols {
     SPI
 };
 
+enum adapter_mappings {
+    COWPI_DEFAULT = 0,
+    ADAFRUIT
+};
+
 typedef struct {
     enum display_modules display_module;
     enum orientations orientation;
@@ -67,7 +72,9 @@ typedef struct {
     enum protocols protocol;
     uint8_t data_pin;
     uint8_t clock_pin;
-    uint8_t select_pin;
+    uint8_t select_pin;                     // used only for SPI
+    uint8_t i2c_address;                    // used only for I2C
+    enum adapter_mappings adapter_mapping;  // used only for HD44780
 } cowpi_display_module_protocol_t;
 
 #ifdef __cplusplus
