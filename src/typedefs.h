@@ -59,9 +59,9 @@ enum adapter_mappings {
 
 typedef struct {
     enum display_modules display_module;
-    enum orientations orientation;
     uint8_t width;
     uint8_t height;
+    enum orientations orientation;
 } cowpi_display_module_t;
 
 /**
@@ -79,6 +79,34 @@ typedef struct {
 
 #ifdef __cplusplus
 } // extern "C"
-#endif
+
+static inline cowpi_display_module_protocol_t cowpi_configure_spi(uint8_t data_pin,
+                                                                  uint8_t clock_pin,
+                                                                  uint8_t select_pin,
+                                                                  enum adapter_mappings adapter_mapping = COWPI_DEFAULT) {
+    return (cowpi_display_module_protocol_t){
+            .protocol = I2C,
+            .data_pin = data_pin,
+            .clock_pin = clock_pin,
+            .select_pin = select_pin,
+            .i2c_address = 0,
+            .adapter_mapping = adapter_mapping
+    };
+}
+
+static inline cowpi_display_module_protocol_t cowpi_configure_i2c(uint8_t data_pin,
+                                                                  uint8_t clock_pin,
+                                                                  uint8_t i2c_address,
+                                                                  enum adapter_mappings adapter_mapping = COWPI_DEFAULT) {
+    return (cowpi_display_module_protocol_t){
+            .protocol = I2C,
+            .data_pin = data_pin,
+            .clock_pin = clock_pin,
+            .select_pin = 0,
+            .i2c_address = i2c_address,
+            .adapter_mapping = adapter_mapping
+    };
+}
+#endif //__CPLUSPLUS
 
 #endif //COWPI_STDIO_TYPEDEFS_H

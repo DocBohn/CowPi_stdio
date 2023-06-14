@@ -186,51 +186,37 @@ static void cowpi_hd44780_send_halfbyte_spi(const cowpi_display_module_protocol_
 }
 
 static void cowpi_hd44780_send_halfbyte_i2c(const cowpi_display_module_protocol_t *configuration,
-                                            uint8_t halfbyte, bool is_command) {
-    uint8_t packet = 0, rs = 0, en = 0;
-    if (configuration->adapter_mapping == COWPI_DEFAULT) {
-        // this mapping is used with most I2C interfaces and libraries
-        // https://github.com/johnrickman/LiquidCrystal_I2C
-        // https://github.com/blackhack/LCD_I2C
-        /* MSB  P7  P6  P5  P4  P3  P2  P1  P0  LSB *
-         * MSB  D7  D6  D5  D4 LITE EN  RW  RS  LSB */
-        rs = is_command ? 0 : 1;
-        en = 1 << 2;
-        packet = rs | (halfbyte << 4) | (is_backlit ? 1 << 3 : 0);
-    } else if (configuration->adapter_mapping == ADAFRUIT) {
-        // this mapping is used with AdaFruit's SPI+I2C interface
-        // https://github.com/adafruit/Adafruit_LiquidCrystal
-        /* MSB   GP7 GP6 GP5 GP4 GP3 GP2 GP1 GP0  LSB *
-         * MSB  LITE  D7  D6  D5  D4  EN  RS  xx  LSB */
-        rs = is_command ? 0 : 1 << 1;
-        en = 1 << 2;
-        packet = rs | (halfbyte << 3) | (is_backlit ? 1 << 7 : 0);
-    } else {}
-    // start bit
-    TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTA);
-    while (!(TWCR & (1<<TWINT))) {}
-//    if ((TWSR & 0xF8) != 0x08) cowpi_error("Controller did not send I2C start!");
-    // I2C address + /w
-    TWDR = configuration->i2c_address << 1;
-    TWCR = (1<<TWINT) | (1<<TWEN);
-    while (!(TWCR & (1<<TWINT))) {}
-//    if ((TWSR & 0xF8) != 0x18) cowpi_error("I2C peripheral did not receive address!");
-    // place data on the line
-    TWDR = packet;
-    TWCR = (1<<TWINT) | (1<<TWEN);
-    while (!(TWCR & (1<<TWINT))) {}
-//    if ((TWSR & 0xF8)!= 0x28) cowpi_error("I2C peripheral did not receive data!");
-    // pulse
-    TWDR = packet | en;
-    TWCR = (1<<TWINT) | (1<<TWEN);
-    while (!(TWCR & (1<<TWINT))) {}
-//    if ((TWSR & 0xF8)!= 0x28) cowpi_error("I2C peripheral did not receive leading edge of the pulse!");
-    delayMicroseconds(1);
-    // end the pulse
-    TWDR = packet;
-    TWCR = (1<<TWINT) | (1<<TWEN);
-    while (!(TWCR & (1<<TWINT))) {}
-//    if ((TWSR & 0xF8)!= 0x28) cowpi_error("I2C peripheral did not receive the trailing edge of the pulse!");
-    // stop bit
-    TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);
+                                           uint8_t halfbyte, bool is_command) {
+   uint8_t packet = 0, rs = 0, en = 0;
+   if (configuration->adapter_mapping == COWPI_DEFAULT) {
+       // this mapping is used with most I2C interfaces and libraries
+       // https://github.com/johnrickman/LiquidCrystal_I2C
+       // https://github.com/blackhack/LCD_I2C
+       /* MSB  P7  P6  P5  P4  P3  P2  P1  P0  LSB *
+        * MSB  D7  D6  D5  D4 LITE EN  RW  RS  LSB */
+       rs = is_command ? 0 : 1;
+       en = 1 << 2;
+       packet = rs | (halfbyte << 4) | (is_backlit ? 1 << 3 : 0);
+   } else if (configuration->adapter_mapping == ADAFRUIT) {
+       // this mapping is used with AdaFruit's SPI+I2C interface
+       // https://github.com/adafruit/Adafruit_LiquidCrystal
+       /* MSB   GP7 GP6 GP5 GP4 GP3 GP2 GP1 GP0  LSB *
+        * MSB  LITE  D7  D6  D5  D4  EN  RS  xx  LSB */
+       rs = is_command ? 0 : 1 << 1;
+       en = 1 << 2;
+       packet = rs | (halfbyte << 3) | (is_backlit ? 1 << 7 : 0);
+   } else {}
+   cowpi_i2c_initialize(configuration);
+   // place data on the line
+   cowpi_i2c_transmit(packet);
+   // pulse
+   cowpi_i2c_transmit(packet | en);
+   // Tom Alby uses NOPs to get to create an exact 0.5us pulse (6 NOPs (6 cycles) + 1 memory write (2 cycles) = 0.5us)
+   // but that isn't portable (also: AVR docs say to use _delay_ms() or _delay_us(), which also aren't portable).
+   // However, since we're only doing a half-byte at a time, function calls, etc., will provide sufficient delay.
+   // But, just to be sure...
+   delayMicroseconds(1);
+   // end the pulse
+   cowpi_i2c_transmit(packet);
+   cowpi_i2c_finalize();
 }

@@ -26,6 +26,7 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
 #include "../typedefs.h"
 
 typedef enum {
@@ -69,6 +70,43 @@ extern void (*cowpi_spi_transmit)(uint8_t byte);
  * @sa cowpi_spi_transmit
  */
 extern void (*cowpi_spi_finalize)(void);
+
+
+/**
+ * Function pointer for function that takes care of any setup needed before
+ * using I2C to send data to a display module. This includes, but might not
+ * be limited to, transmitting the start bit and the peripheral's address.
+ *
+ * @param configuration the microcontroller pins, adapter mapping, and possibly
+ *      i2c peripheral address
+ *
+ * @sa cowpi_i2c_transmit
+ * @sa cowpi_i2c_finalize
+ */
+extern void (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *configuration);
+
+/**
+ * Function pointer for function that uses SPI to send data to a display module.
+ * This might be a pre-defined implementation that uses the microcontroller's
+ * SPI hardware, or it might be a pre-defined bit-bang implementation.
+ *
+ * @param byte the byte to be transmitted to the peripheral
+ * @return <code>true</code> if ACK received; <code>false</code> otherwise
+ *
+ * @sa cowpi_i2c_initialize
+ * @sa cowpi_i2c_finalize
+ */
+extern bool (*cowpi_i2c_transmit)(uint8_t byte);
+
+/**
+ * Function pointer for function that takes care of any teardown needed after
+ * using SPI to send data to a display module. This includes, but might not
+ * be limited to, transmitting the stop bit.
+ *
+ * @sa cowpi_i2c_initialize
+ * @sa cowpi_i2c_transmit
+ */
+extern void (*cowpi_i2c_finalize)(void);
 
 #ifdef __cplusplus
 } // extern "C"

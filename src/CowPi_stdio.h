@@ -77,6 +77,7 @@ extern "C" {
     
 #include "typedefs.h"
 #include "communication/communication.h"
+#include "hd44780/hd44780.h"
 #include "fonts/fonts.h"
 #include "max7219/max7219.h"
 

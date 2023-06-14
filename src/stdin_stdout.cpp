@@ -76,7 +76,7 @@ void cowpi_stdio_setup(unsigned long bitrate) {
 #if defined (__AVR__)
 
 static int cowpi_stdin_getc(__attribute__((unused)) FILE *filestream) {
-    char c;
+    char c = '\0';
     cowpi_arduinostream_get(&Serial, &c, 1);
     return (int) c;
 }
