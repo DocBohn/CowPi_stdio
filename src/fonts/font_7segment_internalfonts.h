@@ -33,7 +33,9 @@ extern "C" {
 #include <stdint.h>
 
 #ifdef __AVR__
+
 #include <avr/pgmspace.h>
+
 #endif //__AVR__
 
 
@@ -43,9 +45,9 @@ extern "C" {
 
 static const uint8_t cowpi_font_7segment[0x80]
 #ifdef __AVR__
-                                        PROGMEM
+        PROGMEM
 #endif //__AVR__
-                                                = {
+        = {
 //      00 nul  01 soh  02 stx  03 etx  04 eot  05 enq  06 ack  07 bel  08 bs   09 ht   0a lf   0b vt   0c ff   0d cr   0e so   0f si
         0x7E,   0x30,   0x6D,   0x79,   0x33,   0x5B,   0x5F,   0x70,   0x7F,   0x7B,   0x77,   0x1F,   0x0D,   0x3D,   0x4F,   0x47,
 //      10 dle  11 dc1  12 dc   13 dc   14 dc   15 na   16 sy   17 et   18 ca   19 em   1a su   1b es   1c fs   1d gs   1e rs   1f us

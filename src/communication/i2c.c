@@ -24,22 +24,23 @@
 #include <Arduino.h>
 #include <stdbool.h>
 #include "i2c.h"
+#include "../typedefs.h"
 
 
 static uint8_t data_pin;
 static uint8_t clock_pin;
 
-void (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *configuration) = cowpi_i2c_initialize_hardware;
+bool (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *configuration) = cowpi_i2c_initialize_bitbang;
 
-bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_hardware;
+bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_bitbang;
 
-void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_hardware;
+void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_bitbang;
 
 
 #define WRITE_LOW(pin)  do { pinMode((pin), OUTPUT); } while(0)
 #define WRITE_HIGH(pin) do { pinMode((pin), INPUT);  } while(0)
 
-void cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration) {
+bool cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration) {
     data_pin = configuration->data_pin;
     clock_pin = configuration->clock_pin;
 
@@ -54,7 +55,7 @@ void cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configu
     WRITE_LOW(clock_pin);
     digitalWrite(clock_pin, LOW);   // first time, just to be sure
     // I2C address + /w
-    cowpi_i2c_transmit_bitbang(configuration->i2c_address << 1);
+    return cowpi_i2c_transmit_bitbang(configuration->i2c_address << 1);
 }
 
 bool cowpi_i2c_transmit_bitbang(uint8_t byte) {
@@ -97,7 +98,7 @@ void cowpi_i2c_finalize_bitbang(void) {
 }
 
 
-void cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration) {
+bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration) {
 #ifdef __AVR__
     static bool initialized = false;
     if (!initialized) {
@@ -120,6 +121,7 @@ void cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *config
     TWCR = (1 << TWINT) | (1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}
 //    if ((TWSR & 0xF8) != 0x18) cowpi_error("I2C peripheral did not receive address!");
+    return ((TWSR & 0xF8) == 0x18);
 #endif //__AVR__
 }
 
@@ -136,6 +138,31 @@ bool cowpi_i2c_transmit_hardware(uint8_t byte) {
 void cowpi_i2c_finalize_hardware(void) {
 #ifdef __AVR__
     // stop bit
-    TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);
+    TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
 #endif //__AVR__
+}
+
+int8_t cowpi_discover_i2c_address(uint8_t data_pin, uint8_t clock_pin) {
+    int8_t discovered_address = 0;
+    int8_t number_of_discovered_addresses = 0;
+    cowpi_display_module_protocol_t detail = (cowpi_display_module_protocol_t) {
+            .data_pin=SDA,
+            .clock_pin=SCL,
+            .i2c_address = 1
+    };
+    cowpi_i2c_initialize_bitbang(&detail);  // clear-out an ACK that might be lingering on the line after a reset
+    for (int8_t address = 1; address > 0; address++) {
+        detail = (cowpi_display_module_protocol_t) {.data_pin=SDA, .clock_pin=SCL, .i2c_address = address};
+        int ack = cowpi_i2c_initialize_bitbang(&detail);
+        cowpi_i2c_finalize_bitbang();
+        if (ack) {
+            discovered_address = discovered_address ? -1 : address;
+            number_of_discovered_addresses++;
+        }
+    }
+    if (number_of_discovered_addresses == 127) {    // probably missing the pull-up resistors
+        return 0;
+    } else {
+        return discovered_address;
+    }
 }

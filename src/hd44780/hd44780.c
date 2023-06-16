@@ -35,8 +35,10 @@ static bool is_backlit = false;
 cowpi_hd44780_send_halfbyte_t cowpi_lcd1602_send_halfbyte = NULL;
 
 static void cowpi_hd44780_set_4bit_mode(const cowpi_display_module_protocol_t *configuration);
+
 static void cowpi_hd44780_send_halfbyte_spi(const cowpi_display_module_protocol_t *configuration,
                                             uint8_t halfbyte, bool is_command);
+
 static void cowpi_hd44780_send_halfbyte_i2c(const cowpi_display_module_protocol_t *configuration,
                                             uint8_t halfbyte, bool is_command);
 
@@ -80,17 +82,19 @@ void cowpi_hd44780_place_cursor(const cowpi_display_module_protocol_t *configura
 
 void cowpi_hd44780_send_command(const cowpi_display_module_protocol_t *configuration, uint8_t command) {
     cowpi_lcd1602_send_halfbyte(configuration, (command >> 4) & 0xF, true);
-    cowpi_lcd1602_send_halfbyte(configuration,  command       & 0xF, true);
+    cowpi_lcd1602_send_halfbyte(configuration, command & 0xF, true);
     if (command & ENTRY_MODE_MARKER) {
         last_entry_mode = command;
     }
-    delayMicroseconds(50);      // most commands require 37us-38us according to various datasheets; the exceptions have their own functions
+    delayMicroseconds(
+            50);      // most commands require 37us-38us according to various datasheets; the exceptions have their own functions
 }
 
 void cowpi_hd44780_send_character(const cowpi_display_module_protocol_t *configuration, uint8_t character) {
     cowpi_lcd1602_send_halfbyte(configuration, (character >> 4) & 0xF, false);
-    cowpi_lcd1602_send_halfbyte(configuration,  character       & 0xF, false);
-    delayMicroseconds(50);      // HD44780U datasheet says 41us (37+4) needed until character is updated and ddram address is updated; SPLC780D simply says 38us
+    cowpi_lcd1602_send_halfbyte(configuration, character & 0xF, false);
+    delayMicroseconds(
+            50);      // HD44780U datasheet says 41us (37+4) needed until character is updated and ddram address is updated; SPLC780D simply says 38us
 }
 
 void cowpi_hd44780_create_character(const cowpi_display_module_protocol_t *configuration,
@@ -104,7 +108,8 @@ void cowpi_hd44780_create_character(const cowpi_display_module_protocol_t *confi
 
 void cowpi_hd44780_clear_display(const cowpi_display_module_protocol_t *configuration) {
     cowpi_hd44780_send_command(configuration, 0x01);
-    delayMicroseconds(5000);    // tom alby says 5ms; adafruit uses 2ms; HD44780U datasheet simply says that 0x20 is written to each position; SPLC780D datasheet says 1.52ms
+    delayMicroseconds(
+            5000);    // tom alby says 5ms; adafruit uses 2ms; HD44780U datasheet simply says that 0x20 is written to each position; SPLC780D datasheet says 1.52ms
 }
 
 void cowpi_hd44780_return_home(const cowpi_display_module_protocol_t *configuration) {
@@ -186,37 +191,37 @@ static void cowpi_hd44780_send_halfbyte_spi(const cowpi_display_module_protocol_
 }
 
 static void cowpi_hd44780_send_halfbyte_i2c(const cowpi_display_module_protocol_t *configuration,
-                                           uint8_t halfbyte, bool is_command) {
-   uint8_t packet = 0, rs = 0, en = 0;
-   if (configuration->adapter_mapping == COWPI_DEFAULT) {
-       // this mapping is used with most I2C interfaces and libraries
-       // https://github.com/johnrickman/LiquidCrystal_I2C
-       // https://github.com/blackhack/LCD_I2C
-       /* MSB  P7  P6  P5  P4  P3  P2  P1  P0  LSB *
-        * MSB  D7  D6  D5  D4 LITE EN  RW  RS  LSB */
-       rs = is_command ? 0 : 1;
-       en = 1 << 2;
-       packet = rs | (halfbyte << 4) | (is_backlit ? 1 << 3 : 0);
-   } else if (configuration->adapter_mapping == ADAFRUIT) {
-       // this mapping is used with AdaFruit's SPI+I2C interface
-       // https://github.com/adafruit/Adafruit_LiquidCrystal
-       /* MSB   GP7 GP6 GP5 GP4 GP3 GP2 GP1 GP0  LSB *
-        * MSB  LITE  D7  D6  D5  D4  EN  RS  xx  LSB */
-       rs = is_command ? 0 : 1 << 1;
-       en = 1 << 2;
-       packet = rs | (halfbyte << 3) | (is_backlit ? 1 << 7 : 0);
-   } else {}
-   cowpi_i2c_initialize(configuration);
-   // place data on the line
-   cowpi_i2c_transmit(packet);
-   // pulse
-   cowpi_i2c_transmit(packet | en);
-   // Tom Alby uses NOPs to get to create an exact 0.5us pulse (6 NOPs (6 cycles) + 1 memory write (2 cycles) = 0.5us)
-   // but that isn't portable (also: AVR docs say to use _delay_ms() or _delay_us(), which also aren't portable).
-   // However, since we're only doing a half-byte at a time, function calls, etc., will provide sufficient delay.
-   // But, just to be sure...
-   delayMicroseconds(1);
-   // end the pulse
-   cowpi_i2c_transmit(packet);
-   cowpi_i2c_finalize();
+                                            uint8_t halfbyte, bool is_command) {
+    uint8_t packet = 0, rs = 0, en = 0;
+    if (configuration->adapter_mapping == COWPI_DEFAULT) {
+        // this mapping is used with most I2C interfaces and libraries
+        // https://github.com/johnrickman/LiquidCrystal_I2C
+        // https://github.com/blackhack/LCD_I2C
+        /* MSB  P7  P6  P5  P4  P3  P2  P1  P0  LSB *
+         * MSB  D7  D6  D5  D4 LITE EN  RW  RS  LSB */
+        rs = is_command ? 0 : 1;
+        en = 1 << 2;
+        packet = rs | (halfbyte << 4) | (is_backlit ? 1 << 3 : 0);
+    } else if (configuration->adapter_mapping == ADAFRUIT) {
+        // this mapping is used with AdaFruit's SPI+I2C interface
+        // https://github.com/adafruit/Adafruit_LiquidCrystal
+        /* MSB   GP7 GP6 GP5 GP4 GP3 GP2 GP1 GP0  LSB *
+         * MSB  LITE  D7  D6  D5  D4  EN  RS  xx  LSB */
+        rs = is_command ? 0 : 1 << 1;
+        en = 1 << 2;
+        packet = rs | (halfbyte << 3) | (is_backlit ? 1 << 7 : 0);
+    } else {}
+    cowpi_i2c_initialize(configuration);
+    // place data on the line
+    cowpi_i2c_transmit(packet);
+    // pulse
+    cowpi_i2c_transmit(packet | en);
+    // Tom Alby uses NOPs to get to create an exact 0.5us pulse (6 NOPs (6 cycles) + 1 memory write (2 cycles) = 0.5us)
+    // but that isn't portable (also: AVR docs say to use _delay_ms() or _delay_us(), which also aren't portable).
+    // However, since we're only doing a half-byte at a time, function calls, etc., will provide sufficient delay.
+    // But, just to be sure...
+    delayMicroseconds(1);
+    // end the pulse
+    cowpi_i2c_transmit(packet);
+    cowpi_i2c_finalize();
 }

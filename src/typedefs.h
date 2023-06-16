@@ -69,6 +69,7 @@ typedef struct {
  * should be sent to a display module.
  */
 typedef struct {
+    // C++ doesn't allow anonymous unions, so we'll be a little less memory-efficient
     enum protocols protocol;
     uint8_t data_pin;
     uint8_t clock_pin;
@@ -79,6 +80,12 @@ typedef struct {
 
 #ifdef __cplusplus
 } // extern "C"
+
+// While C++ will allow us to use a struct initializer that uses default (zero) values
+// for fields that are not given an explicit initial value, it will not allow us to
+// skip over fields when doing so -- cannot initialize i2c_address without explicitly
+// initilizing select_pin -- so we'll provide some initialization functions for use in
+// C++ code.
 
 static inline cowpi_display_module_protocol_t cowpi_configure_spi(uint8_t data_pin,
                                                                   uint8_t clock_pin,

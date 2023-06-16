@@ -36,13 +36,13 @@ extern "C" {
 #include <Arduino.h>
 #include "communication.h"
 
-void cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration);
+bool cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration);
 
 bool cowpi_i2c_transmit_bitbang(uint8_t byte);
 
 void cowpi_i2c_finalize_bitbang(void);
 
-void cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration);
+bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration);
 
 bool cowpi_i2c_transmit_hardware(uint8_t byte);
 

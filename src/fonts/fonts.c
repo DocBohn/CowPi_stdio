@@ -29,7 +29,9 @@
 #include "font_dotmatrix_internalfonts.h"
 
 #ifdef __AVR__
+
 #include <avr/pgmspace.h>
+
 #endif //__AVR__
 
 /* 7-Segment Functions */
@@ -62,7 +64,7 @@ int8_t cowpi_font_get_dotmatrix_width(char c) {
 
 uint8_t *cowpi_font_ascii_to_narrow_dotmatrix(uint8_t *destination, char c) {
 #ifdef __AVR__
-    memcpy_P(destination, (const uint8_t *)pgm_read_word(cowpi_font_dotmatrix + c), 8);
+    memcpy_P(destination, (const uint8_t *) pgm_read_word(cowpi_font_dotmatrix + c), 8);
 #else
     memcpy(destination, cowpi_font_dotmatrix[(int) c], 8);
 #endif //__AVR__

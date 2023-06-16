@@ -12,13 +12,6 @@ and this project adheres to
 
 -->
 
-## [Unreleased]
-
-- Code for controlling MAX7219- and HD44780-based display modules migrated from CowPi library to CowPi_stdio library
-- Code for controlling SSD1306-based display modules
-- File streams to send text to display modules using `fprintf`
-- `printf`/`scanf` for ARM architectures
-
 <!--
 - `Added` for new features.
 - `Changed` for changes in existing functionality.
@@ -27,6 +20,40 @@ and this project adheres to
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 -->
+
+<!--
+## [TODO]
+- Update keywords.txt
+- Add conformity for PlatformIO: `include/`, `library.json`
+- Code for controlling SSD1306-based display modules
+- File stream for OLED matrix (SSD1306)
+- File stream for 8x8 LED matrix (MAX7219)
+- File stream for Morse Code
+- File stream for arbitrary Arduino Stream
+- File stream for scrolling text on 7 segment display module
+- Test file streams on other devices
+- Fix printf on Nano 33 BLE
+- Fix hardware I2C on simulator (works fine on actual hardware)
+- Code for chained MAX7219 modules
+- Stderr to console
+- re-organize file streams code
+- tweak configuration code
+- port to Raspberry Pi Pico SDK framework
+-->
+
+## [Unreleased]
+
+### Added
+
+- File streams to send text to display modules using `fprintf`
+  - 8 digit, 7 segment display module (MAX7219)
+  - 16 column, 2 row character display module (HD44780)
+
+### Changed
+
+- Migrated code for controlling MAX7219- and HD44780-based display modules migrated from CowPi library to CowPi_stdio library
+- `cowpi_lcd1602_xxx()` functions from CowPi library are now `cowpi_hd1602_xxx()` in CowPi_stdio library
+  - More consistent with `cowpi_max7219_xxx()` and (the upcoming) `cowpi_ssd1306_xxx()`
 
 ## [0.4.3] - 2023-06-04
 
@@ -67,7 +94,7 @@ and this project adheres to
 - Part of CowPi library
     - Default implementation to send data to MAX7219-based display module
 
-## [0.2.0] - 2-22-04-01
+## [0.2.0] - 2022-04-01
 
 ### Added
 

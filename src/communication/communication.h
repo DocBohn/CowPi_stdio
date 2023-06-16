@@ -79,11 +79,12 @@ extern void (*cowpi_spi_finalize)(void);
  *
  * @param configuration the microcontroller pins, adapter mapping, and possibly
  *      i2c peripheral address
+ * @return <code>true</code> if ACK received; <code>false</code> otherwise
  *
  * @sa cowpi_i2c_transmit
  * @sa cowpi_i2c_finalize
  */
-extern void (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *configuration);
+extern bool (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *configuration);
 
 /**
  * Function pointer for function that uses SPI to send data to a display module.
@@ -107,6 +108,19 @@ extern bool (*cowpi_i2c_transmit)(uint8_t byte);
  * @sa cowpi_i2c_transmit
  */
 extern void (*cowpi_i2c_finalize)(void);
+
+/**
+ * @brief Reports the address of the I2C peripheral if there is exactly one I2C peripheral attached to the designated pins.
+ * 
+ * @param data_pin the I2C serial data pin
+ * @param clock_pin the I2C serial clock pin
+ * @return <ul>
+ *      <li><code>0</code> if no I2C peripherals are detected
+ *      <li><code>-1</code> if multiple I2C peripherals are detected
+ *      <li>the peripheral's I2C address otherwise
+ *      </ul>
+ */
+int8_t cowpi_discover_i2c_address(uint8_t data_pin, uint8_t clock_pin);
 
 #ifdef __cplusplus
 } // extern "C"

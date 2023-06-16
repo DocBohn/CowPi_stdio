@@ -6,6 +6,7 @@
 #ifdef __AVR__
 // strictly speaking, avr/pgmspace.h is included by Arduino.h and doesn't need to be explicitly included
 #include <avr/pgmspace.h>
+
 #endif //__AVR__
 
 void setup(void) {
