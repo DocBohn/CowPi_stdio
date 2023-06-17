@@ -26,6 +26,10 @@
 #include "i2c.h"
 #include "../typedefs.h"
 
+#ifdef ARDUINO_RASPBERRY_PI_PICO
+#define SDA PICO_DEFAULT_I2C_SDA_PIN
+#define SCL PICO_DEFAULT_I2C_SCL_PIN
+#endif //ARDUINO_RASPBERRY_PI_PICO
 
 static uint8_t data_pin;
 static uint8_t clock_pin;
@@ -122,6 +126,8 @@ bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *config
     while (!(TWCR & (1 << TWINT))) {}
 //    if ((TWSR & 0xF8) != 0x18) cowpi_error("I2C peripheral did not receive address!");
     return ((TWSR & 0xF8) == 0x18);
+#else
+    return false;
 #endif //__AVR__
 }
 
@@ -132,6 +138,8 @@ bool cowpi_i2c_transmit_hardware(uint8_t byte) {
     while (!(TWCR & (1 << TWINT))) {}
 //    if ((TWSR & 0xF8)!= 0x28) cowpi_error("I2C peripheral did not receive byte!");
     return ((TWSR & 0xF8) == 0x28);
+#else
+    return false;
 #endif //__AVR__
 }
 

@@ -11,9 +11,7 @@ cowpi_display_module_protocol_t pins;
 FILE *display;
 
 void setup(void) {
-    cowpi_stdio_setup(9600);
-    pinMode(SDA, INPUT);
-    pinMode(SCL, INPUT);
+    cowpi_stdio_setup(9600);\
 
     int8_t address = cowpi_discover_i2c_address(SDA, SCL);
     if (address == 0) {
@@ -36,7 +34,9 @@ void setup(void) {
 
     display = cowpi_add_display_module(
             (cowpi_display_module_t) {
-                    .display_module = LCD_CHARACTER
+                    .display_module = LCD_CHARACTER,
+                //    .width = 20,
+                //    .height = 4
             },
             pins
     );

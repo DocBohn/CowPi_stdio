@@ -66,8 +66,7 @@ void cowpi_spi_finalize_bitbang(void);
  * @param bit_order indicates whether the peripheral expects the byte to arrive
  *      LSB first or MSB first
  */
-void cowpi_spi_initialize_hardware(__attribute__((unused)) const cowpi_display_module_protocol_t *configuration,
-                                   bit_order_t bit_order);
+void cowpi_spi_initialize_hardware(const cowpi_display_module_protocol_t *configuration, bit_order_t bit_order);
 
 /**
  * An implementation of cowpi_spi_transmit() that uses the microcontroller's

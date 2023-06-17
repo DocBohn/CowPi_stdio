@@ -23,8 +23,10 @@
  * limitations under the License.
  */
 
-#ifndef COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H
-#define COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H
+//#ifndef COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H
+//#define COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H
+
+#ifdef COWPI_STDIO_FONTS_INTERNAL
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,4 +74,6 @@ static const uint8_t cowpi_font_7segment[0x80]
 } // extern "C"
 #endif
 
-#endif //COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H
+#endif //COWPI_STDIO_FONTS_INTERNAL
+
+//#endif //COWPI_STDIO_FONT_7SEGMENT_INTERNALFONTS_H

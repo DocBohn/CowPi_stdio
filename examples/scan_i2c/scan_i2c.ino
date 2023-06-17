@@ -5,8 +5,6 @@
 
 void setup(void) {
     cowpi_stdio_setup(9600);
-    pinMode(SDA, INPUT);
-    pinMode(SCL, INPUT);
 
     int8_t address = cowpi_discover_i2c_address(SDA, SCL);
     if (address == 0) {

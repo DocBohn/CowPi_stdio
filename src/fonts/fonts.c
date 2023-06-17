@@ -21,6 +21,8 @@
  * limitations under the License.
  */
 
+#define COWPI_STDIO_FONTS_INTERNAL
+
 #include <stdbool.h>
 #include <string.h>
 #include "font_7segment.h"

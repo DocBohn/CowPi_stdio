@@ -12,10 +12,6 @@
 FILE *display;
 
 void setup(void) {
-    pinMode(MOSI, OUTPUT);
-    pinMode(SCK, OUTPUT);
-    pinMode(SS, OUTPUT);
-
     display = cowpi_add_display_module(
             (cowpi_display_module_t) {
                     .display_module = SEVEN_SEGMENT

@@ -21,12 +21,17 @@
  * limitations under the License.
  */
 
-#include "CowPi_stdio.h"
+#define COWPI_STDIO_FILE_STREAMS_INTERNAL
+
+#include "file_streams.h"
+#include "file_streams_internal.h"
+
+int8_t number_of_streams;
+stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
 
 #if defined(ARDUINO)
 
 #include <Arduino.h>
-
 
 #if defined (__AVR__)
 static FILE serial_monitor_allocation;

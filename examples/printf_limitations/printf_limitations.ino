@@ -7,11 +7,13 @@ void setup(void) {
     cowpi_stdio_setup(9600);
 
     float f = 3.14f;
-    long long n = 42;
+    long long n = 42;    
 
-#ifndef ARDUINO_RASPBERRY_PI_PICO
+    printf("The default `printf` won't convert floating point values such as %f.\n", f);
 
-#endif //ARDUINO_RASPBERRY_PI_PICO
+// #ifndef ARDUINO_RASPBERRY_PI_PICO
+
+// #endif //ARDUINO_RASPBERRY_PI_PICO
 #ifdef __AVR__
     printf("If you need to print floats, use the additional build arguments\n");
     printf("        -Wl,-u,vfprintf -lprintf_flt -lm        (see the `extras/` directory)\n\n");

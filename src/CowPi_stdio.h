@@ -72,36 +72,14 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stdio.h>
 
 #include "typedefs.h"
 #include "communication/communication.h"
+#include "file_streams/file_streams.h"
 #include "fonts/fonts.h"
 #include "hd44780/hd44780.h"
 #include "max7219/max7219.h"
-
-/**
- * @brief Configures the "Serial Monitor" for `printf()` and `scanf()`.
- *
- * Configures `stdout` and `stdin`, allowing programmers to use `printf()` to
- * write to, and `scanf()` to read from, the USB-based serial interface between
- * the microcontroller and the host computer.
- *
- * @ingroup configuration
- *
- * @param bitrate the serial interface's bit rate
- */
-void cowpi_stdio_setup(unsigned long bitrate);
-
-/**
- * @brief Configures a display module for `fprintf()`.
- * 
- * @param display_module the display module's details
- * @param configuration the communication protocol's details
- * @return a pointer to a `FILE` stream for the display module
- */
-FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_display_module_protocol_t configuration);
 
 #ifdef __cplusplus
 } // extern "C"

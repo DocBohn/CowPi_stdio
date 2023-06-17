@@ -21,45 +21,27 @@
  * limitations under the License.
  */
 
+#define COWPI_STDIO_FILE_STREAMS_INTERNAL
+
+#include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
-#include "CowPi_stdio.h"
-#include "typedefs.h"
-#include "fonts/fonts.h"
-#include "hd44780/hd44780.h"
-#include "max7219/max7219.h"
+#include <Arduino.h>
+#include "file_streams.h"
+#include "file_streams_internal.h"
+#include "../fonts/fonts.h"
+#include "../hd44780/hd44780.h"
+#include "../max7219/max7219.h"
 
 #if defined(__AVR__)
 
 static int cowpi_display_module_putc(char c, FILE *filestream);
 
-typedef struct {
-    FILE stream;
-
-    int (*put)(void *cookie, const char *buffer, int size);
-
-    cowpi_display_module_protocol_t configuration;
-    uint8_t width;
-    uint8_t height;
-} stream_data_t;
-
-#elif defined(ARDUINO_ARCH_SAMD) || defined(__MBED__)
-
-typedef struct {
-    cowpi_display_module_protocol_t configuration;
-    uint8_t width;
-} stream_data_t;
-
-#else
-#error Unknown microcontroller architecture
-#endif // architecture
+#endif //__AVR__
 
 static int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size);
 
 static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size);
-
-#define MAXIMUM_NUMBER_OF_STREAMS 10
-static int8_t number_of_streams = 0;
-static stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
 
 FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_display_module_protocol_t configuration) {
     if (number_of_streams == MAXIMUM_NUMBER_OF_STREAMS) return NULL;
@@ -71,6 +53,19 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     memcpy(&stream_data->configuration, &configuration, sizeof(cowpi_display_module_protocol_t));
     stream_data->width = display_module.width;
     stream_data->height = display_module.height;
+    switch (stream_data->configuration.protocol) {
+        case SPI:
+            pinMode(stream_data->configuration.data_pin, OUTPUT);
+            pinMode(stream_data->configuration.clock_pin, OUTPUT);
+            pinMode(stream_data->configuration.select_pin, OUTPUT);
+            break;
+        case I2C:
+            pinMode(stream_data->configuration.data_pin, INPUT);
+            pinMode(stream_data->configuration.clock_pin, INPUT);
+            break;
+        default:
+            return NULL;
+    }
     switch (display_module.display_module) {
         case SEVEN_SEGMENT:
             // default to a single module of 8 digits (which is good because we're not handling chained modules yet)
@@ -86,8 +81,6 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             // default to the "native" LCD1602
             if (!stream_data->width) stream_data->width = 16;
             if (!stream_data->height) stream_data->height = 2;
-            // must use SPI or I2C
-            if (stream_data->configuration.protocol != SPI && stream_data->configuration.protocol != I2C) return NULL;
             // must be LCD1602 or LCD2004
             if (!(stream_data->width == 16 && stream_data->height == 2)
                 && !(stream_data->width == 20 && stream_data->height == 4))
@@ -185,7 +178,8 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
                 /* FALLTHROUGH */
             case '\v':
                 if (!scrolled) {
-                    row = (row == height - 1) ? 0 : row + 1;
+//                    row = (row == height - 1) ? 0 : row + 1;
+                    row = INCREMENT_MODULO(row, height);
                     row_start = row_starts[row];
                 }
                 /* FALLTHROUGH */
@@ -202,7 +196,8 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
                 ddram_address++;
                 if (ddram_address == row_start + width) {
                     scrolled = true;
-                    row = (row == height - 1) ? 0 : row + 1;
+//                    row = (row == height - 1) ? 0 : row + 1;
+                    row = INCREMENT_MODULO(row, height);
                     ddram_address = row_starts[row];
                 } else {
                     scrolled = false;
@@ -214,7 +209,8 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
                 ddram_address++;
                 if (ddram_address == row_start + width) {
                     scrolled = true;
-                    row = (row == height - 1) ? 0 : row + 1;
+//                    row = (row == height - 1) ? 0 : row + 1;
+                    row = INCREMENT_MODULO(row, height);
                     ddram_address = row_starts[row];
                     cowpi_hd44780_place_cursor(&stream_data->configuration, row_start);
                 } else {
