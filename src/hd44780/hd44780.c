@@ -150,7 +150,7 @@ void cowpi_hd44780_set_4bit_mode(const cowpi_display_module_protocol_t *configur
 static void cowpi_hd44780_send_halfbyte_spi(const cowpi_display_module_protocol_t *configuration,
                                             uint8_t halfbyte, bool is_command) {
     uint8_t packet = 0, rs = 0, en = 0;
-    bit_order_t bit_order = MSB_FIRST;
+    bit_order_t bit_order = COWPI_MSB_FIRST;
     if (configuration->adapter_mapping == COWPI_DEFAULT) {
         // unlike I2C, there doesn't seem to be a "typical" mapping for SPI
         // We'll make our lives simpler by using the same default mapping for SPI that we're using for I2C
@@ -167,7 +167,7 @@ static void cowpi_hd44780_send_halfbyte_spi(const cowpi_display_module_protocol_
         rs = is_command ? 0 : 1 << 6;
         en = 1 << 5;
         packet = rs | (halfbyte << 1) | (is_backlit ? 1 : 0);
-        bit_order = LSB_FIRST;
+        bit_order = COWPI_LSB_FIRST;
     } else {}
     cowpi_spi_initialize(configuration, bit_order);
     // place data on the line

@@ -3,6 +3,11 @@
 // Arduino.h is implicitly included in the Arduino IDE but not in PlatformIO
 #include <Arduino.h>
 
+#ifdef __MBED__
+#define SDA PIN_WIRE_SDA
+#define SCL PIN_WIRE_SCL
+#endif
+
 void setup(void) {
     cowpi_stdio_setup(9600);
 

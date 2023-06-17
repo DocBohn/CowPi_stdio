@@ -5,7 +5,11 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "../lib/CowPi_stdio/src/communication/i2c.h"
+
+#ifdef __MBED__
+#define SDA PIN_WIRE_SDA
+#define SCL PIN_WIRE_SCL
+#endif
 
 cowpi_display_module_protocol_t pins;
 FILE *display;

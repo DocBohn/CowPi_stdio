@@ -24,12 +24,7 @@
 #include <Arduino.h>
 #include <stdbool.h>
 #include "i2c.h"
-#include "../typedefs.h"
-
-#ifdef ARDUINO_RASPBERRY_PI_PICO
-#define SDA PICO_DEFAULT_I2C_SDA_PIN
-#define SCL PICO_DEFAULT_I2C_SCL_PIN
-#endif //ARDUINO_RASPBERRY_PI_PICO
+#include "../translations/translations.h"
 
 static uint8_t data_pin;
 static uint8_t clock_pin;
@@ -41,8 +36,10 @@ bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_bitbang;
 void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_bitbang;
 
 
-#define WRITE_LOW(pin)  do { pinMode((pin), OUTPUT); } while(0)
-#define WRITE_HIGH(pin) do { pinMode((pin), INPUT);  } while(0)
+//#define WRITE_LOW(pin)  do { pinMode((pin), OUTPUT); } while(0)
+//#define WRITE_HIGH(pin) do { pinMode((pin), INPUT);  } while(0)
+#define WRITE_LOW(pin)  do { cowpi_pin_mode((pin), OUTPUT); } while(0)
+#define WRITE_HIGH(pin) do { cowpi_pin_mode((pin), INPUT);  } while(0)
 
 bool cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration) {
     data_pin = configuration->data_pin;
@@ -78,14 +75,16 @@ bool cowpi_i2c_transmit_bitbang(uint8_t byte) {
         delayMicroseconds(6);   // 1us t_icr + 4us t_sch + 0.3us t_icf + 0ns t_sdh
         WRITE_LOW(clock_pin);
     }
-    pinMode(SDA, INPUT);
+//    pinMode(data_pin, INPUT);
+    cowpi_pin_mode(data_pin, INPUT);
     delayMicroseconds(6);
     WRITE_HIGH(clock_pin);
     delayMicroseconds(3);
     uint8_t nack = digitalRead(data_pin);
     delayMicroseconds(3);
     WRITE_LOW(clock_pin);
-    pinMode(SDA, OUTPUT);
+//    pinMode(data_pin, OUTPUT);
+    cowpi_pin_mode(data_pin, OUTPUT);
 
     WRITE_LOW(data_pin);
     return !nack;
@@ -103,7 +102,7 @@ void cowpi_i2c_finalize_bitbang(void) {
 
 
 bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration) {
-#ifdef __AVR__
+#if defined(__AVR__) && !defined(__AVR_MEGA__)
     static bool initialized = false;
     if (!initialized) {
         /* Set SCL Frequency [100kHz] = CPU Clock Frequency [16MHz] / (16 + 2 * TWBR * prescaler [1]) */
@@ -132,7 +131,7 @@ bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *config
 }
 
 bool cowpi_i2c_transmit_hardware(uint8_t byte) {
-#ifdef __AVR__
+#if defined(__AVR__) && !defined(__AVR_MEGA__)
     TWDR = byte;
     TWCR = (1 << TWINT) | (1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}
@@ -144,18 +143,18 @@ bool cowpi_i2c_transmit_hardware(uint8_t byte) {
 }
 
 void cowpi_i2c_finalize_hardware(void) {
-#ifdef __AVR__
+#if defined(__AVR__) && !defined(__AVR_MEGA__)
     // stop bit
     TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
 #endif //__AVR__
 }
 
-int8_t cowpi_discover_i2c_address(uint8_t data_pin, uint8_t clock_pin) {
+int8_t cowpi_discover_i2c_address(uint8_t i2c_data_pin, uint8_t i2c_clock_pin) {
     int8_t discovered_address = 0;
     int8_t number_of_discovered_addresses = 0;
     cowpi_display_module_protocol_t detail = (cowpi_display_module_protocol_t) {
-            .data_pin=SDA,
-            .clock_pin=SCL,
+            .data_pin = i2c_data_pin,
+            .clock_pin = i2c_clock_pin,
             .i2c_address = 1
     };
     cowpi_i2c_initialize_bitbang(&detail);  // clear-out an ACK that might be lingering on the line after a reset
@@ -164,11 +163,11 @@ int8_t cowpi_discover_i2c_address(uint8_t data_pin, uint8_t clock_pin) {
         int ack = cowpi_i2c_initialize_bitbang(&detail);
         cowpi_i2c_finalize_bitbang();
         if (ack) {
-            discovered_address = discovered_address ? -1 : address;
+            discovered_address = (int8_t) (discovered_address ? -1 : address);
             number_of_discovered_addresses++;
         }
     }
-    if (number_of_discovered_addresses == 127) {    // probably missing the pull-up resistors
+    if (number_of_discovered_addresses == 127) {    // if this happens, then we're likely missing the pull-up resistors
         return 0;
     } else {
         return discovered_address;

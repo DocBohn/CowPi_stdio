@@ -29,9 +29,6 @@
 extern "C" {
 #endif
 
-#include "typedefs.h"
-
-//uint8_t cowpi_reverse_byte(uint8_t byte);
 
 #ifdef __cplusplus
 } // extern "C"

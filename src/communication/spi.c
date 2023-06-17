@@ -43,29 +43,29 @@ void cowpi_spi_initialize_bitbang(const cowpi_display_module_protocol_t *configu
 }
 
 void cowpi_spi_transmit_bitbang(uint8_t byte) {
-    shiftOut(data_pin, clock_pin, data_order == MSB_FIRST ? MSBFIRST : LSBFIRST, byte);
+    shiftOut(data_pin, clock_pin, data_order == COWPI_MSB_FIRST ? MSBFIRST : LSBFIRST, byte);
 }
 
 void cowpi_spi_finalize_bitbang(void) { ; }
 
 void cowpi_spi_initialize_hardware(__attribute__((unused)) const cowpi_display_module_protocol_t *configuration,
                                    bit_order_t bit_order) {
-#ifdef __AVR__
-    uint8_t bit_order_bit = ((bit_order == LSB_FIRST) << DORD);
+#if defined(__AVR__) && !defined(__AVR_MEGA__)
+    uint8_t bit_order_bit = ((bit_order == COWPI_LSB_FIRST) << DORD);
     /* Enable SPI, data order, Controller, set clock rate fck/16 [1MHz] */
     SPCR = (1 << SPE) | bit_order_bit | (1 << MSTR) | (1 << SPR0);
 #endif //__AVR__
 }
 
 void cowpi_spi_transmit_hardware(uint8_t byte) {
-#ifdef __AVR__
+#if defined(__AVR__) && !defined(__AVR_MEGA__)
     SPDR = byte;
     while (!(SPSR & 0x80)) {}
 #endif //__AVR__
 }
 
 void cowpi_spi_finalize_hardware(void) {
-#ifdef __AVR__
+#if defined(__AVR__) && !defined(__AVR_MEGA__)
     SPCR = 0;
 #endif //__AVR__
 }

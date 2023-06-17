@@ -30,8 +30,8 @@ extern "C" {
 #include "../typedefs.h"
 
 typedef enum {
-    LSB_FIRST,
-    MSB_FIRST
+    COWPI_LSB_FIRST,
+    COWPI_MSB_FIRST
 } bit_order_t;
 
 
@@ -112,15 +112,15 @@ extern void (*cowpi_i2c_finalize)(void);
 /**
  * @brief Reports the address of the I2C peripheral if there is exactly one I2C peripheral attached to the designated pins.
  * 
- * @param data_pin the I2C serial data pin
- * @param clock_pin the I2C serial clock pin
+ * @param i2c_data_pin the I2C serial data pin
+ * @param i2c_clock_pin the I2C serial clock pin
  * @return <ul>
  *      <li><code>0</code> if no I2C peripherals are detected
  *      <li><code>-1</code> if multiple I2C peripherals are detected
  *      <li>the peripheral's I2C address otherwise
  *      </ul>
  */
-int8_t cowpi_discover_i2c_address(uint8_t data_pin, uint8_t clock_pin);
+int8_t cowpi_discover_i2c_address(uint8_t i2c_data_pin, uint8_t i2c_clock_pin);
 
 #ifdef __cplusplus
 } // extern "C"

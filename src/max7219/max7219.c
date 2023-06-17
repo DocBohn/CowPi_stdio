@@ -45,7 +45,7 @@ void cowpi_setup_max7219(const cowpi_display_module_protocol_t *configuration) {
 }
 
 void cowpi_max7219_send(const cowpi_display_module_protocol_t *configuration, uint8_t address, uint8_t data) {
-    cowpi_spi_initialize(configuration, MSB_FIRST);
+    cowpi_spi_initialize(configuration, COWPI_MSB_FIRST);
     digitalWrite(configuration->select_pin, LOW);
     cowpi_spi_transmit(address);
     cowpi_spi_transmit(data);
