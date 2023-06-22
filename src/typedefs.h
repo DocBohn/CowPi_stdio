@@ -92,7 +92,7 @@ static inline cowpi_display_module_protocol_t cowpi_configure_spi(uint8_t data_p
                                                                   uint8_t select_pin,
                                                                   enum adapter_mappings adapter_mapping = COWPI_DEFAULT) {
     return (cowpi_display_module_protocol_t){
-            .protocol = I2C,
+            .protocol = SPI,
             .data_pin = data_pin,
             .clock_pin = clock_pin,
             .select_pin = select_pin,

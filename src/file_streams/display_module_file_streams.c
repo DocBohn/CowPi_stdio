@@ -32,6 +32,7 @@
 #include "../fonts/fonts.h"
 #include "../hd44780/hd44780.h"
 #include "../max7219/max7219.h"
+#include "../translations/translations.h"
 
 #if defined(__AVR__)
 
@@ -55,13 +56,18 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     stream_data->height = display_module.height;
     switch (stream_data->configuration.protocol) {
         case SPI:
-            pinMode(stream_data->configuration.data_pin, OUTPUT);
-            pinMode(stream_data->configuration.clock_pin, OUTPUT);
-            pinMode(stream_data->configuration.select_pin, OUTPUT);
+            // pinMode(stream_data->configuration.data_pin, OUTPUT);
+            // pinMode(stream_data->configuration.clock_pin, OUTPUT);
+            // pinMode(stream_data->configuration.select_pin, OUTPUT);
+            cowpi_pin_mode(stream_data->configuration.data_pin, OUTPUT);
+            cowpi_pin_mode(stream_data->configuration.clock_pin, OUTPUT);
+            cowpi_pin_mode(stream_data->configuration.select_pin, OUTPUT);
             break;
         case I2C:
-            pinMode(stream_data->configuration.data_pin, INPUT);
-            pinMode(stream_data->configuration.clock_pin, INPUT);
+            // pinMode(stream_data->configuration.data_pin, INPUT);
+            // pinMode(stream_data->configuration.clock_pin, INPUT);
+            cowpi_pin_mode(stream_data->configuration.data_pin, INPUT);
+            cowpi_pin_mode(stream_data->configuration.clock_pin, INPUT);
             break;
         default:
             return NULL;
@@ -98,6 +104,8 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     fdev_setup_stream(stream, cowpi_display_module_putc, NULL, _FDEV_SETUP_WRITE);
 #elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__)
     stream = funopen(stream_data, NULL, put, NULL, NULL);
+    // I suppose we should make line buffering an option, but not today
+    if (setvbuf(stream, NULL, _IONBF, 0)) return NULL;
 #else
     stream = NULL;
 #endif //architecture
@@ -161,8 +169,8 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
     static const uint8_t row_starts[] = {0x00, 0x40, 0x14, 0x54};
     static bool scrolled = false;
     int i = 0;
-    char c = buffer[i];
     while (i < size) {
+        char c = buffer[i];
         uint8_t row_start = row_starts[row];
         if (ddram_address == row_start) {
             cowpi_hd44780_place_cursor(&stream_data->configuration, ddram_address);

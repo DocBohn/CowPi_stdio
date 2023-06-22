@@ -1,6 +1,6 @@
 # CowPi_stdio Library
 
-version 0.4.3-plus
+version 0.4.4
 
 ## What the CowPi_stdio library has to offer
 
@@ -24,14 +24,17 @@ Our plans for the v0.6 release include:
 
 The examples are all `.ino` files as expected by the Arduino IDE.
 (Maybe) You can use them in PlatformIO by creating a `main.cpp` file that consists only of
+
 ```cpp
 #include "../lib/CowPi_stdio/examples/example_name/example_name.ino"
 ```
+
 (where `example_name` is replaced with the actual example's name)
 
 ### printf_and_scanf
 
-Demonstrates the use of `printf` (including the nonstandard `printf_P` and `PSTR` functions provided by avr-libc), as well as `scanf`.
+Demonstrates the use of `printf` (including the nonstandard `printf_P` and `PSTR` functions provided by avr-libc), as
+well as `scanf`.
 
 ### printf_limitations
 
@@ -48,8 +51,10 @@ Demonstrates using `fprintf` with an 8 digit, 7 segment display module.
 
 ### hd44780_blinky
 
-Used to test whether an LCD character display is connected properly by blinking the display module's backlight while displaying "Hello, world!" so that the user an adjust the contrast trimpot.
-Just for fun, this example also demonstrates the use of custom characters, by having a 👻 (which might or might not be inspired by Pac-Man's [Blinky](https://pacman.fandom.com/wiki/Blinky)) move back and forth.
+Used to test whether an LCD character display is connected properly by blinking the display module's backlight while
+displaying "Hello, world!" so that the user an adjust the contrast trimpot.
+Just for fun, this example also demonstrates the use of custom characters, by having a 👻 (which might or might not be
+inspired by Pac-Man's [Blinky](https://pacman.fandom.com/wiki/Blinky)) move back and forth.
 
 ### hd44780_lcd_character
 
@@ -59,14 +64,17 @@ Demonstrates using `fprintf` with a 16x2 (or 20x4) LCD character display module.
 
 ### Advantage of using `printf`
 
-- Being able to print using a format string with conversion specifiers is *much* more convenient than using the Arduino `Serial.print` and `Serial.println` functions.
-  Even without specifying alignment and padding, as soon as you combine constant text with a variable, `printf` becomes easier to use than a chain of `Serial.print`/`println` calls.
+- Being able to print using a format string with conversion specifiers is *much* more convenient than using the
+  Arduino `Serial.print` and `Serial.println` functions.
+  Even without specifying alignment and padding, as soon as you combine constant text with a variable, `printf` becomes
+  easier to use than a chain of `Serial.print`/`println` calls.
   (But, of course, you have all the conversion specifier goodness, including alignment and padding.
   Well, *almost* all -- see the note below about [limitations](#Limitations).)
 
 ### Disadvantage of using `printf`
 
-- Using `printf` *will* increase the size of your executable by about 1.2KB over simply using `Serial.print` and `Serial.println`, about the same as if you were to combine `snprintf` with `Serial.println`.
+- Using `printf` *will* increase the size of your executable by about 1.2KB over simply using `Serial.print`
+  and `Serial.println`, about the same as if you were to combine `snprintf` with `Serial.println`.
 
   For example, on an Arduino Nano,
   ```cpp
@@ -100,7 +108,8 @@ Demonstrates using `fprintf` with a 16x2 (or 20x4) LCD character display module.
 
 ### Neither advantage nor disadvantage
 
-- Even without using the CowPi_stdio library, you can create formatted output by using `sprintf` (or, better yet, `snprintf`).
+- Even without using the CowPi_stdio library, you can create formatted output by using `sprintf` (or, better
+  yet, `snprintf`).
   This, however, still brings the code for format conversions into the program:
   ```cpp
   void setup(void) {
@@ -116,18 +125,21 @@ Demonstrates using `fprintf` with a 16x2 (or 20x4) LCD character display module.
   ```
   uses 3066 bytes of Flash memory and 200 bytes of SRAM.
 - Conventional wisdom is that format conversions are very slow.
-  While it is true that using `printf` is slower than not printing to a terminal, it is *not* true that using `printf` is slower than chaining `Serial.print`/`println` calls.
-  The `Serial.print` and `Serial.println` statements in the first snippet require 276µs (±4µs) to execute, and the `printf` statement in the second snippet requires 212µs (±4µs) to execute.
+  While it is true that using `printf` is slower than not printing to a terminal, it is *not* true that using `printf`
+  is slower than chaining `Serial.print`/`println` calls.
+  The `Serial.print` and `Serial.println` statements in the first snippet require 276µs (±4µs) to execute, and
+  the `printf` statement in the second snippet requires 212µs (±4µs) to execute.
 
 ## Limitations
 
-The only limitations are inherited from the avr-libc library.
+The only limitations are inherited from the avr-libc (for AVR) and the newlib (for ARM) libraries.
 The one you will most likely notice is floating point conversions, which can be overcome.
 There are other limitations that cannot be.
 
 ### Floating point conversions
 
-Like most microcontroller environments, the default implementation does not support floating point conversions (except for Raspberry Pi Pico).
+Like most microcontroller environments, the default implementation does not support floating point conversions (except
+for Raspberry Pi Pico).
 Instead, the output will be `?` on AVR architectures.
 On ARM (SAMD) architectures, the output is an unprintable character.
 
@@ -153,8 +165,6 @@ Another implementation is available that will support floating point conversions
 
 ### Other limitations
 
-On AVR architectures:
-
 - The specified width and precision can be at most 255 on AVR architectures.
   This is unlikely to be a practical limitation.
 - `long long` conversions (*i.e.*, 64-bit integers) are not supported.
@@ -163,27 +173,35 @@ On AVR architectures:
   This also is unlikely to be a practical limitation.
 - Variable width or precision fields is not supported on AVR architectures.
   Using `*` to specify the width or precision will abort the output.
+  Lines 105-108 and 119-122 of *hd44780_blinky* have code that must work around this limitation.
 
 ## Compatability
 
-| MCU                        | `printf`/`scanf` | Display Modules | Notes                                                                                                                             |
-|:---------------------------|:----------------:|:---------------:|:----------------------------------------------------------------------------------------------------------------------------------|
-| ATmega328P                 |        ✅         |        ✅        | I2C code works fine on actual hardware but not in simulator (bitbang I2C works for both)                                          |
-| ATmega2560                 |        ✅         |        ⁇        |                                                                                                                                   |
-| ATmega4809                 |        ✅         |        ⁇        |                                                                                                                                   |
-| nRF52840                   |        ❌         |        ⁇        | Locks up USB -- problem with waiting for Serial? <!-- https://forum.arduino.cc/t/nano-33-ble-sense-serial-workaround/884962/7 --> |
-| RP2040 (Arduino framework) |        ✅         |        ⁇        | Still need to resolve floating point conversions                                                                                  |
-| SAM D21                    |        ✅         |        ⁇        | Still need to resolve floating point conversions                                                                                  |
+| MCU                        | `printf`/`scanf` | SPI bitbang | SPI hardware | I2C bitbang | I2C hardware | Notes                                                                                                                                                                                                                                                      |
+|:---------------------------|:----------------:|:-----------:|:------------:|:-----------:|:------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ATmega328P                 |        ✅         |      ✅      |      ✅       |      ✅      |      ✅       | I2C code works fine on actual hardware but not in simulator (bitbang I2C works for both)                                                                                                                                                                   |
+| ATmega2560                 |        ✅         |      ✅      |      ✅       |      ✅      |      ✅       | I2C code works fine on actual hardware but not in simulator (bitbang I2C works for both); it looks like *some* of the ICSP pins aren't connected to the SPI pins (50-53) even though schematic indicates they are (this just might be my particular board) |
+| ATmega4809                 |        ✅         |      ⁇      |      ❌       |      ⁇      |      ❌       |                                                                                                                                                                                                                                                            |
+| nRF52840                   |        ❌         |      ⁇      |      ❌       |      ⁇      |      ❌       | Locks up USB -- problem with waiting for Serial? <!-- https://forum.arduino.cc/t/nano-33-ble-sense-serial-workaround/884962/7 -->                                                                                                                          |
+| RP2040 (Arduino framework) |        ✅         |      ✅      |      ❌       |      ✅      |      ❌       | Still need to resolve floating point conversions; SPI and I2C implemented as bit-bang only                                                                                                                                                                 |
+| SAM D21                    |        ✅         |      ⁇      |      ❌       |      ⁇      |      ❌       | Still need to resolve floating point conversions                                                                                                                                                                                                           |
 
 <!--
 | RA4M1                      |  not yet tested  | not yet tested  | Arduino Uno R4 not yet released                                                                                                   |
 -->
 
-| Display Module                       | AVR | megaAVR | MBED | SAMD |
-|:-------------------------------------|:---:|:-------:|:----:|:----:|
-| 8-digit, 7-segment display (MAX7219) |  ✅  |    ⁇    |  ⁇   |  ⁇   |
-| 16x2 LCD character display (HD44780) |  ✅  |    ⁇    |  ⁇   |  ⁇   |
-| 20x4 LCD character display (HD44780) |  ⁇  |    ⁇    |  ⁇   |  ⁇   |
+| Display Module                                                    | AVR | megaAVR | MBED | SAMD |
+|:------------------------------------------------------------------|:---:|:-------:|:----:|:----:|
+| 8-digit, 7-segment display (MAX7219, 5V)                          |  ✅  |    ⁇    |  ✅   |  ⁇   |
+| 8-digit, 7-segment scrolling display (MAX7219, 5V)                |  ❌  |    ❌    |  ❌   |  ❌   |
+| 8x8 LED matrix scrolling display (MAX7219, 5V)                    |  ❌  |    ❌    |  ❌   |  ❌   |
+| 16x2 LCD character display (HD44780, 5V; some devices claim 3.3V) |  ✅  |    ⁇    |  ✅   |  ⁇   |
+| 20x4 LCD character display (HD44780, 5V; some devices claim 3.3V) |  ✅  |    ⁇    |  ✅   |  ⁇   |
+| 128x64 OLED matrix display (SSD1306, 3.3V or 5V)                  |  ❌  |    ❌    |  ❌   |  ❌   |
+| 128x32 OLED matrix display (SSD1306, 3.3V or 5V)                  |  ❌  |    ❌    |  ❌   |  ❌   |
+| Morse Code LED (no serial adapter necessary)                      |  ❌  |    ❌    |  ❌   |  ❌   |
+
+(MBED tested on Raspberry Pi Pico but not on Arduino Nano 33 BLE)
 
 ### Tested on...
 
@@ -217,9 +235,13 @@ On AVR architectures:
 
 ## About the name
 
-Some of the code in the CowPi_stdio library was once part of the [CowPi](https://github.com/DocBohn/CowPi/) library, which was designed to work with Cow Pi development boards.
-The code in the CowPi_stdio library will work in projects that do not use a Cow Pi development board, but we preserve the "CowPi" part of the name as a nod to its origins, and also to distinguish it from the `stdio` portion of libc.
-The "stdio" part of the name is because it makes available to AVR architectures two of the most-commonly used functions from `stdio.h` and makes it possible for coders to use stdio functions to work with display modules for both AVR and ARM architectures.
+Some of the code in the CowPi_stdio library was once part of the [CowPi](https://github.com/DocBohn/CowPi/) library,
+which was designed to work with Cow Pi development boards.
+The code in the CowPi_stdio library will work in projects that do not use a Cow Pi development board, but we preserve
+the "CowPi" part of the name as a nod to its origins, and also to distinguish it from the `stdio` portion of libc.
+The "stdio" part of the name is because it makes available to AVR architectures two of the most-commonly used functions
+from `stdio.h` and makes it possible for coders to use stdio functions to work with display modules for both AVR and ARM
+architectures.
 
 ### Why *Cow Pi*?
 
@@ -232,9 +254,15 @@ Besides, it will (soon) also work with the Raspberry Pi Pico.
 
 ## An abbreviated pre-history
 
-Some of the code in the CowPi_stdio library was once part of the [CowPi](https://github.com/DocBohn/CowPi/) library, which was designed to work with Cow Pi development boards, designed for class assignments at the hardware/software interface.
-Version 0.3 of the CowPi library saw many improvements, including being able to use `printf()` and `scanf()` with a serial terminal and abstractions for controlling MAX7219- and HH44780-based display modules.
-Plans for v0.5 included abstractions for SSD1306-based display modules and to further abstract the display modules by creating file streams for them that can be used with `fprintf()`.
-As we were making initial forays into what this display code would look like, we realized that the code that controls the displays depends on the displays but not on any of the other hardware on the Cow Pi development board, and we realized that it might be useful for projects that don't use the Cow Pi development board.
+Some of the code in the CowPi_stdio library was once part of the [CowPi](https://github.com/DocBohn/CowPi/) library,
+which was designed to work with Cow Pi development boards, designed for class assignments at the hardware/software
+interface.
+Version 0.3 of the CowPi library saw many improvements, including being able to use `printf()` and `scanf()` with a
+serial terminal and abstractions for controlling MAX7219- and HH44780-based display modules.
+Plans for v0.5 included abstractions for SSD1306-based display modules and to further abstract the display modules by
+creating file streams for them that can be used with `fprintf()`.
+As we were making initial forays into what this display code would look like, we realized that the code that controls
+the displays depends on the displays but not on any of the other hardware on the Cow Pi development board, and we
+realized that it might be useful for projects that don't use the Cow Pi development board.
 
 And so we separated the display code out from the rest of the CowPi library.

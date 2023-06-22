@@ -36,6 +36,25 @@ bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_bitbang;
 void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_bitbang;
 
 
+bool cowpi_use_i2c_hardware() {
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
+    cowpi_i2c_initialize = cowpi_i2c_initialize_hardware;
+    cowpi_i2c_transmit = cowpi_i2c_transmit_hardware;
+    cowpi_i2c_finalize = cowpi_i2c_finalize_hardware;
+    return true;
+#else
+    cowpi_use_i2c_bitbang();
+    return false;
+#endif //__AVR__
+}
+
+void cowpi_use_i2c_bitbang() {
+    cowpi_i2c_initialize = cowpi_i2c_initialize_bitbang;
+    cowpi_i2c_transmit = cowpi_i2c_transmit_bitbang;
+    cowpi_i2c_finalize = cowpi_i2c_finalize_bitbang;
+}
+
+
 //#define WRITE_LOW(pin)  do { pinMode((pin), OUTPUT); } while(0)
 //#define WRITE_HIGH(pin) do { pinMode((pin), INPUT);  } while(0)
 #define WRITE_LOW(pin)  do { cowpi_pin_mode((pin), OUTPUT); } while(0)
@@ -102,7 +121,7 @@ void cowpi_i2c_finalize_bitbang(void) {
 
 
 bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration) {
-#if defined(__AVR__) && !defined(__AVR_MEGA__)
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     static bool initialized = false;
     if (!initialized) {
         /* Set SCL Frequency [100kHz] = CPU Clock Frequency [16MHz] / (16 + 2 * TWBR * prescaler [1]) */
@@ -131,7 +150,7 @@ bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *config
 }
 
 bool cowpi_i2c_transmit_hardware(uint8_t byte) {
-#if defined(__AVR__) && !defined(__AVR_MEGA__)
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     TWDR = byte;
     TWCR = (1 << TWINT) | (1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}
@@ -143,7 +162,7 @@ bool cowpi_i2c_transmit_hardware(uint8_t byte) {
 }
 
 void cowpi_i2c_finalize_hardware(void) {
-#if defined(__AVR__) && !defined(__AVR_MEGA__)
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     // stop bit
     TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
 #endif //__AVR__

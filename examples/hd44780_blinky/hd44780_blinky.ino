@@ -15,8 +15,21 @@ cowpi_display_module_protocol_t pins;
 FILE *display;
 
 void setup(void) {
-    cowpi_stdio_setup(9600);\
+    cowpi_stdio_setup(9600);
 
+
+    // **********
+    // CHOOSE SERIAL-TO-PARALLEL MAPPING (typically can omit adapter mapping if using COWPI_DEFAULT)
+    enum adapter_mappings adapter_mapping = COWPI_DEFAULT;
+    // enum adapter_mappings adapter_mapping = ADAFRUIT;
+    // **********
+
+
+    // **********
+    // CHOOSE I2C OR SPI
+    /*
+    pins = cowpi_configure_spi(MOSI, SCK, SS, adapter_mapping);
+    */
     int8_t address = cowpi_discover_i2c_address(SDA, SCL);
     if (address == 0) {
         printf("no devices detected\n");
@@ -30,11 +43,9 @@ void setup(void) {
     if (!(0x20 <= address && address <= 0x27) && !(0x38 <= address && address <= 0x3F)) {
         printf("This might not be an HD44780 LCD character display.\n");
     }
+    pins = cowpi_configure_i2c(SDA, SCL, address, adapter_mapping);
+    // **********
 
-    pins = cowpi_configure_i2c(SDA, SCL, address);
-
-    printf("You should see the backlight blinking.\n");
-    printf("Adjust the contrast until you can see the \"Hello, world!\" message.\n");
 
     display = cowpi_add_display_module(
             (cowpi_display_module_t) {
@@ -48,6 +59,8 @@ void setup(void) {
         printf("received NULL file pointer\n");
         while (1) {}
     } else {
+        printf("You should see the backlight blinking.\n");
+        printf("Adjust the contrast until you can see the \"Hello, world!\" message.\n");
         fprintf(display, "Hello, world!\n");
     }
 

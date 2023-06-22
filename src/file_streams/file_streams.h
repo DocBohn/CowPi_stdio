@@ -49,7 +49,7 @@ void cowpi_stdio_setup(unsigned long bitrate);
  *
  * @param display_module the display module's details
  * @param configuration the communication protocol's details
- * @return a pointer to a `FILE` stream for the display module
+ * @return a pointer to a `FILE` stream for the display module, or `NULL` if a stream could not be created
  */
 FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_display_module_protocol_t configuration);
 

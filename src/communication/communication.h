@@ -73,6 +73,34 @@ extern void (*cowpi_spi_finalize)(void);
 
 
 /**
+ * @brief Assigns to `cowpi_spi_initialize`, `cowpi_spi_transmit`, and 
+ * `cowpi_spi_finalize` implementations that use the microcontroller's built-in 
+ * SPI hardware. Using the SPI hardware may limit the choice of data and clock
+ * pins. Attempting to use the SPI hardware while specifying pins that cannot
+ * be used by the SPI hardware may result in unexpected behavior.
+ * 
+ * The CowPi_stdio library does not have SPI hardware implementations for all 
+ * microcontrollers. If a hardware implementation is unavailable, this function 
+ * will return <code>false</code> and will assign a bit-banged implementation 
+ * instead.
+ * 
+ * @return <code>true</code> if hardware implementations have been assigned to 
+ *      the CowPi's SPI function pointers
+ * @return <code>false</code> if hardware implementations have not been assigned
+ *      to the CowPi's SPI function pointers
+ */
+bool cowpi_use_spi_hardware();
+
+/**
+ * @brief Assigns to `cowpi_spi_initialize`, `cowpi_spi_transmit`, and 
+ * `cowpi_spi_finalize` pure software ("bit-banged") implementations that do not
+ * use the microcontroller's built-in SPI hardware. Bit-banged implementations 
+ * have no restrictions on the choice of data and clock pins.
+ */
+void cowpi_use_spi_bitbang();
+
+
+/**
  * Function pointer for function that takes care of any setup needed before
  * using I2C to send data to a display module. This includes, but might not
  * be limited to, transmitting the start bit and the peripheral's address.
@@ -121,6 +149,35 @@ extern void (*cowpi_i2c_finalize)(void);
  *      </ul>
  */
 int8_t cowpi_discover_i2c_address(uint8_t i2c_data_pin, uint8_t i2c_clock_pin);
+
+
+/**
+ * @brief Assigns to `cowpi_i2c_initialize`, `cowpi_i2c_transmit`, and 
+ * `cowpi_i2c_finalize` implementations that use the microcontroller's built-in 
+ * I2C (aka IIC, aka TWI) hardware. Using the I2C hardware may limit the choice 
+ * of data and clock pins. Attempting to use the I2C hardware while specifying 
+ * pins that cannot be used by the I2C hardware may result in unexpected 
+ * behavior.
+ * 
+ * The CowPi_stdio library does not have I2C hardware implementations for all 
+ * microcontrollers. If a hardware implementation is unavailable, this function 
+ * will return <code>false</code> and will assign a bit-banged implementation 
+ * instead.
+ * 
+ * @return <code>true</code> if hardware implementations have been assigned to 
+ *      the CowPi's I2C function pointers
+ * @return <code>false</code> if hardware implementations have not been assigned
+ *      to the CowPi's I2C function pointers
+ */
+bool cowpi_use_i2c_hardware();
+
+/**
+ * @brief Assigns to `cowpi_i2c_initialize`, `cowpi_i2c_transmit`, and 
+ * `cowpi_i2c_finalize` pure software ("bit-banged") implementations that do not
+ * use the microcontroller's built-in I2C hardware. Bit-banged implementations 
+ * have no restrictions on the choice of data and clock pins.
+ */
+void cowpi_use_i2c_bitbang();
 
 #ifdef __cplusplus
 } // extern "C"
