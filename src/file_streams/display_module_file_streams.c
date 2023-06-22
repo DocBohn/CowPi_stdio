@@ -48,24 +48,18 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     if (number_of_streams == MAXIMUM_NUMBER_OF_STREAMS) return NULL;
     if (configuration.protocol == I2C && configuration.i2c_address == 0) return NULL;
     FILE *stream;
-    int (*put)(void *cookie, const char *buffer, int size);
+//    int (*put)(void *cookie, const char *buffer, int size);
     stream_data_t *stream_data = streams + number_of_streams;
-    number_of_streams++;
     memcpy(&stream_data->configuration, &configuration, sizeof(cowpi_display_module_protocol_t));
     stream_data->width = display_module.width;
     stream_data->height = display_module.height;
     switch (stream_data->configuration.protocol) {
         case SPI:
-            // pinMode(stream_data->configuration.data_pin, OUTPUT);
-            // pinMode(stream_data->configuration.clock_pin, OUTPUT);
-            // pinMode(stream_data->configuration.select_pin, OUTPUT);
             cowpi_pin_mode(stream_data->configuration.data_pin, OUTPUT);
             cowpi_pin_mode(stream_data->configuration.clock_pin, OUTPUT);
             cowpi_pin_mode(stream_data->configuration.select_pin, OUTPUT);
             break;
         case I2C:
-            // pinMode(stream_data->configuration.data_pin, INPUT);
-            // pinMode(stream_data->configuration.clock_pin, INPUT);
             cowpi_pin_mode(stream_data->configuration.data_pin, INPUT);
             cowpi_pin_mode(stream_data->configuration.clock_pin, INPUT);
             break;
@@ -81,7 +75,8 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             // number of digits must be multiple of 8
             if (display_module.width & 0x7) return NULL;
             cowpi_setup_max7219(&stream_data->configuration);
-            put = cowpi_seven_segment_noscroll_put;
+//            put = cowpi_seven_segment_noscroll_put;
+            stream_data->put = cowpi_seven_segment_noscroll_put;
             break;
         case LCD_CHARACTER:
             // default to the "native" LCD1602
@@ -93,22 +88,26 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
                 return NULL;
             cowpi_setup_hd44780(&stream_data->configuration);
             cowpi_hd44780_set_backlight(&stream_data->configuration, 1);
-            put = cowpi_lcd_character_put;
+//            put = cowpi_lcd_character_put;
+            stream_data->put = cowpi_lcd_character_put;
             break;
         default:
             return NULL;
     }
 #if defined(__AVR__)
-    stream_data->put = put;
-    stream = &(stream_data->stream);
+//    stream_data->put = put;
+//    stream = &(stream_data->stream);
+    stream = &(streams[number_of_streams].stream);
     fdev_setup_stream(stream, cowpi_display_module_putc, NULL, _FDEV_SETUP_WRITE);
 #elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__)
-    stream = funopen(stream_data, NULL, put, NULL, NULL);
+    stream = funopen(stream_data, NULL, stream_data->put, NULL, NULL);
     // I suppose we should make line buffering an option, but not today
     if (setvbuf(stream, NULL, _IONBF, 0)) return NULL;
+    stream_data->stream = stream;
 #else
     stream = NULL;
 #endif //architecture
+    number_of_streams++;
     return stream;
 }
 
@@ -117,7 +116,8 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
 static int cowpi_display_module_putc(char c, FILE *filestream) {
     // because the file stream is the first element in the struct,
     // the address of that element is also the base address of the struct
-    stream_data_t *stream_data = (stream_data_t *) filestream;
+//    stream_data_t *stream_data = (stream_data_t *) filestream;
+    stream_data_t *stream_data = cowpi_file_to_cookie(filestream);
     return !stream_data->put(stream_data, &c, 1);
 }
 
@@ -126,27 +126,69 @@ static int cowpi_display_module_putc(char c, FILE *filestream) {
 static int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size) {
     stream_data_t *stream_data = (stream_data_t *) cookie;
     static int8_t left_to_right_position = 0;
+    static bool escaped = false;
     uint8_t pattern;
     int i = 0;
-    char c = buffer[i];
-    while (i < size && left_to_right_position < stream_data->width) {
-        // TODO: handle other control sequences
-        if (c == '\n') {
-            pattern = cowpi_font_ascii_to_7segment(' ');
-            while (left_to_right_position < stream_data->width) {
-                cowpi_max7219_send(&stream_data->configuration, stream_data->width - left_to_right_position, pattern);
+    while (i < size) {
+        if (escaped) {
+            pattern = buffer[i];
+            if (left_to_right_position < stream_data->width) {
+                cowpi_max7219_send(&stream_data->configuration,
+                                   stream_data->width - left_to_right_position,
+                                   pattern);
                 left_to_right_position++;
             }
+            escaped = false;
         } else {
-            pattern = cowpi_font_ascii_to_7segment(c);
-            cowpi_max7219_send(&stream_data->configuration, stream_data->width - left_to_right_position, pattern);
-            left_to_right_position++;
-            c = buffer[i];
+            char c = buffer[i];
+            switch (c) {
+                case 0x1B:
+                    escaped = true;
+                    break;
+                case '\n':
+                    pattern = cowpi_font_ascii_to_7segment(' ');
+                    while (left_to_right_position < stream_data->width) {
+                        cowpi_max7219_send(&stream_data->configuration,
+                                           stream_data->width - left_to_right_position,
+                                           pattern);
+                        left_to_right_position++;
+                    }
+                    /* FALLTHROUGH */
+                case '\v':  // with only one row, there's not much vertical movement going on
+                case '\r':
+                case '\f':
+                    left_to_right_position = 0;
+                    break;
+                case '\b':
+                    if (left_to_right_position > 0) {
+                        left_to_right_position--;
+                    }
+                    break;
+                case 0x7F:
+                    if (left_to_right_position > 0) {
+                        left_to_right_position--;
+                        pattern = cowpi_font_ascii_to_7segment(' ');
+                        cowpi_max7219_send(&stream_data->configuration,
+                                           stream_data->width - left_to_right_position,
+                                           pattern);
+                    }
+                    break;
+                case '\t':
+                    if (left_to_right_position < stream_data->width) {
+                        left_to_right_position++;
+                    }
+                    break;
+                default:    // I'm breaking my rule about using `default` only for error cases
+                    pattern = cowpi_font_ascii_to_7segment(c);
+                    if (left_to_right_position < stream_data->width) {
+                        cowpi_max7219_send(&stream_data->configuration,
+                                           stream_data->width - left_to_right_position,
+                                           pattern);
+                        left_to_right_position++;
+                    }
+            }
         }
         i++;
-    }
-    if (c == '\n' && left_to_right_position == stream_data->width) {
-        left_to_right_position = 0;
     }
     return i;
 }
@@ -186,7 +228,6 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
                 /* FALLTHROUGH */
             case '\v':
                 if (!scrolled) {
-//                    row = (row == height - 1) ? 0 : row + 1;
                     row = INCREMENT_MODULO(row, height);
                     row_start = row_starts[row];
                 }
@@ -204,7 +245,6 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
                 ddram_address++;
                 if (ddram_address == row_start + width) {
                     scrolled = true;
-//                    row = (row == height - 1) ? 0 : row + 1;
                     row = INCREMENT_MODULO(row, height);
                     ddram_address = row_starts[row];
                 } else {
@@ -217,7 +257,6 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
                 ddram_address++;
                 if (ddram_address == row_start + width) {
                     scrolled = true;
-//                    row = (row == height - 1) ? 0 : row + 1;
                     row = INCREMENT_MODULO(row, height);
                     ddram_address = row_starts[row];
                     cowpi_hd44780_place_cursor(&stream_data->configuration, row_start);
@@ -228,4 +267,57 @@ static int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
         i++;
     }
     return i;
+}
+
+stream_data_t *cowpi_file_to_cookie(FILE *filestream) {
+#ifdef __AVR__
+    // because the file stream is the first element in the struct,
+    // the address of that element is also the base address of the struct
+    return (stream_data_t *) filestream;
+#else
+    stream_data_t *cookie = NULL;
+    int i = 0;
+    while (cookie == NULL && i < MAXIMUM_NUMBER_OF_STREAMS) {
+        if (streams[i].stream == filestream) {
+            cookie = streams + i;
+        } else {
+            i++;
+        }
+    }
+    return cookie;
+#endif //__AVR__
+}
+
+void cowpi_clear_display(FILE *filestream) {
+    stream_data_t *stream_data = cowpi_file_to_cookie(filestream);
+    int (*put)(void *, const char *, int) = stream_data->put;
+    cowpi_display_module_protocol_t *configuration = &stream_data->configuration;
+    if (put == cowpi_seven_segment_noscroll_put) {
+        fprintf(filestream, "\r\n");    // place cursor at start of line, and then \n clears it
+    } else if (put == cowpi_lcd_character_put) {
+        fprintf(filestream, "\f");      // so that `put` knows where the cursor is
+        cowpi_hd44780_clear_display(configuration);
+    } else {}
+}
+
+void cowpi_sleep_display(FILE *filestream) {
+    stream_data_t *stream_data = cowpi_file_to_cookie(filestream);
+    int (*put)(void *, const char *, int) = stream_data->put;
+    cowpi_display_module_protocol_t *configuration = &stream_data->configuration;
+    if (put == cowpi_seven_segment_noscroll_put) {
+        cowpi_max7219_shutdown(configuration);
+    } else if (put == cowpi_lcd_character_put) {
+        cowpi_hd44780_set_backlight(configuration, false);
+    } else {}
+}
+
+void cowpi_wake_display(FILE *filestream) {
+    stream_data_t *stream_data = cowpi_file_to_cookie(filestream);
+    int (*put)(void *, const char *, int) = stream_data->put;
+    cowpi_display_module_protocol_t *configuration = &stream_data->configuration;
+    if (put == cowpi_seven_segment_noscroll_put) {
+        cowpi_max7219_startup(configuration);
+    } else if (put == cowpi_lcd_character_put) {
+        cowpi_hd44780_set_backlight(configuration, true);
+    } else {}
 }

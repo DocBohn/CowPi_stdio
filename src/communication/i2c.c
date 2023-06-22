@@ -36,29 +36,16 @@ bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_bitbang;
 void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_bitbang;
 
 
-bool cowpi_use_i2c_hardware() {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
-    cowpi_i2c_initialize = cowpi_i2c_initialize_hardware;
-    cowpi_i2c_transmit = cowpi_i2c_transmit_hardware;
-    cowpi_i2c_finalize = cowpi_i2c_finalize_hardware;
-    return true;
-#else
-    cowpi_use_i2c_bitbang();
-    return false;
-#endif //__AVR__
-}
+//#define WRITE_LOW(pin)  do { pinMode((pin), OUTPUT); } while(0)
+//#define WRITE_HIGH(pin) do { pinMode((pin), INPUT);  } while(0)
+#define WRITE_LOW(pin)  do { cowpi_pin_mode((pin), OUTPUT); } while(0)
+#define WRITE_HIGH(pin) do { cowpi_pin_mode((pin), INPUT);  } while(0)
 
 void cowpi_use_i2c_bitbang() {
     cowpi_i2c_initialize = cowpi_i2c_initialize_bitbang;
     cowpi_i2c_transmit = cowpi_i2c_transmit_bitbang;
     cowpi_i2c_finalize = cowpi_i2c_finalize_bitbang;
 }
-
-
-//#define WRITE_LOW(pin)  do { pinMode((pin), OUTPUT); } while(0)
-//#define WRITE_HIGH(pin) do { pinMode((pin), INPUT);  } while(0)
-#define WRITE_LOW(pin)  do { cowpi_pin_mode((pin), OUTPUT); } while(0)
-#define WRITE_HIGH(pin) do { cowpi_pin_mode((pin), INPUT);  } while(0)
 
 bool cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration) {
     data_pin = configuration->data_pin;
@@ -120,8 +107,16 @@ void cowpi_i2c_finalize_bitbang(void) {
 }
 
 
-bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration) {
 #if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
+
+bool cowpi_use_i2c_hardware() {
+    cowpi_i2c_initialize = cowpi_i2c_initialize_hardware;
+    cowpi_i2c_transmit = cowpi_i2c_transmit_hardware;
+    cowpi_i2c_finalize = cowpi_i2c_finalize_hardware;
+    return true;
+}
+
+bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration) {
     static bool initialized = false;
     if (!initialized) {
         /* Set SCL Frequency [100kHz] = CPU Clock Frequency [16MHz] / (16 + 2 * TWBR * prescaler [1]) */
@@ -144,29 +139,42 @@ bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *config
     while (!(TWCR & (1 << TWINT))) {}
 //    if ((TWSR & 0xF8) != 0x18) cowpi_error("I2C peripheral did not receive address!");
     return ((TWSR & 0xF8) == 0x18);
-#else
-    return false;
-#endif //__AVR__
 }
 
 bool cowpi_i2c_transmit_hardware(uint8_t byte) {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     TWDR = byte;
     TWCR = (1 << TWINT) | (1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}
 //    if ((TWSR & 0xF8)!= 0x28) cowpi_error("I2C peripheral did not receive byte!");
     return ((TWSR & 0xF8) == 0x28);
-#else
-    return false;
-#endif //__AVR__
 }
 
 void cowpi_i2c_finalize_hardware(void) {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     // stop bit
     TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
-#endif //__AVR__
 }
+
+#else
+
+bool cowpi_use_i2c_hardware() {
+    cowpi_use_i2c_bitbang();
+    return false;
+}
+
+bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration) {
+    return cowpi_i2c_initialize_bitbang(configuration);
+}
+
+bool cowpi_i2c_transmit_hardware(uint8_t byte) {
+    return cowpi_i2c_transmit_bitbang(byte);
+}
+
+void cowpi_i2c_finalize_hardware(void) {
+    cowpi_i2c_finalize_bitbang();
+}
+
+#endif // ARCHITECTURE
+
 
 int8_t cowpi_discover_i2c_address(uint8_t i2c_data_pin, uint8_t i2c_clock_pin) {
     int8_t discovered_address = 0;

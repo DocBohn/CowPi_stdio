@@ -84,7 +84,11 @@ void setup(void) {
 
 void loop(void) {
     unsigned long time = millis();
-    cowpi_hd44780_set_backlight(&pins, time & 0x400);
+    if (time & 0x400) {
+        cowpi_sleep_display(display);
+    } else {
+        cowpi_wake_display(display);
+    }
     static enum {
         WAITING_LEFT, MOVING_LEFT, WAITING_RIGHT, MOVING_RIGHT
     } mode = WAITING_RIGHT;

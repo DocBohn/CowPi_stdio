@@ -17,7 +17,6 @@ extern "C" {
 #elif defined(ARDUINO_ARCH_MEGAAVR)
 #define pin_number_t uint8_t
 #define pin_mode_t PinMode
-//#elif defined(ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_NRF52840) || defined (ARDUINO_ARCH_RP2040)
 #elif defined(ARDUINO_ARCH_SAMD)
 #define pin_number_t pin_size_t
 #define pin_mode_t PinMode

@@ -37,33 +37,23 @@ extern "C" {
 // assumes the modulus is a power-of-two
 #define INCREMENT_MODULO(value, modulus) (((value) + 1) & ((modulus) - 1))
 
+typedef struct {
 #if defined(__AVR__)
-
-typedef struct {
-    FILE stream;
-
-    int (*put)(void *cookie, const char *buffer, int size);
-
-    cowpi_display_module_protocol_t configuration;
-    uint8_t width;
-    uint8_t height;
-} stream_data_t;
-
-#elif defined(ARDUINO_ARCH_SAMD) || defined(__MBED__)
-
-typedef struct {
-    cowpi_display_module_protocol_t configuration;
-    uint8_t width;
-    uint8_t height;
-} stream_data_t;
-
+    FILE stream;    // for AVR, we'll use the FILE's address to refer back to the stream_data_t, a frequent need
 #else
-#error Unknown microcontroller architecture
-#endif // architecture
+    FILE *stream;   // for ARM, we'll have to compare addresses for occasionally finding a FILE's stream_data_t
+#endif //__AVR__
+    int (*put)(void *cookie, const char *buffer, int size);
+    cowpi_display_module_protocol_t configuration;
+    uint8_t width;
+    uint8_t height;
+} stream_data_t;
 
 #define MAXIMUM_NUMBER_OF_STREAMS 10
 extern int8_t number_of_streams;
 extern stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
+
+stream_data_t *cowpi_file_to_cookie(FILE *filestream);
 
 #ifdef __cplusplus
 } // extern "C"

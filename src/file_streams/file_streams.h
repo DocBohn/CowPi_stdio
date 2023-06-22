@@ -53,6 +53,27 @@ void cowpi_stdio_setup(unsigned long bitrate);
  */
 FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_display_module_protocol_t configuration);
 
+/**
+ * .....
+ *
+ * @param filestream
+ */
+void cowpi_clear_display(FILE *filestream);
+
+/**
+ * .....
+ *
+ * @param filestream
+ */
+void cowpi_sleep_display(FILE *filestream);
+
+/**
+ * .....
+ *
+ * @param filestream
+ */
+void cowpi_wake_display(FILE *filestream);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

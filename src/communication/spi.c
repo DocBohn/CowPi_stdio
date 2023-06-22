@@ -37,24 +37,11 @@ void (*cowpi_spi_transmit)(uint8_t byte) = cowpi_spi_transmit_bitbang;
 void (*cowpi_spi_finalize)(void) = cowpi_spi_finalize_bitbang;
 
 
-bool cowpi_use_spi_hardware() {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
-    cowpi_spi_initialize = cowpi_spi_initialize_hardware;
-    cowpi_spi_transmit = cowpi_spi_transmit_hardware;
-    cowpi_spi_finalize = cowpi_spi_finalize_hardware;
-    return true;
-#else
-    cowpi_use_spi_bitbang();
-    return false;
-#endif //__AVR__
-}
-
 void cowpi_use_spi_bitbang() {
     cowpi_spi_initialize = cowpi_spi_initialize_bitbang;
     cowpi_spi_transmit = cowpi_spi_transmit_bitbang;
     cowpi_spi_finalize = cowpi_spi_finalize_bitbang;
 }
-
 
 void cowpi_spi_initialize_bitbang(const cowpi_display_module_protocol_t *configuration, bit_order_t bit_order) {
     data_pin = configuration->data_pin;
@@ -68,24 +55,49 @@ void cowpi_spi_transmit_bitbang(uint8_t byte) {
 
 void cowpi_spi_finalize_bitbang(void) { ; }
 
+
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
+
+bool cowpi_use_spi_hardware() {
+    cowpi_spi_initialize = cowpi_spi_initialize_hardware;
+    cowpi_spi_transmit = cowpi_spi_transmit_hardware;
+    cowpi_spi_finalize = cowpi_spi_finalize_hardware;
+    return true;
+}
+
 void cowpi_spi_initialize_hardware(__attribute__((unused)) const cowpi_display_module_protocol_t *configuration,
                                    bit_order_t bit_order) {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     uint8_t bit_order_bit = ((bit_order == COWPI_LSB_FIRST) << DORD);
     /* Enable SPI, data order, Controller, set clock rate fck/16 [1MHz] */
     SPCR = (1 << SPE) | bit_order_bit | (1 << MSTR) | (1 << SPR0);
-#endif //__AVR__
 }
 
 void cowpi_spi_transmit_hardware(uint8_t byte) {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     SPDR = byte;
     while (!(SPSR & 0x80)) {}
-#endif //__AVR__
 }
 
 void cowpi_spi_finalize_hardware(void) {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
     SPCR = 0;
-#endif //__AVR__
 }
+
+#else
+
+bool cowpi_use_spi_hardware() {
+    cowpi_use_spi_bitbang();
+    return false;
+}
+
+void cowpi_spi_initialize_hardware(const cowpi_display_module_protocol_t *configuration, bit_order_t bit_order) {
+    cowpi_spi_initialize_bitbang(configuration, bit_order);
+}
+
+void cowpi_spi_transmit_hardware(uint8_t byte) {
+    cowpi_spi_transmit_bitbang(byte);
+}
+
+void cowpi_spi_finalize_hardware(void) {
+    cowpi_spi_finalize_bitbang();
+}
+
+#endif // ARCHITECTURE
