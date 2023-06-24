@@ -27,15 +27,7 @@
 #include "file_streams_internal.h"
 #include "../fonts/fonts.h"
 
-#ifdef __AVR__
-
-#include <util/delay.h>
-
-#endif //__AVR__
-
-static inline void inject_morse_symbol(symbol_t entry);
-
-static void emit_morse_symbol(void *symbol);
+static void send_morse_symbol_from_buffer(void *symbol);
 
 int cowpi_morse_code_put(void *cookie, const char *buffer, int size) {
     stream_data_t *stream_data = (stream_data_t *) cookie;
@@ -56,16 +48,16 @@ int cowpi_morse_code_put(void *cookie, const char *buffer, int size) {
             } else {
                 number_of_units = 0;
             }
-            inject_morse_symbol((symbol_t) {
-                    .callback = emit_morse_symbol,
+            add_symbol_to_buffer((symbol_t) {
+                    .callback = send_morse_symbol_from_buffer,
                     .stream_data = stream_data,
                     .symbol = (next_symbol == DIT || next_symbol == DAH) ? 1 : 0,
                     .symbol_duration = number_of_units * stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
             });
             if (next_symbol == DIT || next_symbol == DAH) {
                 // add intracharacter space
-                inject_morse_symbol((symbol_t) {
-                        .callback = emit_morse_symbol,
+                add_symbol_to_buffer((symbol_t) {
+                        .callback = send_morse_symbol_from_buffer,
                         .stream_data = stream_data,
                         .symbol = 0,
                         .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
@@ -73,8 +65,8 @@ int cowpi_morse_code_put(void *cookie, const char *buffer, int size) {
             }
         }
         // add intercharacter space
-        inject_morse_symbol((symbol_t) {
-                .callback = emit_morse_symbol,
+        add_symbol_to_buffer((symbol_t) {
+                .callback = send_morse_symbol_from_buffer,
                 .stream_data = stream_data,
                 .symbol = 0,
                 .symbol_duration = 3 * stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
@@ -84,19 +76,7 @@ int cowpi_morse_code_put(void *cookie, const char *buffer, int size) {
     return i;
 }
 
-static inline void inject_morse_symbol(symbol_t entry) {
-    while (BUFFER_IS_FULL) {
-#ifdef __AVR__
-        _delay_ms(1.0);     // busy-wait -- works even when interrupts are disabled
-#else
-        while(1);
-#endif //__AVR__
-    }
-    symbol_buffer[buffer_tail] = entry;
-    buffer_tail = INCREMENT_MODULO(buffer_tail, BUFFER_SIZE);
-}
-
-static void emit_morse_symbol(void *symbol) {
+static void send_morse_symbol_from_buffer(void *symbol) {
     symbol_t *symbol_data = (symbol_t *) symbol;
     uint8_t pin = symbol_data->stream_data->configuration.data_pin;
     uint8_t logic_level = symbol_data->symbol;

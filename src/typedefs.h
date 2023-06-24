@@ -58,12 +58,15 @@ enum adapter_mappings {
     ADAFRUIT
 };
 
+/**
+ * Structure that consolidates all information needed about a display module.
+ */
 typedef struct {
     enum display_modules display_module;
-    uint8_t width;
-    uint8_t height;
-    uint8_t words_per_minute;
-    enum orientations orientation;
+    uint8_t width;                          // used by all displays except MORSE_CODE
+    uint8_t height;                         // used by multi-row displays
+    uint8_t words_per_minute;               // used by timed streams
+    enum orientations orientation;          // used by LED matrix
 } cowpi_display_module_t;
 
 /**
@@ -73,7 +76,7 @@ typedef struct {
 typedef struct {
     // C++ doesn't allow anonymous unions, so we'll be a little less memory-efficient
     enum protocols protocol;
-    uint8_t data_pin;
+    uint8_t data_pin;                       // used by all protocols (including NO_PROTOCOL)
     uint8_t clock_pin;                      // not used by NO_PROTOCOL
     uint8_t select_pin;                     // used only for SPI
     uint8_t i2c_address;                    // used only for I2C
@@ -86,8 +89,8 @@ typedef struct {
 // While C++ will allow us to use a struct initializer that uses default (zero) values
 // for fields that are not given an explicit initial value, it will not allow us to
 // skip over fields when doing so -- cannot initialize i2c_address without explicitly
-// initilizing select_pin -- so we'll provide some initialization functions for use in
-// C++ code.
+// (and unnecessarily) initilizing select_pin -- so we'll provide some initialization
+// functions for use in C++ code.
 
 static inline cowpi_display_module_protocol_t cowpi_configure_spi(uint8_t data_pin,
                                                                   uint8_t clock_pin,

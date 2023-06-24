@@ -50,6 +50,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     memcpy(&stream_data->configuration, &configuration, sizeof(cowpi_display_module_protocol_t));
     stream_data->width = display_module.width;
     stream_data->height = display_module.height;
+    uint8_t words_per_minute = display_module.words_per_minute;
     switch (stream_data->configuration.protocol) {
         case NO_PROTOCOL:
             if (display_module.display_module != MORSE_CODE) return NULL;
@@ -76,7 +77,19 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             // number of digits must be multiple of 8
             if (display_module.width & 0x7) return NULL;
             cowpi_setup_max7219(&stream_data->configuration);
-            stream_data->put = cowpi_seven_segment_noscroll_put;
+            // if 0wpm (the default), no scrolling
+            if (!words_per_minute) {
+                stream_data->put = cowpi_seven_segment_noscroll_put;
+            } else {
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
+                OCR0B = 0x40;   // fires every 1.024ms -- close enough
+                TIMSK0 |= (1 << OCIE0B);
+#endif //architecture
+                // minimum 6wpm (2000ms per letter), maximum 255wpm (47ms per letter) when scrolling
+                if (words_per_minute < 6) words_per_minute = 6;
+                stream_data->ms_per_signal = 60000 /* ms per minute */ / 5 /* letters per "PARIS" word */ / words_per_minute;
+                stream_data->put = cowpi_seven_segment_scrolling_put;
+            }
             break;
         case LCD_CHARACTER:
             // default to the "native" LCD1602
@@ -95,11 +108,10 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             OCR0B = 0x40;   // fires every 1.024ms -- close enough
             TIMSK0 |= (1 << OCIE0B);
 #endif //architecture
-            uint8_t words_per_minute = display_module.words_per_minute;
             // default to 12wpm
             if (!words_per_minute) words_per_minute = 5;
-            // minimum 1wpm (1200ms per unit), maximum 50wpm (24ms per unit)
-            if (words_per_minute > 50) words_per_minute = 50;
+            // minimum 1wpm (1200ms per unit), maximum 150wpm (1ms per unit)
+            if (words_per_minute > 50) words_per_minute = 150;
             stream_data->ms_per_signal = 60000 /* ms per minute */ / 50 /* units per "PARIS" word */ / words_per_minute;
             stream_data->put = cowpi_morse_code_put;
             break;

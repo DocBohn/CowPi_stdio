@@ -29,6 +29,12 @@
 #include <stdio.h>
 #include "typedefs.h"
 
+#ifdef __AVR__
+
+#include <util/delay.h>
+
+#endif //__AVR__
+
 #ifdef COWPI_STDIO_FILE_STREAMS_INTERNAL
 
 #ifdef __cplusplus
@@ -79,12 +85,28 @@ extern uint8_t buffer_tail;
 extern symbol_t symbol_buffer[BUFFER_SIZE];
 #define BUFFER_IS_EMPTY ((buffer_head) == (buffer_tail))
 #define BUFFER_IS_FULL  ((INCREMENT_MODULO(buffer_tail, BUFFER_SIZE)) == (buffer_head))
-#define BUFFER_HAS_ROOM_FOR(quantity)
 #define SYMBOL_DURATION_SCALING_FACTOR (8)
 
 
 
 stream_data_t *cowpi_file_to_cookie(FILE *filestream);
+
+
+/**
+ * ............
+ * @param entry
+ */
+static inline void add_symbol_to_buffer(symbol_t entry) {
+    while (BUFFER_IS_FULL) {
+#ifdef __AVR__
+        _delay_ms(1.0);             // busy-wait -- works even when interrupts are disabled
+#else
+        for (uint8_t i = 1; i; i++) {}  // will have to run many, many times, but that's okay
+#endif //__AVR__
+    }
+    symbol_buffer[buffer_tail] = entry;
+    buffer_tail = INCREMENT_MODULO(buffer_tail, BUFFER_SIZE);
+}
 
 
 /**
@@ -95,6 +117,15 @@ stream_data_t *cowpi_file_to_cookie(FILE *filestream);
  * @return
  */
 int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size);
+
+/**
+ * .........
+ * @param cookie
+ * @param buffer
+ * @param size
+ * @return
+ */
+int cowpi_seven_segment_scrolling_put(void *cookie, const char *buffer, int size);
 
 /**
  * .......
