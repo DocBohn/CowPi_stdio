@@ -1,10 +1,10 @@
 /**************************************************************************//**
  *
- * @file fonts.h
+ * @file font_morse_code.h
  *
  * @author Christopher A. Bohn
  *
- * @brief Functions to display printable ASCII characters on display modules.
+ * @brief .......
  *
  ******************************************************************************/
 
@@ -21,11 +21,40 @@
  * limitations under the License.
  */
 
-#ifndef COWPI_STDIO_FONTS_H
-#define COWPI_STDIO_FONTS_H
+#ifndef COWPI_STDIO_FONT_MORSE_CODE_H
+#define COWPI_STDIO_FONT_MORSE_CODE_H
 
-#include "font_7segment.h"
-#include "font_dotmatrix.h"
-#include "font_morse_code.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif //COWPI_STDIO_FONTS_H
+#include <stdint.h>
+
+enum {
+    END_OF_CHARACTER = 0,
+    SYMBOL_SPACE,       // 1 unit
+    CHARACTER_SPACE,    // 3 units
+    WORD_SPACE,         // 7 units
+    DIT,                // 1 unit
+    DAH                 // 3 units
+};
+
+/**
+ * @brief ...
+ *
+ * ...
+ *
+ * @ingroup font
+ *
+ * @param destination   an empty 8-byte array
+ * @param c             the ASCII character whose ......... is
+ *      to be provided
+ * @return              `destination`, with the requested........
+ */
+uint8_t *cowpi_font_ascii_to_morse_code(uint8_t *destination, char c);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+#endif //COWPI_STDIO_FONT_MORSE_CODE_H

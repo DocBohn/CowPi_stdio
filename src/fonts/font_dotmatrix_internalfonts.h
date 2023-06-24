@@ -24,9 +24,6 @@
  * limitations under the License.
  */
 
-//#ifndef COWPI_STDIO_FONT_DOTMATRIX_INTERNALFONTS_H
-//#define COWPI_STDIO_FONT_DOTMATRIX_INTERNALFONTS_H
-
 #ifdef COWPI_STDIO_FONTS_INTERNAL
 
 #ifdef __cplusplus
@@ -200,5 +197,3 @@ static const uint8_t *const cowpi_font_dotmatrix[] PROGMEM = {
 #endif
 
 #endif //COWPI_STDIO_FONTS_INTERNAL
-
-//#endif //COWPI_STDIO_FONT_DOTMATRIX_INTERNALFONTS_H

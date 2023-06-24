@@ -30,6 +30,8 @@
 #include "font_dotmatrix.h"
 #include "font_dotmatrix_internalfonts.h"
 
+#include "font_morse_code_internalfonts.h"
+
 #ifdef __AVR__
 
 #include <avr/pgmspace.h>
@@ -164,4 +166,17 @@ int cowpi_font_string_to_vertical_dotmatrix(uint8_t *destination, const char *s,
         destination[length++] = 0x00;
     }
     return length;
+}
+
+/* Morse Code Functions */
+
+uint8_t *cowpi_font_ascii_to_morse_code(uint8_t *destination, char c) {
+#ifdef __AVR__
+    memcpy_P(destination, (const uint8_t *) pgm_read_word(cowpi_font_morse_code + c),
+             c == '%' ? PERCENT_MORSE_CODE_LENGTH : MAXIMUM_MORSE_CODE_LENGTH);
+#else
+    memcpy(destination, cowpi_font_morse_code[(int) c],
+           c == '%' ? PERCENT_MORSE_CODE_LENGTH : MAXIMUM_MORSE_CODE_LENGTH);
+#endif //__AVR__
+    return destination;
 }

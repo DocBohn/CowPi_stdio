@@ -100,4 +100,4 @@ void cowpi_spi_finalize_hardware(void) {
     cowpi_spi_finalize_bitbang();
 }
 
-#endif // ARCHITECTURE
+#endif //architecture

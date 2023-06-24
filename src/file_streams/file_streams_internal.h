@@ -26,6 +26,7 @@
 //#ifndef COWPI_STDIO_FILE_STREAMS_INTERNAL_H
 //#define COWPI_STDIO_FILE_STREAMS_INTERNAL_H
 
+#include <stdio.h>
 #include "typedefs.h"
 
 #ifdef COWPI_STDIO_FILE_STREAMS_INTERNAL
@@ -47,13 +48,71 @@ typedef struct {
     cowpi_display_module_protocol_t configuration;
     uint8_t width;
     uint8_t height;
+    uint16_t ms_per_signal;
 } stream_data_t;
 
-#define MAXIMUM_NUMBER_OF_STREAMS 10
+#define MAXIMUM_NUMBER_OF_STREAMS (5)
 extern int8_t number_of_streams;
 extern stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
 
+
+typedef struct {
+    void (*callback)(void *symbol);
+    stream_data_t *stream_data;
+    uint8_t symbol;
+    uint8_t symbol_duration;
+} symbol_t;
+
+// BUFFER_SIZE needs to be power-of-two to work with INCREMENT_MODULO
+// A larger buffer reduces likelihood of blocking, but ATmega328P has only 2KB of RAM to work with
+#if defined(__AVR_ATmega328P__)
+#define BUFFER_SIZE (16)
+// ATmega4809 has 6KB, and ATmega2560 has 8KB
+#elif defined (__AVR_ATmega2560__) || defined (__AVR_ATmega4809__)
+#define BUFFER_SIZE (32)
+// RA4M1 has 32KB, SAMD21 & nRF52840 have 256KB, and RP24040 has 264KB
+#else
+#define BUFFER_SIZE (128)
+#endif
+extern uint8_t buffer_head;
+extern uint8_t buffer_tail;
+extern symbol_t symbol_buffer[BUFFER_SIZE];
+#define BUFFER_IS_EMPTY ((buffer_head) == (buffer_tail))
+#define BUFFER_IS_FULL  ((INCREMENT_MODULO(buffer_tail, BUFFER_SIZE)) == (buffer_head))
+#define BUFFER_HAS_ROOM_FOR(quantity)
+#define SYMBOL_DURATION_SCALING_FACTOR (8)
+
+
+
 stream_data_t *cowpi_file_to_cookie(FILE *filestream);
+
+
+/**
+ * .......
+ * @param cookie
+ * @param buffer
+ * @param size
+ * @return
+ */
+int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size);
+
+/**
+ * .......
+ * @param cookie
+ * @param buffer
+ * @param size
+ * @return
+ */
+int cowpi_lcd_character_put(void *cookie, const char *buffer, int size);
+
+/**
+ * .......
+ * @param cookie
+ * @param buffer
+ * @param size
+ * @return
+ */
+int cowpi_morse_code_put(void *cookie, const char *buffer, int size);
 
 #ifdef __cplusplus
 } // extern "C"

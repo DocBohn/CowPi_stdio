@@ -36,7 +36,8 @@ enum display_modules {
     SEVEN_SEGMENT,
     LED_MATRIX,
     LCD_CHARACTER,
-    OLED_MATRIX
+    OLED_MATRIX,
+    MORSE_CODE
 };
 
 enum orientations {
@@ -61,6 +62,7 @@ typedef struct {
     enum display_modules display_module;
     uint8_t width;
     uint8_t height;
+    uint8_t words_per_minute;
     enum orientations orientation;
 } cowpi_display_module_t;
 
@@ -72,7 +74,7 @@ typedef struct {
     // C++ doesn't allow anonymous unions, so we'll be a little less memory-efficient
     enum protocols protocol;
     uint8_t data_pin;
-    uint8_t clock_pin;
+    uint8_t clock_pin;                      // not used by NO_PROTOCOL
     uint8_t select_pin;                     // used only for SPI
     uint8_t i2c_address;                    // used only for I2C
     enum adapter_mappings adapter_mapping;  // used only for HD44780
