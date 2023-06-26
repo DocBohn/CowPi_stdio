@@ -24,8 +24,6 @@
 #define COWPI_STDIO_FILE_STREAMS_INTERNAL
 
 #include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 #include "file_streams_internal.h"
 #include "../fonts/fonts.h"
@@ -43,9 +41,9 @@ int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size)
     while (i < size) {
         if (escaped) {
             pattern = buffer[i];
-            if (left_to_right_position < stream_data->width) {
+            if (left_to_right_position < stream_data->display_module.width) {
                 cowpi_max7219_send(&stream_data->configuration,
-                                   stream_data->width - left_to_right_position,
+                                   stream_data->display_module.width - left_to_right_position,
                                    pattern);
                 left_to_right_position++;
             }
@@ -60,9 +58,9 @@ int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size)
                     break;
                 case '\n':
                     pattern = cowpi_font_ascii_to_7segment(' ');
-                    while (left_to_right_position < stream_data->width) {
+                    while (left_to_right_position < stream_data->display_module.width) {
                         cowpi_max7219_send(&stream_data->configuration,
-                                           stream_data->width - left_to_right_position,
+                                           stream_data->display_module.width - left_to_right_position,
                                            pattern);
                         left_to_right_position++;
                     }
@@ -82,20 +80,20 @@ int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size)
                         left_to_right_position--;
                         pattern = cowpi_font_ascii_to_7segment(' ');
                         cowpi_max7219_send(&stream_data->configuration,
-                                           stream_data->width - left_to_right_position,
+                                           stream_data->display_module.width - left_to_right_position,
                                            pattern);
                     }
                     break;
                 case '\t':
-                    if (left_to_right_position < stream_data->width) {
+                    if (left_to_right_position < stream_data->display_module.width) {
                         left_to_right_position++;
                     }
                     break;
                 default:    // I'm breaking my rule about using `default` only for error cases
                     pattern = cowpi_font_ascii_to_7segment(c);
-                    if (left_to_right_position < stream_data->width) {
+                    if (left_to_right_position < stream_data->display_module.width) {
                         cowpi_max7219_send(&stream_data->configuration,
-                                           stream_data->width - left_to_right_position,
+                                           stream_data->display_module.width - left_to_right_position,
                                            pattern);
                         left_to_right_position++;
                     }
@@ -136,7 +134,7 @@ int cowpi_seven_segment_scrolling_put(void *cookie, const char *buffer, int size
                 case '\f':
                 case '\n':
                     pattern = cowpi_font_ascii_to_7segment(' ');
-                    uint8_t width = stream_data->width;
+                    uint8_t width = stream_data->display_module.width;
                     for (int j = 0; j < width; j++) {
                         add_symbol_to_buffer((symbol_t) {
                                 .callback = send_segment_pattern_from_buffer,
@@ -202,7 +200,7 @@ int cowpi_led_matrix_scrolling_put(void *cookie, const char *buffer, int size) {
                 case '\f':
                 case '\n':
                     memset(character, 0, 16);
-                    character_width = 15;
+                    character_width = 2*8;
                     break;
                 case '\t':
                     memset(character, 0, 16);
@@ -240,7 +238,7 @@ static void send_segment_pattern_from_buffer(void *symbol) {
     static uint8_t display_patterns[8] = {0};   // for now, use 8 -- will have to put an upper limit on it later
     symbol_t *symbol_data = (symbol_t *) symbol;
     cowpi_display_module_protocol_t *configuration = &symbol_data->stream_data->configuration;
-    uint8_t width = symbol_data->stream_data->width;
+    uint8_t width = symbol_data->stream_data->display_module.width;
     for (int i = width - 1; i >= 0; i--) {
         if (i > 0) {
             display_patterns[i] = display_patterns[i - 1];
@@ -252,5 +250,41 @@ static void send_segment_pattern_from_buffer(void *symbol) {
 }
 
 static void send_matrix_pattern_from_buffer(void *symbol) {
-    send_segment_pattern_from_buffer(symbol);
+//    send_segment_pattern_from_buffer(symbol);
+    static uint8_t incoming_display_patterns[8] = {0};   // for now, use 8 -- will have to put an upper limit on it later
+    static uint8_t outgoing_display_patterns[8] = {0};
+    symbol_t *symbol_data = (symbol_t *) symbol;
+    enum orientations display_orientation = symbol_data->stream_data->display_module.display_orientation;
+    enum flips character_flip = symbol_data->stream_data->display_module.character_flip;
+    uint8_t width = symbol_data->stream_data->display_module.width;
+    cowpi_display_module_protocol_t *configuration = &symbol_data->stream_data->configuration;
+    // first, update what the sender thinks is sent to the display
+    uint8_t pattern = character_flip ? symbol_data->symbol : reverse_byte(symbol_data->symbol);
+    for (int i = width - 1; i >= 0; i--) {
+        if (i > 0) {
+            incoming_display_patterns[i] = incoming_display_patterns[i - 1];
+        } else {
+            incoming_display_patterns[i] = pattern;
+        }
+    }
+    // then, send it to the display
+    memcpy(outgoing_display_patterns, incoming_display_patterns, 8);
+    switch (display_orientation) {
+        case SOUTH:
+            cowpi_font_transpose_dotmatrix(outgoing_display_patterns);
+            /* FALLTHROUGH */
+        case EAST:
+            for (int i = 0; i < width; i++) {
+                cowpi_max7219_send(configuration, i+1, outgoing_display_patterns[i]);
+            }
+            break;
+        case NORTH:
+            cowpi_font_transpose_dotmatrix(outgoing_display_patterns);
+            /* FALLTHROUGH */
+        case WEST:
+            for (int i = 1; i <= width; i++) {
+                cowpi_max7219_send(configuration, i, reverse_byte(outgoing_display_patterns[width - i]));
+            }
+            break;
+    }
 }

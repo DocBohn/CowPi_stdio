@@ -24,14 +24,13 @@
 #define COWPI_STDIO_FILE_STREAMS_INTERNAL
 
 #include <stdbool.h>
-#include <stdio.h>
 #include "file_streams_internal.h"
 #include "../hd44780/hd44780.h"
 
 int cowpi_lcd_character_put(void *cookie, const char *buffer, int size) {
     stream_data_t *stream_data = (stream_data_t *) cookie;
-    uint8_t width = stream_data->width;
-    uint8_t height = stream_data->height;
+    uint8_t width = stream_data->display_module.width;
+    uint8_t height = stream_data->display_module.height;
     static uint8_t ddram_address = 0;
     static int8_t row = 0;
     static const uint8_t row_starts[] = {0x00, 0x40, 0x14, 0x54};

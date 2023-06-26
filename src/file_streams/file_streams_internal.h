@@ -51,9 +51,10 @@ typedef struct {
     FILE *stream;   // for ARM, we'll have to compare addresses for occasionally finding a FILE's stream_data_t
 #endif //__AVR__
     int (*put)(void *cookie, const char *buffer, int size);
+    cowpi_display_module_t display_module;
     cowpi_display_module_protocol_t configuration;
-    uint8_t width;
-    uint8_t height;
+//    uint8_t width;
+//    uint8_t height;
     uint16_t ms_per_signal;
 } stream_data_t;
 
@@ -106,6 +107,18 @@ static inline void add_symbol_to_buffer(symbol_t entry) {
     }
     symbol_buffer[buffer_tail] = entry;
     buffer_tail = INCREMENT_MODULO(buffer_tail, BUFFER_SIZE);
+}
+
+/**
+ * .........
+ * @param byte
+ * @return
+ */
+static inline uint8_t reverse_byte(uint8_t byte) {
+    byte = ((byte & 0xF0) >> 4) | ((byte & 0x0F) << 4);
+    byte = ((byte & 0xCC) >> 2) | ((byte & 0x33) << 2);
+    byte = ((byte & 0xAA) >> 1) | ((byte & 0x55) << 1);
+    return byte;
 }
 
 

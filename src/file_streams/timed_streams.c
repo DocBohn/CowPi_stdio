@@ -24,7 +24,6 @@
 #define COWPI_STDIO_FILE_STREAMS_INTERNAL
 
 #include <stdbool.h>
-#include <stdint.h>
 #include "file_streams_internal.h"
 
 static void timer_handler(void);
@@ -51,6 +50,8 @@ void cowpi_enable_buffer_timer(void) {
 #if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
         OCR0B = 0x40;   // fires every 1.024ms -- close enough
         TIMSK0 |= (1 << OCIE0B);
+#else
+#warning Timer for buffered display modules will not be enabled.
 #endif //architecture
     }
 }

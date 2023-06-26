@@ -47,9 +47,8 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     if (configuration.protocol == I2C && configuration.i2c_address == 0) return NULL;
     FILE *stream;
     stream_data_t *stream_data = streams + number_of_streams;
+    memcpy(&stream_data->display_module, &display_module, sizeof(cowpi_display_module_t));
     memcpy(&stream_data->configuration, &configuration, sizeof(cowpi_display_module_protocol_t));
-    stream_data->width = display_module.width;
-    stream_data->height = display_module.height;
     uint8_t words_per_minute = display_module.words_per_minute;
     switch (stream_data->configuration.protocol) {
         case NO_PROTOCOL:
@@ -71,7 +70,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     switch (display_module.display_module) {
         case SEVEN_SEGMENT:
             // default to a single module of 8 digits (which is good because we're not handling chained modules yet)
-            if (!stream_data->width) stream_data->width = 8;
+            if (!stream_data->display_module.width) stream_data->display_module.width = 8;
             // must use SPI
             if (stream_data->configuration.protocol != SPI) return NULL;
             // number of digits must be multiple of 8
@@ -91,8 +90,8 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
         case LED_MATRIX:
             cowpi_enable_buffer_timer();
             // default to a single 8x8 module (which is good because we're not handling chained modules yet)
-            if (!stream_data->width) stream_data->width = 8;
-            if (!stream_data->height) stream_data->height = 8;
+            if (!stream_data->display_module.width) stream_data->display_module.width = 8;
+            if (!stream_data->display_module.height) stream_data->display_module.height = 8;
             // must use SPI
             if (stream_data->configuration.protocol != SPI) return NULL;
             // number of rows and columns must each be multiple of 8
@@ -110,11 +109,11 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             break;
         case LCD_CHARACTER:
             // default to the "native" LCD1602
-            if (!stream_data->width) stream_data->width = 16;
-            if (!stream_data->height) stream_data->height = 2;
+            if (!stream_data->display_module.width) stream_data->display_module.width = 16;
+            if (!stream_data->display_module.height) stream_data->display_module.height = 2;
             // must be LCD1602 or LCD2004
-            if (!(stream_data->width == 16 && stream_data->height == 2)
-                && !(stream_data->width == 20 && stream_data->height == 4))
+            if (!(stream_data->display_module.width == 16 && stream_data->display_module.height == 2)
+                && !(stream_data->display_module.width == 20 && stream_data->display_module.height == 4))
                 return NULL;
             cowpi_setup_hd44780(&stream_data->configuration);
             cowpi_hd44780_set_backlight(&stream_data->configuration, 1);

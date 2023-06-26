@@ -27,21 +27,27 @@ and this project adheres to
 - Add conformity for PlatformIO: `include/`, `library.json`
 - Code for controlling SSD1306-based display modules
 - File stream for OLED matrix (SSD1306)
-- File stream for 8x8 LED matrix (MAX7219)
-- File stream for Morse Code
 - File stream for arbitrary Arduino Stream
-- File stream for scrolling text on 7 segment display module
-- Test file streams on other devices
+- File stream for arbitrary UART
 - Fix printf on Nano 33 BLE
 - Fix hardware I2C on simulator (works fine on actual hardware)
 - Code for chained MAX7219 modules
-- Stderr to console
-- re-organize file streams code
+- Stderr to morse code
 - tweak configuration code
 - port to Raspberry Pi Pico SDK framework
+- Buffer timer for RP2040, ATmega4809, SAMD21, nRF52840
+- Rename stdio setup
 -->
 
 ## [Unreleased]
+
+### Added
+
+- File stream for scrolling text on 7 segment display module (MAX7219), ATmega328P & ATmega2560 only
+- File stream for 8x8 LED matrix (MAX7219), ATmega328P & ATmega2560 only
+- File stream for Morse Code, ATmega328P & ATmega2560 only
+
+## [0.4.4] - 2023-06-22
 
 ### Added
 
@@ -52,7 +58,7 @@ and this project adheres to
 ### Changed
 
 - Migrated code for controlling MAX7219- and HD44780-based display modules migrated from CowPi library to CowPi_stdio library
-- `cowpi_lcd1602_xxx()` functions from CowPi library are now `cowpi_hd1602_xxx()` in CowPi_stdio library
+- `cowpi_lcd1602_xxx()` functions from CowPi library are now `cowpi_hd44780_xxx()` in CowPi_stdio library
   - More consistent with `cowpi_max7219_xxx()` and (the upcoming) `cowpi_ssd1306_xxx()`
 
 ## [0.4.3] - 2023-06-04

@@ -37,7 +37,7 @@ void setup(void) {
                     .select_pin = SS
             }
     );
-    fprintf(scrolling_display, "Hello, World!\n");
+    fprintf(scrolling_display, "Hello World!\n");
     // normally, using two file streams on the same display module can have
     // undesired effects, but in this simple example, we should be okay if
     // we wait until the scolling text is gone

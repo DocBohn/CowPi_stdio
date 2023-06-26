@@ -177,19 +177,19 @@ Another implementation is available that will support floating point conversions
 
 ## Compatability
 
-| MCU                        | `printf`/`scanf` | SPI bitbang | SPI hardware | I2C bitbang | I2C hardware | Notes                                                                                                                                                                                                                                                    |
-|:---------------------------|:----------------:|:-----------:|:------------:|:-----------:|:------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ATmega328P                 |        ✅         |      ✅      |      ✅       |      ✅      |      ✅       | I2C code works fine on actual hardware but not in simulator (bitbang I2C works for both)                                                                                                                                                                 |
-| ATmega2560                 |        ✅         |      ✅      |      ✅       |      ✅      |      ✅       | I2C code works fine on actual hardware but not in simulator (bitbang I2C works for both)                                                                                                                                                                 |
-| ATmega4809                 |        ✅         |      ⁇      |      ❌       |      ⁇      |      ❌       |                                                                                                                                                                                                                                                          |
-| nRF52840                   |        ❌         |      ⁇      |      ❌       |      ⁇      |      ❌       | Locks up USB -- problem with waiting for Serial? <!-- https://forum.arduino.cc/t/nano-33-ble-sense-serial-workaround/884962/7 -->                                                                                                                        |
-| RP2040 (Arduino framework) |        ✅         |      ✅      |      ❌       |      ✅      |      ❌       | Still need to resolve floating point conversions; SPI and I2C implemented as bit-bang only                                                                                                                                                               |
-| SAM D21                    |        ✅         |      ⁇      |      ❌       |      ⁇      |      ❌       | Still need to resolve floating point conversions                                                                                                                                                                                                         |
+| MCU                        | `printf`/`scanf` | SPI bitbang | SPI hardware | I2C bitbang | I2C hardware | Notes                                                                                                                             |
+|:---------------------------|:----------------:|:-----------:|:------------:|:-----------:|:------------:|:----------------------------------------------------------------------------------------------------------------------------------|
+| ATmega328P                 |        ✅         |      ✅      |      ✅       |      ✅      |      ✅       | I2C code works fine on actual hardware but not in simulator (bitbang I2C works for both)                                          |
+| ATmega2560                 |        ✅         |      ✅      |      ✅       |      ✅      |      ✅       | I2C code works fine on actual hardware but not in simulator (bitbang I2C works for both)                                          |
+| ATmega4809                 |        ✅         |      ⁇      |      ❌       |      ⁇      |      ❌       |                                                                                                                                   |
+| nRF52840                   |        ❌         |      ⁇      |      ❌       |      ⁇      |      ❌       | Locks up USB -- problem with waiting for Serial? <!-- https://forum.arduino.cc/t/nano-33-ble-sense-serial-workaround/884962/7 --> |
+| RP2040 (Arduino framework) |        ✅         |      ✅      |      ❌       |      ✅      |      ❌       | Still need to resolve floating point conversions; SPI and I2C implemented as bit-bang only                                        |
+| SAM D21                    |        ✅         |      ⁇      |      ❌       |      ⁇      |      ❌       | Still need to resolve floating point conversions                                                                                  |
 
-(It looks like *some* of the ICSP pins on the Arduino Mega 2560 aren't connected to the SPI pins (50-53) even though schematic indicates they are -- this just might be my particular board)
-<!--
-| RA4M1                      |  not yet tested  | not yet tested  | Arduino Uno R4 not yet released                                                                                                   |
--->
+[//]: # (| RA4M1                      |        ⁇         |      ⁇      |      ❌       |      ⁇      |      ❌       |                                                                                                                                   |)
+
+(It looks like *some* of the ICSP pins on the Arduino Mega 2560 aren't connected to the SPI pins (50-53) even though
+schematic indicates they are -- this just might be my particular board)
 
 | Display Module                                                    | AVR | megaAVR | MBED | SAMD |
 |:------------------------------------------------------------------|:---:|:-------:|:----:|:----:|
@@ -201,6 +201,8 @@ Another implementation is available that will support floating point conversions
 | 128x64 OLED matrix display (SSD1306, 3.3V or 5V)                  |  ❌  |    ❌    |  ❌   |  ❌   |
 | 128x32 OLED matrix display (SSD1306, 3.3V or 5V)                  |  ❌  |    ❌    |  ❌   |  ❌   |
 | Morse Code LED (no serial adapter necessary)                      |  ❌  |    ❌    |  ❌   |  ❌   |
+
+[//]: # (| 8x12 LED matrix scrolling display &#40;Uno Wifi R4&#41;                   |  ❌  |    ❌    |  ❌   |  ❌   |)
 
 (MBED tested on Raspberry Pi Pico but not on Arduino Nano 33 BLE)
 
@@ -229,10 +231,9 @@ Another implementation is available that will support floating point conversions
             - [x] Arduino Nano 33 IoT
             - [ ] Arduino Zero
 
-<!--
-  - RENESAS
-    - Renesas RA4M1: Arduino Uno R4
--->
+[//]: # (  - RENESAS)
+
+[//]: # (    - [ ] Renesas RA4M1: Arduino Uno R4)
 
 ## About the name
 

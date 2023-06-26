@@ -68,10 +68,11 @@ enum adapter_mappings {
  */
 typedef struct {
     enum display_modules display_module;
-    uint8_t width;                          // used by all displays except MORSE_CODE
-    uint8_t height;                         // used by multi-row displays
-    uint8_t words_per_minute;               // used by timed streams
-    enum orientations orientation;          // used by LED matrix
+    uint8_t width;                              // used by all displays except MORSE_CODE
+    uint8_t height;                             // used by multi-row displays
+    uint8_t words_per_minute;                   // used by timed streams
+    enum orientations display_orientation;      // used by LED matrix
+    enum flips character_flip;                  // used by LED matrix
 } cowpi_display_module_t;
 
 /**

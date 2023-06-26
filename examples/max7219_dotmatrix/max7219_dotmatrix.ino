@@ -12,12 +12,15 @@
 FILE *no_scroll_display, *display;
 
 void setup(void) {
+    cowpi_stdio_setup(9600);
     display = cowpi_add_display_module(
             (cowpi_display_module_t) {
                     .display_module = LED_MATRIX,
                     .width = 8,
                     .height = 8,
-                    .words_per_minute = 25
+                    .words_per_minute = 25,
+                    .display_orientation = SOUTH,
+                    .character_flip = HEADS
             },
             (cowpi_display_module_protocol_t) {
                     .protocol = SPI,
