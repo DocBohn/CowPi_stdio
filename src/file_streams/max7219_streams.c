@@ -26,11 +26,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include "file_streams_internal.h"
 #include "../fonts/fonts.h"
 #include "../max7219/max7219.h"
 
 static void send_segment_pattern_from_buffer(void *symbol);
+static void send_matrix_pattern_from_buffer(void *symbol);
 
 int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size) {
     stream_data_t *stream_data = (stream_data_t *) cookie;
@@ -170,6 +172,70 @@ int cowpi_seven_segment_scrolling_put(void *cookie, const char *buffer, int size
     return i;
 }
 
+int cowpi_led_matrix_scrolling_put(void *cookie, const char *buffer, int size) {
+    stream_data_t *stream_data = (stream_data_t *) cookie;
+    static bool escaped = false;
+    uint8_t character[16];
+    int8_t character_width;
+    int i = 0;
+    while (i < size) {
+        if (escaped) {
+            add_symbol_to_buffer((symbol_t) {
+                    .callback = send_matrix_pattern_from_buffer,
+                    .stream_data = stream_data,
+                    .symbol = buffer[i],
+                    .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
+            });
+            escaped = false;
+        } else {
+            char c = buffer[i];
+            switch (c) {
+                case 0x1B:
+                    escaped = true;
+                    break;
+                case '\a':
+                case '\b':
+                case 0x7F:
+                    break;
+                case '\v':
+                case '\r':
+                case '\f':
+                case '\n':
+                    memset(character, 0, 16);
+                    character_width = 15;
+                    break;
+                case '\t':
+                    memset(character, 0, 16);
+                    character_width = 10;
+                    break;
+                default:    // I'm breaking my rule about using `default` only for error cases
+                    cowpi_font_ascii_to_5wide_dotmatrix(character, c);
+                    cowpi_font_transpose_dotmatrix(character);
+                    character_width = cowpi_font_get_dotmatrix_width(c);
+            }
+            int character_offset = character_width > 8 ? 0 : 3 + (5 - character_width) / 2;
+            for (int j = 0; j < character_width; j++) {
+                add_symbol_to_buffer((symbol_t) {
+                    .callback = send_matrix_pattern_from_buffer,
+                    .stream_data = stream_data,
+                    .symbol = character[j + character_offset],
+                    .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
+                });
+            }
+            // add intercharacter space
+            add_symbol_to_buffer((symbol_t) {
+                    .callback = send_matrix_pattern_from_buffer,
+                    .stream_data = stream_data,
+                    .symbol = 0x00,
+                    .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
+            });
+        }
+        i++;
+    }
+    return i;
+}
+
+
 static void send_segment_pattern_from_buffer(void *symbol) {
     static uint8_t display_patterns[8] = {0};   // for now, use 8 -- will have to put an upper limit on it later
     symbol_t *symbol_data = (symbol_t *) symbol;
@@ -183,4 +249,8 @@ static void send_segment_pattern_from_buffer(void *symbol) {
         }
         cowpi_max7219_send(configuration, i + 1, display_patterns[i]);
     }
+}
+
+static void send_matrix_pattern_from_buffer(void *symbol) {
+    send_segment_pattern_from_buffer(symbol);
 }

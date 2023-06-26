@@ -110,6 +110,12 @@ static inline void add_symbol_to_buffer(symbol_t entry) {
 
 
 /**
+ * ..............
+ */
+void cowpi_enable_buffer_timer(void);
+
+
+/**
  * .......
  * @param cookie
  * @param buffer
@@ -126,6 +132,15 @@ int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size)
  * @return
  */
 int cowpi_seven_segment_scrolling_put(void *cookie, const char *buffer, int size);
+
+/**
+ * .........
+ * @param cookie
+ * @param buffer
+ * @param size
+ * @return
+ */
+int cowpi_led_matrix_scrolling_put(void *cookie, const char *buffer, int size);
 
 /**
  * .......

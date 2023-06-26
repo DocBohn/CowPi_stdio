@@ -41,7 +41,7 @@ void setup(void) {
     // normally, using two file streams on the same display module can have
     // undesired effects, but in this simple example, we should be okay if
     // we wait until the scolling text is gone
-    delay(7500);
+    delay(7000);
 }
 
 void loop(void) {

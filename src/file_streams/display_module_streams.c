@@ -81,15 +81,32 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             if (!words_per_minute) {
                 stream_data->put = cowpi_seven_segment_noscroll_put;
             } else {
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
-                OCR0B = 0x40;   // fires every 1.024ms -- close enough
-                TIMSK0 |= (1 << OCIE0B);
-#endif //architecture
+                cowpi_enable_buffer_timer();
                 // minimum 6wpm (2000ms per letter), maximum 255wpm (47ms per letter) when scrolling
                 if (words_per_minute < 6) words_per_minute = 6;
                 stream_data->ms_per_signal = 60000 /* ms per minute */ / 5 /* letters per "PARIS" word */ / words_per_minute;
                 stream_data->put = cowpi_seven_segment_scrolling_put;
             }
+            break;
+        case LED_MATRIX:
+            cowpi_enable_buffer_timer();
+            // default to a single 8x8 module (which is good because we're not handling chained modules yet)
+            if (!stream_data->width) stream_data->width = 8;
+            if (!stream_data->height) stream_data->height = 8;
+            // must use SPI
+            if (stream_data->configuration.protocol != SPI) return NULL;
+            // number of rows and columns must each be multiple of 8
+            if (display_module.width & 0x7) return NULL;
+            if (display_module.height & 0x7) return NULL;
+            cowpi_setup_max7219(&stream_data->configuration);
+            // calculate wpm assuming fixed spacing of 6 columns per character (5 character + 1 intercharacter space)
+            // proportional spacing 26 columns per "PARIS" word (vs 30) -- a non-trivial but acceptable error
+            // default to 5wpm
+            if (!words_per_minute) words_per_minute = 5;
+            // minimum 1wpm (250ms per column), maximum 250wpm (1ms per column)
+            if (words_per_minute > 250) words_per_minute = 250;
+            stream_data->ms_per_signal = 60000 /* ms per minute */ / 30 /* columns per "PARIS" word */ / words_per_minute;
+            stream_data->put = cowpi_led_matrix_scrolling_put;
             break;
         case LCD_CHARACTER:
             // default to the "native" LCD1602
@@ -104,14 +121,11 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             stream_data->put = cowpi_lcd_character_put;
             break;
         case MORSE_CODE:
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
-            OCR0B = 0x40;   // fires every 1.024ms -- close enough
-            TIMSK0 |= (1 << OCIE0B);
-#endif //architecture
-            // default to 12wpm
+            cowpi_enable_buffer_timer();
+            // default to 5wpm
             if (!words_per_minute) words_per_minute = 5;
             // minimum 1wpm (1200ms per unit), maximum 150wpm (1ms per unit)
-            if (words_per_minute > 50) words_per_minute = 150;
+            if (words_per_minute > 150) words_per_minute = 150;
             stream_data->ms_per_signal = 60000 /* ms per minute */ / 50 /* units per "PARIS" word */ / words_per_minute;
             stream_data->put = cowpi_morse_code_put;
             break;
@@ -179,7 +193,7 @@ void cowpi_sleep_display(FILE *filestream) {
     stream_data_t *stream_data = cowpi_file_to_cookie(filestream);
     int (*put)(void *, const char *, int) = stream_data->put;
     cowpi_display_module_protocol_t *configuration = &stream_data->configuration;
-    if (put == cowpi_seven_segment_noscroll_put) {
+    if (put == cowpi_seven_segment_noscroll_put || put == cowpi_seven_segment_scrolling_put) {
         cowpi_max7219_shutdown(configuration);
     } else if (put == cowpi_lcd_character_put) {
         cowpi_hd44780_set_backlight(configuration, false);
@@ -190,7 +204,7 @@ void cowpi_wake_display(FILE *filestream) {
     stream_data_t *stream_data = cowpi_file_to_cookie(filestream);
     int (*put)(void *, const char *, int) = stream_data->put;
     cowpi_display_module_protocol_t *configuration = &stream_data->configuration;
-    if (put == cowpi_seven_segment_noscroll_put) {
+    if (put == cowpi_seven_segment_noscroll_put || put == cowpi_seven_segment_scrolling_put) {
         cowpi_max7219_startup(configuration);
     } else if (put == cowpi_lcd_character_put) {
         cowpi_hd44780_set_backlight(configuration, true);

@@ -23,15 +23,37 @@
 
 #define COWPI_STDIO_FILE_STREAMS_INTERNAL
 
+#include <stdbool.h>
 #include <stdint.h>
-#include <avr/interrupt.h>
 #include "file_streams_internal.h"
+
+static void timer_handler(void);
+
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
+
+#include <avr/interrupt.h>
+
+ISR(TIMER0_COMPB_vect) {
+    timer_handler();
+}
+
+#endif //__AVR__
 
 
 uint8_t buffer_head = 0;
 uint8_t buffer_tail = 0;
 symbol_t symbol_buffer[BUFFER_SIZE];
 
+void cowpi_enable_buffer_timer(void) {
+    static bool timer_is_enabled = false;
+    if (!timer_is_enabled) {
+        timer_is_enabled = true;
+#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
+        OCR0B = 0x40;   // fires every 1.024ms -- close enough
+        TIMSK0 |= (1 << OCIE0B);
+#endif //architecture
+    }
+}
 
 static void timer_handler(void) {
     static unsigned int milliseconds = 0;
@@ -47,9 +69,3 @@ static void timer_handler(void) {
         }
     }
 }
-
-#if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
-ISR(TIMER0_COMPB_vect) {
-    timer_handler();
-}
-#endif //architecture

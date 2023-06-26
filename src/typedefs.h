@@ -47,6 +47,11 @@ enum orientations {
     SOUTH
 };
 
+enum flips {
+    HEADS = 0,
+    TAILS
+};
+
 enum protocols {
     NO_PROTOCOL = 0,
     I2C,
