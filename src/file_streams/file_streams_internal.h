@@ -26,21 +26,16 @@
 //#ifndef COWPI_STDIO_FILE_STREAMS_INTERNAL_H
 //#define COWPI_STDIO_FILE_STREAMS_INTERNAL_H
 
+#include <Arduino.h>
 #include <stdio.h>
 #include "typedefs.h"
-
-#ifdef __AVR__
-
-#include <util/delay.h>
-
-#endif //__AVR__
 
 #ifdef COWPI_STDIO_FILE_STREAMS_INTERNAL
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#
 // assumes the modulus is a power-of-two
 #define INCREMENT_MODULO(value, modulus) (((value) + 1) & ((modulus) - 1))
 
@@ -99,11 +94,9 @@ stream_data_t *cowpi_file_to_cookie(FILE *filestream);
  */
 static inline void add_symbol_to_buffer(symbol_t entry) {
     while (BUFFER_IS_FULL) {
-#ifdef __AVR__
-        _delay_ms(1.0);             // busy-wait -- works even when interrupts are disabled
-#else
-        for (uint8_t i = 1; i; i++) {}  // will have to run many, many times, but that's okay
-#endif //__AVR__
+        // it's okay that `delay` is blocked while interrupts are disabled,
+        // because we can't add something to a full buffer until the timer handler removes something else
+        delay(1);
     }
     symbol_buffer[buffer_tail] = entry;
     buffer_tail = INCREMENT_MODULO(buffer_tail, BUFFER_SIZE);

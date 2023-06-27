@@ -174,7 +174,7 @@ int cowpi_led_matrix_scrolling_put(void *cookie, const char *buffer, int size) {
     stream_data_t *stream_data = (stream_data_t *) cookie;
     static bool escaped = false;
     uint8_t character[16];
-    int8_t character_width;
+    int8_t character_width = 0;
     int i = 0;
     while (i < size) {
         if (escaped) {
@@ -214,10 +214,10 @@ int cowpi_led_matrix_scrolling_put(void *cookie, const char *buffer, int size) {
             int character_offset = character_width > 8 ? 0 : 3 + (5 - character_width) / 2;
             for (int j = 0; j < character_width; j++) {
                 add_symbol_to_buffer((symbol_t) {
-                    .callback = send_matrix_pattern_from_buffer,
-                    .stream_data = stream_data,
-                    .symbol = character[j + character_offset],
-                    .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
+                        .callback = send_matrix_pattern_from_buffer,
+                        .stream_data = stream_data,
+                        .symbol = character[j + character_offset],
+                        .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
                 });
             }
             // add intercharacter space

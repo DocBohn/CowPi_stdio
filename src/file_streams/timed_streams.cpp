@@ -36,7 +36,14 @@ ISR(TIMER0_COMPB_vect) {
     timer_handler();
 }
 
-#endif //__AVR__
+#elif defined(__MBED__)
+
+#include <chrono>
+#include <mbed.h>
+
+static mbed::Ticker displayTicker;
+
+#endif //architecture
 
 
 uint8_t buffer_head = 0;
@@ -50,6 +57,9 @@ void cowpi_enable_buffer_timer(void) {
 #if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
         OCR0B = 0x40;   // fires every 1.024ms -- close enough
         TIMSK0 |= (1 << OCIE0B);
+#elif defined(__MBED__)
+        displayTicker.attach(timer_handler, std::chrono::milliseconds(1));
+//        displayTicker.attach_us(timer_handler, 1000);
 #else
 #warning Timer for buffered display modules will not be enabled.
 #endif //architecture

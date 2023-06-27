@@ -12,7 +12,6 @@
 FILE *no_scroll_display, *display;
 
 void setup(void) {
-    cowpi_stdio_setup(9600);
     display = cowpi_add_display_module(
             (cowpi_display_module_t) {
                     .display_module = LED_MATRIX,

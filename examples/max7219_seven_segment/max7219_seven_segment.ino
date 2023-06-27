@@ -12,6 +12,7 @@
 FILE *no_scroll_display, *scrolling_display;
 
 void setup(void) {
+    // cowpi_stdio_setup(9600);
     no_scroll_display = cowpi_add_display_module(
             (cowpi_display_module_t) {
                     .display_module = SEVEN_SEGMENT
@@ -41,7 +42,7 @@ void setup(void) {
     // normally, using two file streams on the same display module can have
     // undesired effects, but in this simple example, we should be okay if
     // we wait until the scolling text is gone
-    delay(7000);
+    delay(8000);
 }
 
 void loop(void) {

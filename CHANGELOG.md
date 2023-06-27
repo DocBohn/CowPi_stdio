@@ -54,6 +54,7 @@ and this project adheres to
 - File streams to send text to display modules using `fprintf`
   - 8 digit, 7 segment display module (MAX7219)
   - 16 column, 2 row character display module (HD44780)
+  - 16 column, 4 row character display module (HD44780)
 
 ### Changed
 
