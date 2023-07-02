@@ -2,9 +2,8 @@
  *
  * @file max7219_streams.c
  *
- * @brief @copybrief cowpi_seven_segment_noscroll_put
- *
- * @copydetails cowpi_seven_segment_noscroll_put
+ * Implementations of functions specific to FILE streams for MAX7219-based
+ * 7-segment displays and MAX7219-based LED matrix displays.
  *
  ******************************************************************************/
 
@@ -211,22 +210,24 @@ int cowpi_led_matrix_scrolling_put(void *cookie, const char *buffer, int size) {
                     cowpi_font_transpose_dotmatrix(character);
                     character_width = cowpi_font_get_dotmatrix_width(c);
             }
-            int character_offset = character_width > 8 ? 0 : 3 + (5 - character_width) / 2;
-            for (int j = 0; j < character_width; j++) {
+            if (!escaped) {
+                int character_offset = character_width > 8 ? 0 : 3 + (5 - character_width) / 2;
+                for (int j = 0; j < character_width; j++) {
+                    add_symbol_to_buffer((symbol_t) {
+                            .callback = send_matrix_pattern_from_buffer,
+                            .stream_data = stream_data,
+                            .symbol = character[j + character_offset],
+                            .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
+                    });
+                }
+                // add intercharacter space
                 add_symbol_to_buffer((symbol_t) {
                         .callback = send_matrix_pattern_from_buffer,
                         .stream_data = stream_data,
-                        .symbol = character[j + character_offset],
+                        .symbol = 0x00,
                         .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
                 });
             }
-            // add intercharacter space
-            add_symbol_to_buffer((symbol_t) {
-                    .callback = send_matrix_pattern_from_buffer,
-                    .stream_data = stream_data,
-                    .symbol = 0x00,
-                    .symbol_duration = stream_data->ms_per_signal / SYMBOL_DURATION_SCALING_FACTOR
-            });
         }
         i++;
     }
@@ -250,7 +251,6 @@ static void send_segment_pattern_from_buffer(void *symbol) {
 }
 
 static void send_matrix_pattern_from_buffer(void *symbol) {
-//    send_segment_pattern_from_buffer(symbol);
     static uint8_t incoming_display_patterns[8] = {0};   // for now, use 8 -- will have to put an upper limit on it later
     static uint8_t outgoing_display_patterns[8] = {0};
     symbol_t *symbol_data = (symbol_t *) symbol;

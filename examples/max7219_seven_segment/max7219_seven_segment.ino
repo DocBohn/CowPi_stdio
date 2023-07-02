@@ -12,7 +12,18 @@
 FILE *no_scroll_display, *scrolling_display;
 
 void setup(void) {
-    // cowpi_stdio_setup(9600);
+    // The C++ approach
+    no_scroll_display = cowpi_add_display_module(
+            cowpi_configure_seven_segment_display(),
+            cowpi_configure_spi(SS, MOSI, SCK)
+    );
+    scrolling_display = cowpi_add_display_module(
+            cowpi_configure_scrolling_seven_segment_display(30),
+            cowpi_configure_spi(SS, MOSI, SCK)
+    );
+
+    // The C approach
+    /*
     no_scroll_display = cowpi_add_display_module(
             (cowpi_display_module_t) {
                     .display_module = SEVEN_SEGMENT
@@ -27,8 +38,6 @@ void setup(void) {
     scrolling_display = cowpi_add_display_module(
             (cowpi_display_module_t) {
                     .display_module = SEVEN_SEGMENT,
-                    .width = 8,
-                    .height = 1,
                     .words_per_minute = 30
             },
             (cowpi_display_module_protocol_t) {
@@ -38,10 +47,12 @@ void setup(void) {
                     .select_pin = SS
             }
     );
+    */
+
     fprintf(scrolling_display, "Hello World!\n");
     // normally, using two file streams on the same display module can have
     // undesired effects, but in this simple example, we should be okay if
-    // we wait until the scolling text is gone
+    // we wait until the scrolling text is gone
     delay(8000);
 }
 

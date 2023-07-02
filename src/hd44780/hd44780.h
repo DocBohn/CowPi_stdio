@@ -20,7 +20,10 @@
  * `cowpi_hd44780_send_halfbyte()`.
  *
  * Unlike the MAX7219 and the SSD1306, the HD44780 does not handle serial
- * communication on its own.....
+ * communication on its own and requires a serial adapter. The mapping between
+ * the byte sent from the program and the lines on the display module is
+ * specified by the `adapter_mapping` field in the functions'
+ * `cowpi_display_module_protocol_t` argument
  *
  ******************************************************************************/
 

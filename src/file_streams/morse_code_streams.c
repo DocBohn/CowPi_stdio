@@ -2,9 +2,8 @@
  *
  * @file morse_code_streams.c
  *
- * @brief @copybrief .....
- *
- * @copydetails .....
+ * Implementations of functions specific to FILE streams that send Morse Code
+ * to output pins.
  *
  ******************************************************************************/
 

@@ -1,10 +1,9 @@
 /**************************************************************************//**
  *
- * @file display_module_file_streams.c
+ * @file timed_streams.cpp
  *
- * @brief @copybrief cowpi_add_display_module
- *
- * @copydetails cowpi_add_display_module
+ * @brief Functions supporting the timer interrupt-based symbol buffer, and the
+ * externalized symbol buffer itself.
  *
  ******************************************************************************/
 
@@ -26,7 +25,15 @@
 #include <stdbool.h>
 #include "file_streams_internal.h"
 
+/**
+ * @brief Interrupt handler for the symbol buffer's timer interrupts.
+ *
+ * On each invocation, the elapsed time is updated. If enough time has elapsed,
+ * the symbol at the head of the buffer is sent to the appropriate display
+ * module.
+ */
 static void timer_handler(void);
+
 
 #if defined(__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
 
@@ -59,7 +66,6 @@ void cowpi_enable_buffer_timer(void) {
         TIMSK0 |= (1 << OCIE0B);
 #elif defined(__MBED__)
         displayTicker.attach(timer_handler, std::chrono::milliseconds(1));
-//        displayTicker.attach_us(timer_handler, 1000);
 #else
 #warning Timer for buffered display modules will not be enabled.
 #endif //architecture

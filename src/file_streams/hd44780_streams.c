@@ -2,9 +2,8 @@
  *
  * @file hd44780_streams.c
  *
- * @brief @copybrief cowpi_lcd_character_put
- *
- * @copydetails cowpi_lcd_character_put
+ * Implementations of functions specific to FILE streams for HD44780-based LCD
+ * character displays.
  *
  ******************************************************************************/
 

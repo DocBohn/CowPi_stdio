@@ -32,10 +32,9 @@ and this project adheres to
 - Fix printf on Nano 33 BLE
 - Fix hardware I2C on simulator (works fine on actual hardware)
 - Code for chained MAX7219 modules
-- Stderr to morse code
 - tweak configuration code
 - port to Raspberry Pi Pico SDK framework
-- Buffer timer for RP2040, ATmega4809, SAMD21, nRF52840
+- Buffer timer for ATmega4809, SAMD21
 - Rename stdio setup
 -->
 
@@ -43,9 +42,11 @@ and this project adheres to
 
 ### Added
 
-- File stream for scrolling text on 7 segment display module (MAX7219), ATmega328P & ATmega2560 only
-- File stream for 8x8 LED matrix (MAX7219), ATmega328P & ATmega2560 only
-- File stream for Morse Code, ATmega328P & ATmega2560 only
+- File streams that require a timed buffer
+  - File stream for scrolling text on 7 segment display module (MAX7219)
+  - File stream for 8x8 LED matrix (MAX7219)
+  - File stream for Morse Code
+- Documentation
 
 ## [0.4.4] - 2023-06-22
 

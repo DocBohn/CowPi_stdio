@@ -4,7 +4,8 @@
  *
  * @author Christopher A. Bohn
  *
- * @brief .......
+ * @brief Provides a "font" to drive the dits and dahs of a Morse Code
+ *      illuminator or sounder
  *
  ******************************************************************************/
 
@@ -40,16 +41,25 @@ enum {
 };
 
 /**
- * @brief ...
+ * @brief Provides the series of DITs and DAHs to represent an ASCII
+ *      character in Morse Code.
  *
- * ...
+ * Each byte of the destination array stores a DIT, a DAH, a SYMBOL_SPACE
+ * (the pause between dits/dahs), a CHARACTER_SPACE (the pause between letters),
+ * a WORD_SPACE (the pause between words), or an END_OF_CHARACTER (a
+ * terminating NUL).
+ *
+ * In most cases, a 9-byte `destination` array will be sufficient; however,
+ * if `c` is a percent sign (`'\%'`) then 18 bytes will be required for the
+ * `destination` array.
  *
  * @ingroup font
  *
  * @param destination   an empty 8-byte array
- * @param c             the ASCII character whose ......... is
+ * @param c             the ASCII character whose Morse Code representation is
  *      to be provided
- * @return              `destination`, with the requested........
+ * @return              `destination`, with the requested series of Morse
+ *      symbols
  */
 uint8_t *cowpi_font_ascii_to_morse_code(uint8_t *destination, char c);
 

@@ -11,15 +11,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-cowpi_display_module_protocol_t pins;
 FILE *display;
-const uint8_t backslash = 0x01;   // ROM Code A00 has a Yen symbol instead of '\\'
+const uint8_t backslash = 0x01;
 
 void fill_display(void);
 
 void setup(void) {
     cowpi_stdio_setup(9600);
-    
 
     // **********
     // CHOOSE SERIAL-TO-PARALLEL MAPPING (typically can omit adapter mapping if using COWPI_DEFAULT)
@@ -27,28 +25,14 @@ void setup(void) {
     // enum adapter_mappings adapter_mapping = ADAFRUIT;
     // **********
 
-
     // **********
-    // CHOOSE I2C OR SPI
-    /*
-    pins = cowpi_configure_spi(MOSI, SCK, SS, adapter_mapping);
-    */
-    int8_t address = cowpi_discover_i2c_address(SDA, SCL);
-    if (address == 0) {
-        printf("no devices detected\n");
-        while (1) {}
-    } else if (address == -1) {
-        printf("multiple devices detected\n");
-        while (1) {}
-    } else {
-        printf("device detected at %#04x\n", address);
-    }
-    if (!(0x20 <= address && address <= 0x27) && !(0x38 <= address && address <= 0x3F)) {
-        printf("This might not be an HD44780 LCD character display.\n");
-    }
-    pins = cowpi_configure_i2c(SDA, SCL, address, adapter_mapping);
+    // CHOOSE SPI OR I2C
+    // cowpi_display_module_protocol_t pins = cowpi_configure_spi(SS, MOSI, SCK, adapter_mapping);
+    cowpi_display_module_protocol_t pins = cowpi_configure_i2c(cowpi_discover_i2c_address(SDA, SCL),
+                                                               SDA,
+                                                               SCL,
+                                                               adapter_mapping);
     // **********
-
 
     display = cowpi_add_display_module(
             (cowpi_display_module_t) {
@@ -63,6 +47,7 @@ void setup(void) {
         while (1) {}
     }
 
+    // ROM Code A00 has a Yen symbol instead of '\\'
     uint8_t backslash_matrix[8];
     cowpi_font_ascii_to_5wide_dotmatrix(backslash_matrix, '\\');
     cowpi_hd44780_create_character(&pins, backslash, backslash_matrix);
@@ -86,10 +71,12 @@ void loop(void) {
     fill_display();
     printf("Horizontal tab (\\t, 0x09) advances 1 space without overwriting the character.\n");
     fprintf(display, "Advance\tcursor\n");
-    fprintf(display, "\t\twith\t%ct\n", (char) backslash);
+    // place a custom character with the literal byte for its CGRAM address
+    fprintf(display, "\t\twith\t\x1t\n");
     fill_display();
     printf("Form feed, or new page, (\\f, 0x0C) places the cursor in the top row and performs a carriage return.\n");
     fprintf(display, "return home\n");
+    // or place a custom character with the "%c" conversion specifier
     fprintf(display, "  with %cf\f", (char) backslash);
     delay(1500);
     fprintf(display, "like this\n");
@@ -102,7 +89,7 @@ void loop(void) {
     fprintf(display, "Clear row & go\n");
     fprintf(display, "to next row: %cn\n", (char) backslash);
     fill_display();
-    printf("Carriage return (\\r, 0x0D) places the cursor at the left posistion of the current row.\n");
+    printf("Carriage return (\\r, 0x0D) places the cursor at the left position of the current row.\n");
     fprintf(display, "Go to row start\n");
     fprintf(display, "  with %cr  \r", (char) backslash);
     delay(1500);

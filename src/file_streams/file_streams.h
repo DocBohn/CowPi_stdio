@@ -45,32 +45,44 @@ extern "C" {
 void cowpi_stdio_setup(unsigned long bitrate);
 
 /**
- * @brief Configures a display module for `fprintf()`.
+ * Configures a display module for `fprintf()`.
  *
  * @param display_module the display module's details
  * @param configuration the communication protocol's details
- * @return a pointer to a `FILE` stream for the display module, or `NULL` if a stream could not be created
+ * @return a pointer to a `FILE` stream for the display module, or `NULL` if a
+ *      stream could not be created
  */
 FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_display_module_protocol_t configuration);
 
 /**
- * .....
+ * Removes the contents of the display module and places the cursor in the home
+ * position.
  *
- * @param filestream
+ * @param filestream a pointer to the `FILE` stream for the display module to
+ *      be cleared
  */
 void cowpi_clear_display(FILE *filestream);
 
 /**
- * .....
+ * @brief Places a display module in a low-power state.
  *
- * @param filestream
+ * If the display module has a low-power mode that preserves the contents of
+ * the display, then this function will place the display module in that mode.
+ *
+ * @param filestream a pointer to the `FILE` stream for the display module to
+ *      be placed in a low-power state
  */
 void cowpi_sleep_display(FILE *filestream);
 
 /**
- * .....
+ * @brief Takes a display module out of a low-power state.
  *
- * @param filestream
+ * If the display module has a low-power mode that preserves the contents of
+ * the display, then this function will take the display out of that mode,
+ * restoring the display's contents.
+ *
+ * @param filestream a pointer to the `FILE` stream for the display module to
+ *      be brought out of a low-power state
  */
 void cowpi_wake_display(FILE *filestream);
 

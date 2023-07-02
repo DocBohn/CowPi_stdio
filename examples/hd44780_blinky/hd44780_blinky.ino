@@ -11,12 +11,10 @@
 #define SCL PIN_WIRE_SCL
 #endif
 
-cowpi_display_module_protocol_t pins;
 FILE *display;
 
 void setup(void) {
     cowpi_stdio_setup(9600);
-
 
     // **********
     // CHOOSE SERIAL-TO-PARALLEL MAPPING (typically can omit adapter mapping if using COWPI_DEFAULT)
@@ -24,37 +22,16 @@ void setup(void) {
     // enum adapter_mappings adapter_mapping = ADAFRUIT;
     // **********
 
-
     // **********
-    // CHOOSE I2C OR SPI
-    /*
-    pins = cowpi_configure_spi(MOSI, SCK, SS, adapter_mapping);
-    */
-    int8_t address = cowpi_discover_i2c_address(SDA, SCL);
-    if (address == 0) {
-        printf("no devices detected\n");
-        while (1) {}
-    } else if (address == -1) {
-        printf("multiple devices detected\n");
-        while (1) {}
-    } else {
-        printf("device detected at %#04x\n", address);
-    }
-    if (!(0x20 <= address && address <= 0x27) && !(0x38 <= address && address <= 0x3F)) {
-        printf("This might not be an HD44780 LCD character display.\n");
-    }
-    pins = cowpi_configure_i2c(SDA, SCL, address, adapter_mapping);
+    // CHOOSE SPI OR I2C
+    // cowpi_display_module_protocol_t pins = cowpi_configure_spi(SS, MOSI, SCK, adapter_mapping);
+    cowpi_display_module_protocol_t pins = cowpi_configure_i2c(cowpi_discover_i2c_address(SDA, SCL),
+                                                               SDA,
+                                                               SCL,
+                                                               adapter_mapping);
     // **********
 
-
-    display = cowpi_add_display_module(
-            (cowpi_display_module_t) {
-                    .display_module = LCD_CHARACTER,
-                //    .width = 20,
-                //    .height = 4
-            },
-            pins
-    );
+    display = cowpi_add_display_module((cowpi_display_module_t) {.display_module = LCD_CHARACTER}, pins);
     if (!display) {
         printf("received NULL file pointer\n");
         while (1) {}
@@ -64,12 +41,6 @@ void setup(void) {
         fprintf(display, "Hello, world!\n");
     }
 
-    // uint8_t blinky[][8] = {
-    //         {0x0E, 0x1F, 0x1D, 0x1F, 0x1F, 0x1F, 0x15, 0x15},
-    //         {0x0E, 0x1F, 0x1D, 0x1F, 0x1F, 0x1F, 0x0A, 0x0A},
-    //         {0x0E, 0x1F, 0x17, 0x1F, 0x1F, 0x1F, 0x15, 0x15},
-    //         {0x0E, 0x1F, 0x17, 0x1F, 0x1F, 0x1F, 0x0A, 0x0A},
-    // };
     uint8_t blinky[][8] = {
             {0x0E, 0x1F, 0x1D, 0x1F, 0x1F, 0x1F, 0x1F, 0x15},
             {0x0E, 0x1F, 0x1D, 0x1F, 0x1F, 0x1F, 0x1F, 0x0A},
@@ -118,11 +89,15 @@ void loop(void) {
                 }
                 break;
             case MOVING_LEFT:
+#ifdef __AVR__
                 // gotta do it this way since AVR doesn't do variable-width conversions
                 for (int i = 0; i < column; i++) {
                     fprintf(display, " ");
                 }
                 fprintf(display, "%4c \r", blinky_frame);
+#else
+                fprintf(display, "%*c \r", column + 4, blinky_frame);
+#endif //__AVR__
                 if (column == 0) {
                     mode = WAITING_RIGHT;
                     column = 0;
@@ -133,10 +108,14 @@ void loop(void) {
                 }
                 break;
             case MOVING_RIGHT:
+#ifdef __AVR__
                 for (int i = 0; i < column; i++) {
                     fprintf(display, " ");
                 }
                 fprintf(display, "%4c\r", blinky_frame);
+#else
+                fprintf(display, "%*c\r", column + 4, blinky_frame);
+#endif //__AVR__
                 if (column == 9) {
                     mode = WAITING_LEFT;
                     column = 0;

@@ -4,9 +4,11 @@
  *
  * @author Christopher A. Bohn
  *
- * @brief .....
+ * @brief Functions and structures needed for file streams that do not need to
+ *      be exposed outside the library.
  *
- * This file should be `#include`d *only* by .......
+ * This file should be `#include`d *only* by .c and .cpp files in the
+ * `file_streams` directory
  *
  ******************************************************************************/
 
@@ -23,9 +25,6 @@
  * limitations under the License.
  */
 
-//#ifndef COWPI_STDIO_FILE_STREAMS_INTERNAL_H
-//#define COWPI_STDIO_FILE_STREAMS_INTERNAL_H
-
 #include <Arduino.h>
 #include <stdio.h>
 #include "typedefs.h"
@@ -39,6 +38,11 @@ extern "C" {
 // assumes the modulus is a power-of-two
 #define INCREMENT_MODULO(value, modulus) (((value) + 1) & ((modulus) - 1))
 
+/**
+ * Structure containing everything needed for correct updates to a display
+ * module in response to `fprintf`, `cowpi_clear_display`,
+ * `cowpi_sleep_display`, or `cowpi_wake_display`.
+ */
 typedef struct {
 #if defined(__AVR__)
     FILE stream;    // for AVR, we'll use the FILE's address to refer back to the stream_data_t, a frequent need
@@ -48,21 +52,23 @@ typedef struct {
     int (*put)(void *cookie, const char *buffer, int size);
     cowpi_display_module_t display_module;
     cowpi_display_module_protocol_t configuration;
-//    uint8_t width;
-//    uint8_t height;
     uint16_t ms_per_signal;
 } stream_data_t;
 
-#define MAXIMUM_NUMBER_OF_STREAMS (5)
-extern int8_t number_of_streams;
-extern stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
+//#define MAXIMUM_NUMBER_OF_STREAMS (5)
+//extern int8_t number_of_streams;
+//extern stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
 
 
+/**
+ * Structure containing everything needed to place a symbol, or pattern,
+ * on a display module from the symbol buffer driven by timer interrupts.
+ */
 typedef struct {
-    void (*callback)(void *symbol);
-    stream_data_t *stream_data;
-    uint8_t symbol;
-    uint8_t symbol_duration;
+    void (*callback)(void *symbol); //!< the function that this structure will be passed to; the parameter is considered to be of type `(symbol_t *)`
+    stream_data_t *stream_data;     //!< the cookie for the display module
+    uint8_t symbol;                 //!< the symbol, or pattern, that will be sent to the display module
+    uint8_t symbol_duration;        //!< the length of time between this symbol being sent to the display module and the next symbol being sent to the display module; each unit of timme is 8ms @sa SYMBOL_DURATION_SCALING_FACTOR
 } symbol_t;
 
 // BUFFER_SIZE needs to be power-of-two to work with INCREMENT_MODULO
@@ -85,12 +91,21 @@ extern symbol_t symbol_buffer[BUFFER_SIZE];
 
 
 
+/**
+ * Given a FILE stream, returns the corresponding `stream_data_t` structure
+ * that should be used as a cookie.
+ *
+ * @param filestream a FILE stream that can be mapped to a cookie
+ * @return the `stream_data_t` cookie corresponding to `filestream`
+ */
 stream_data_t *cowpi_file_to_cookie(FILE *filestream);
 
 
 /**
- * ............
- * @param entry
+ * Adds a symbol to the timer interrupt-driven symbol buffer, to eventually
+ * be send to a display module.
+ *
+ * @param entry the symbol (and related data) that will be sent to the display module
  */
 static inline void add_symbol_to_buffer(symbol_t entry) {
     while (BUFFER_IS_FULL) {
@@ -103,9 +118,10 @@ static inline void add_symbol_to_buffer(symbol_t entry) {
 }
 
 /**
- * .........
- * @param byte
- * @return
+ * Places a byte's bits in the reversed order.
+ *
+ * @param byte the byte to be reversed
+ * @return a byte whose bits are in the reverse order as those of the argument
  */
 static inline uint8_t reverse_byte(uint8_t byte) {
     byte = ((byte & 0xF0) >> 4) | ((byte & 0x0F) << 4);
@@ -116,53 +132,86 @@ static inline uint8_t reverse_byte(uint8_t byte) {
 
 
 /**
- * ..............
+ * Configures the timer interrupts for the symbol buffer.
  */
 void cowpi_enable_buffer_timer(void);
 
 
 /**
- * .......
- * @param cookie
- * @param buffer
- * @param size
- * @return
+ * @brief The `put` function for a MAX7219-driven 7-segment display module
+ *      that does *not* have scrolling text.
+ *
+ * This function satisfies the `writefn`/`write` argument expected by the
+ * newlib/glibc `funopen` and `fopencookie` functions.
+ *
+ * @param cookie the `stream_data_t` structure with data about the display
+ *      module and communication protocol
+ * @param buffer an origin buffer containing the characters to be written
+ * @param size the number of characters to be written
+ * @return the number of characters successfully sent to the display module;
+ *      -1 on failure
  */
 int cowpi_seven_segment_noscroll_put(void *cookie, const char *buffer, int size);
 
 /**
- * .........
- * @param cookie
- * @param buffer
- * @param size
- * @return
+ * @brief The `put` function for a MAX7219-driven 7-segment display module
+ *      that has scrolling text.
+ *
+ * This function satisfies the `writefn`/`write` argument expected by the
+ * newlib/glibc `funopen` and `fopencookie` functions.
+ *
+ * @param cookie the `stream_data_t` structure with data about the display
+ *      module and communication protocol
+ * @param buffer an origin buffer containing the characters to be written
+ * @param size the number of characters to be written
+ * @return the number of characters successfully sent to the display module;
+ *      -1 on failure
  */
 int cowpi_seven_segment_scrolling_put(void *cookie, const char *buffer, int size);
 
 /**
- * .........
- * @param cookie
- * @param buffer
- * @param size
- * @return
+ * @brief The `put` function for a MAX7219-driven LED matrix display module
+ *      that shows scrolling text.
+ *
+ * This function satisfies the `writefn`/`write` argument expected by the
+ * newlib/glibc `funopen` and `fopencookie` functions.
+ *
+ * @param cookie the `stream_data_t` structure with data about the display
+ *      module and communication protocol
+ * @param buffer an origin buffer containing the characters to be written
+ * @param size the number of characters to be written
+ * @return the number of characters successfully sent to the display module;
+ *      -1 on failure
  */
 int cowpi_led_matrix_scrolling_put(void *cookie, const char *buffer, int size);
 
 /**
- * .......
- * @param cookie
- * @param buffer
- * @param size
- * @return
+ * @brief The `put` function for a HD44780-driven LCD character display module.
+ *
+ * This function satisfies the `writefn`/`write` argument expected by the
+ * newlib/glibc `funopen` and `fopencookie` functions.
+ *
+ * @param cookie the `stream_data_t` structure with data about the display
+ *      module and communication protocol
+ * @param buffer an origin buffer containing the characters to be written
+ * @param size the number of characters to be written
+ * @return the number of characters successfully sent to the display module;
+ *      -1 on failure
  */
 int cowpi_lcd_character_put(void *cookie, const char *buffer, int size);
 
 /**
- * .......
- * @param cookie
- * @param buffer
- * @param size
- * @return
+ * @brief The `put` function for sending Morse Code to an output pin.
+ *
+ * This function satisfies the `writefn`/`write` argument expected by the
+ * newlib/glibc `funopen` and `fopencookie` functions.
+ *
+ * @param cookie the `stream_data_t` structure with data about the display
+ *      module and communication protocol
+ * @param buffer an origin buffer containing the characters to be written
+ * @param size the number of characters to be written
+ * @return the number of characters successfully sent to the display module;
+ *      -1 on failure
  */
 int cowpi_morse_code_put(void *cookie, const char *buffer, int size);
 
@@ -171,5 +220,3 @@ int cowpi_morse_code_put(void *cookie, const char *buffer, int size);
 #endif
 
 #endif //COWPI_STDIO_FILE_STREAMS_INTERNAL
-
-//#endif //COWPI_STDIO_FILE_STREAMS_INTERNAL_H

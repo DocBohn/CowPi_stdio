@@ -1,6 +1,6 @@
 /**************************************************************************//**
  *
- * @file spi.h
+ * @file i2c.h
  *
  * @brief Hardware-based and software-based implementations of the I2C protocol.
  *
@@ -36,16 +36,53 @@ extern "C" {
 #include <Arduino.h>
 #include "communication.h"
 
+/**
+ * An implementation of cowpi_i2c_initialize() that supports
+ * cowpi_i2c_transmit_bitbang().
+ *
+ * @param configuration the microcontroller pins, adapter mapping, and possibly
+ *      i2c peripheral address
+ * @return `true` if ACK received; `false` otherwise
+ */
 bool cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration);
 
+/**
+ * A bit-banged implementation of cowpi_spi_transmit().
+ *
+ * @param byte the byte to be transmitted to the peripheral
+ * @return `true` if ACK received; `false` otherwise
+ */
 bool cowpi_i2c_transmit_bitbang(uint8_t byte);
 
+/**
+ * An implementation of cowpi_i2c_finalize() that supports
+ * cowpi_i2c_transmit_bitbang().
+ */
 void cowpi_i2c_finalize_bitbang(void);
 
+/**
+ * An implementation of cowpi_i2c_initialize() that supports
+ * cowpi_i2c_transmit_hardware().
+ *
+ * @param configuration the microcontroller pins, adapter mapping, and possibly
+ *      i2c peripheral address
+ * @return `true` if ACK received; `false` otherwise
+ */
 bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration);
 
+/**
+ * An implementation of cowpi_i2c_transmit() that uses the microcontroller's
+ * hardware.
+ *
+ * @param byte the byte to be transmitted to the peripheral
+ * @return `true` if ACK received; `false` otherwise
+ */
 bool cowpi_i2c_transmit_hardware(uint8_t byte);
 
+/**
+ * An implementation of cowpi_i2c_finalize() that supports
+ * cowpi_i2c_transmit_hardware().
+ */
 void cowpi_i2c_finalize_hardware(void);
 
 #ifdef __cplusplus

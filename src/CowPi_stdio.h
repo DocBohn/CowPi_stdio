@@ -1,7 +1,7 @@
 /*!
  * @mainpage CowPi_stdio Library
  *
- * @version 0.4.3
+ * @version 0.4.5
  *
  * @copyright (c) 2022-23 Christopher A. Bohn
  *
@@ -20,8 +20,12 @@
  *      - RP2040        (Raspberry Pi Pico (Arduino Framework),
  *                       Arduino Nano RP2040 Connect)
  *      - SAM D21       (Arduino Zero, Arduino Nano 33 IoT)
- *  - Display modules
+ *  - Inputs/Outputs
+ *      - USB connection to host computer (`stdin`/`stdout`)
+ *      - Morse Code to output pin (LED or buzzer with oscillator crystal)
  *      - MAX7219-based 8-digit, 7-segment display
+ *      - MAX7219-based 8x8 LED matrix display
+ *      - HD44780-based LCD character display
  *
  * @section license License
  *

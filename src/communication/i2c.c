@@ -36,8 +36,6 @@ bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_bitbang;
 void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_bitbang;
 
 
-//#define WRITE_LOW(pin)  do { pinMode((pin), OUTPUT); } while(0)
-//#define WRITE_HIGH(pin) do { pinMode((pin), INPUT);  } while(0)
 #define WRITE_LOW(pin)  do { cowpi_pin_mode((pin), OUTPUT); } while(0)
 #define WRITE_HIGH(pin) do { cowpi_pin_mode((pin), INPUT);  } while(0)
 

@@ -4,7 +4,8 @@
  *
  * @author Christopher A. Bohn
  *
- * @brief ...
+ * @brief The specific static constants for the font promised by
+ *      font_morse_code.h
  *
  * This file should be `#include`d *only* by fonts.c
  *
@@ -45,88 +46,90 @@ extern "C" {
  *  @{
  */
 
-static const uint8_t cowpi_font_morse_skip[]                    PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_error[]                   PROGMEM = {DIT, DIT, DIT, DIT, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_skip[]                        PROGMEM = {END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_error[]                       PROGMEM = {DIT, DIT, DIT, DIT, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
 
-static const uint8_t cowpi_font_morse_newparagraph[]/* BT */    PROGMEM = {DIT, DAH, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_nextline[]    /* AA */    PROGMEM = {DIT, DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_break[]       /* BK */    PROGMEM = {DAH, DIT, DIT, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_newparagraph[]      /* BT */  PROGMEM = {DAH, DIT, DIT, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_nextline[]          /* AA */  PROGMEM = {DIT, DAH, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_break[]             /* BK */  PROGMEM = {DAH, DIT, DIT, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_start_of_message[]  /* KA */  PROGMEM = {DAH, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_end_of_message[]    /* AR */  PROGMEM = {DIT, DAH, DIT, DAH, DIT, END_OF_CHARACTER};
 
-static const uint8_t cowpi_font_morse_space[]                   PROGMEM = {WORD_SPACE, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_space[]                       PROGMEM = {WORD_SPACE, END_OF_CHARACTER};
 
-static const uint8_t cowpi_font_morse_bang[]                    PROGMEM = {DAH, DIT, DAH, DIT, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_doublequote[]             PROGMEM = {DIT, DAH, DIT, DIT, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_octothorpe[]              PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_dollar[]                  PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_percent[]                 PROGMEM = {DAH, DAH, DAH, DAH, DAH, SYMBOL_SPACE,
-                                                                           DAH, DIT, DIT, DAH, DIT, SYMBOL_SPACE,
-                                                                           DAH, DAH, DAH, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_ampersand[]   /* AS */    PROGMEM = {DIT, DAH, DIT, DIT, DIT, END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_apostrophe[]              PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_leftparen[]               PROGMEM = {DAH, DIT, DAH, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_rightparen[]              PROGMEM = {DAH, DIT, DAH, DAH, DIT, DAH, END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_asterisk[]                PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_plus[]        /* AR */    PROGMEM = {DIT, DAH, DIT, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_comma[]                   PROGMEM = {DAH, DAH, DIT, DIT, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_dash[]                    PROGMEM = {DAH, DIT, DIT, DIT, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_period[]                  PROGMEM = {DIT, DAH, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_slash[]                   PROGMEM = {DAH, DIT, DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_bang[]                        PROGMEM = {DAH, DIT, DAH, DIT, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_doublequote[]                 PROGMEM = {DIT, DAH, DIT, DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_octothorpe[]                  PROGMEM = {END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_dollar[]                      PROGMEM = {END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_percent[]                     PROGMEM = {DAH, DAH, DAH, DAH, DAH, SYMBOL_SPACE,
+                                                                               DAH, DIT, DIT, DAH, DIT, SYMBOL_SPACE,
+                                                                               DAH, DAH, DAH, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_ampersand[]         /* AS */  PROGMEM = {DIT, DAH, DIT, DIT, DIT, END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_apostrophe[]                  PROGMEM = {END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_leftparen[]                   PROGMEM = {DAH, DIT, DAH, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_rightparen[]                  PROGMEM = {DAH, DIT, DAH, DAH, DIT, DAH, END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_asterisk[]                    PROGMEM = {END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_plus[]              /* AR */  PROGMEM = {DIT, DAH, DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_comma[]                       PROGMEM = {DAH, DAH, DIT, DIT, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_dash[]                        PROGMEM = {DAH, DIT, DIT, DIT, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_period[]                      PROGMEM = {DIT, DAH, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_slash[]                       PROGMEM = {DAH, DIT, DIT, DAH, DIT, END_OF_CHARACTER};
 
-static const uint8_t cowpi_font_morse_zero[]                    PROGMEM = {DAH, DAH, DAH, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_one[]                     PROGMEM = {DIT, DAH, DAH, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_two[]                     PROGMEM = {DIT, DIT, DAH, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_three[]                   PROGMEM = {DIT, DIT, DIT, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_four[]                    PROGMEM = {DIT, DIT, DIT, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_five[]                    PROGMEM = {DIT, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_six[]                     PROGMEM = {DAH, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_seven[]                   PROGMEM = {DAH, DAH, DIT, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_eight[]                   PROGMEM = {DAH, DAH, DAH, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_nine[]                    PROGMEM = {DAH, DAH, DAH, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_zero[]                        PROGMEM = {DAH, DAH, DAH, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_one[]                         PROGMEM = {DIT, DAH, DAH, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_two[]                         PROGMEM = {DIT, DIT, DAH, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_three[]                       PROGMEM = {DIT, DIT, DIT, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_four[]                        PROGMEM = {DIT, DIT, DIT, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_five[]                        PROGMEM = {DIT, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_six[]                         PROGMEM = {DAH, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_seven[]                       PROGMEM = {DAH, DAH, DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_eight[]                       PROGMEM = {DAH, DAH, DAH, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_nine[]                        PROGMEM = {DAH, DAH, DAH, DAH, DIT, END_OF_CHARACTER};
 
-static const uint8_t cowpi_font_morse_colon[]                   PROGMEM = {DAH, DAH, DAH, DIT, DIT, DIT, END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_semicolon[]               PROGMEM = {END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_lessthan[]                PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_equals[]      /* BT */    PROGMEM = {DAH, DIT, DIT, DIT, DAH, END_OF_CHARACTER};  // similar to INT ¿
-//static const uint8_t cowpi_font_morse_greaterthan[]             PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_question[]                PROGMEM = {DIT, DIT, DAH, DAH, DIT, DIT};
-static const uint8_t cowpi_font_morse_at[]                      PROGMEM = {DIT, DAH, DAH, DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_colon[]                       PROGMEM = {DAH, DAH, DAH, DIT, DIT, DIT, END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_semicolon[]                   PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_lessthan[]                    PROGMEM = {END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_equals[]            /* BT */  PROGMEM = {DAH, DIT, DIT, DIT, DAH, END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_greaterthan[]                 PROGMEM = {END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_question[]                    PROGMEM = {DIT, DIT, DAH, DAH, DIT, DIT};
+static const uint8_t cowpi_font_morse_at[]                          PROGMEM = {DIT, DAH, DAH, DIT, DAH, DIT, END_OF_CHARACTER};
 
-static const uint8_t cowpi_font_morse_A[]                       PROGMEM = {DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_B[]                       PROGMEM = {DAH, DIT, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_C[]                       PROGMEM = {DAH, DIT, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_D[]                       PROGMEM = {DAH, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_E[]                       PROGMEM = {DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_F[]                       PROGMEM = {DIT, DIT, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_G[]                       PROGMEM = {DAH, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_H[]                       PROGMEM = {DIT, DIT, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_I[]                       PROGMEM = {DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_J[]                       PROGMEM = {DIT, DAH, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_K[]                       PROGMEM = {DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_L[]                       PROGMEM = {DIT, DAH, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_M[]                       PROGMEM = {DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_N[]                       PROGMEM = {DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_O[]                       PROGMEM = {DAH, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_P[]                       PROGMEM = {DIT, DAH, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_Q[]                       PROGMEM = {DAH, DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_R[]                       PROGMEM = {DIT, DAH, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_S[]                       PROGMEM = {DIT, DIT, DIT, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_T[]                       PROGMEM = {DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_U[]                       PROGMEM = {DIT, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_V[]                       PROGMEM = {DIT, DIT, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_W[]                       PROGMEM = {DIT, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_X[]                       PROGMEM = {DAH, DIT, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_Y[]                       PROGMEM = {DAH, DIT, DAH, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_Z[]                       PROGMEM = {DAH, DAH, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_A[]                           PROGMEM = {DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_B[]                           PROGMEM = {DAH, DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_C[]                           PROGMEM = {DAH, DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_D[]                           PROGMEM = {DAH, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_E[]                           PROGMEM = {DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_F[]                           PROGMEM = {DIT, DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_G[]                           PROGMEM = {DAH, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_H[]                           PROGMEM = {DIT, DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_I[]                           PROGMEM = {DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_J[]                           PROGMEM = {DIT, DAH, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_K[]                           PROGMEM = {DAH, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_L[]                           PROGMEM = {DIT, DAH, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_M[]                           PROGMEM = {DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_N[]                           PROGMEM = {DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_O[]                           PROGMEM = {DAH, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_P[]                           PROGMEM = {DIT, DAH, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_Q[]                           PROGMEM = {DAH, DAH, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_R[]                           PROGMEM = {DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_S[]                           PROGMEM = {DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_T[]                           PROGMEM = {DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_U[]                           PROGMEM = {DIT, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_V[]                           PROGMEM = {DIT, DIT, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_W[]                           PROGMEM = {DIT, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_X[]                           PROGMEM = {DAH, DIT, DIT, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_Y[]                           PROGMEM = {DAH, DIT, DAH, DAH, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_Z[]                           PROGMEM = {DAH, DAH, DIT, DIT, END_OF_CHARACTER};
 
-//static const uint8_t cowpi_font_morse_backslash[]               PROGMEM = {END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_carat[]                   PROGMEM = {END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_underscore[]              PROGMEM = {END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_backtick[]                PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_backslash[]                   PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_carat[]                       PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_underscore[]                  PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_backtick[]                    PROGMEM = {END_OF_CHARACTER};
 
-//static const uint8_t cowpi_font_morse_leftbrace[]               PROGMEM = {END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_pipe[]                    PROGMEM = {END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_rightbrace[]              PROGMEM = {END_OF_CHARACTER};
-//static const uint8_t cowpi_font_morse_tilde[]                   PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_leftbrace[]                   PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_pipe[]                        PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_rightbrace[]                  PROGMEM = {END_OF_CHARACTER};
+//static const uint8_t cowpi_font_morse_tilde[]                       PROGMEM = {END_OF_CHARACTER};
 
 
 #define MAXIMUM_MORSE_CODE_LENGTH (9)   /* except for percent sign */
@@ -134,8 +137,8 @@ static const uint8_t cowpi_font_morse_Z[]                       PROGMEM = {DAH, 
 
 
 static const uint8_t *const cowpi_font_morse_code[] PROGMEM = {
-        cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,
-        cowpi_font_morse_error,         cowpi_font_morse_space,         cowpi_font_morse_newparagraph,  cowpi_font_morse_nextline,      cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,
+        cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_start_of_message,
+        cowpi_font_morse_error,         cowpi_font_morse_space,         cowpi_font_morse_newparagraph,  cowpi_font_morse_nextline,      cowpi_font_morse_end_of_message,cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,
         cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,
         cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_skip,
         cowpi_font_morse_space,         cowpi_font_morse_bang,          cowpi_font_morse_doublequote,   cowpi_font_morse_skip,          cowpi_font_morse_skip,          cowpi_font_morse_percent,       cowpi_font_morse_ampersand,     cowpi_font_morse_skip,

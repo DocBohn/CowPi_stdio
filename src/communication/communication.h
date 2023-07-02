@@ -81,12 +81,12 @@ extern void (*cowpi_spi_finalize)(void);
  * 
  * The CowPi_stdio library does not have SPI hardware implementations for all 
  * microcontrollers. If a hardware implementation is unavailable, this function 
- * will return <code>false</code> and will assign a bit-banged implementation 
+ * will return `false` and will assign a bit-banged implementation 
  * instead.
  * 
- * @return <code>true</code> if hardware implementations have been assigned to 
+ * @return `true` if hardware implementations have been assigned to 
  *      the CowPi's SPI function pointers
- * @return <code>false</code> if hardware implementations have not been assigned
+ * @return `false` if hardware implementations have not been assigned
  *      to the CowPi's SPI function pointers
  */
 bool cowpi_use_spi_hardware();
@@ -107,7 +107,7 @@ void cowpi_use_spi_bitbang();
  *
  * @param configuration the microcontroller pins, adapter mapping, and possibly
  *      i2c peripheral address
- * @return <code>true</code> if ACK received; <code>false</code> otherwise
+ * @return `true` if ACK received; `false` otherwise
  *
  * @sa cowpi_i2c_transmit
  * @sa cowpi_i2c_finalize
@@ -120,7 +120,7 @@ extern bool (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *confi
  * SPI hardware, or it might be a pre-defined bit-bang implementation.
  *
  * @param byte the byte to be transmitted to the peripheral
- * @return <code>true</code> if ACK received; <code>false</code> otherwise
+ * @return `true` if ACK received; `false` otherwise
  *
  * @sa cowpi_i2c_initialize
  * @sa cowpi_i2c_finalize
@@ -143,8 +143,8 @@ extern void (*cowpi_i2c_finalize)(void);
  * @param i2c_data_pin the I2C serial data pin
  * @param i2c_clock_pin the I2C serial clock pin
  * @return <ul>
- *      <li><code>0</code> if no I2C peripherals are detected
- *      <li><code>-1</code> if multiple I2C peripherals are detected
+ *      <li>0 if no I2C peripherals are detected
+ *      <li>-1 if multiple I2C peripherals are detected
  *      <li>the peripheral's I2C address otherwise
  *      </ul>
  */
@@ -161,12 +161,12 @@ int8_t cowpi_discover_i2c_address(uint8_t i2c_data_pin, uint8_t i2c_clock_pin);
  * 
  * The CowPi_stdio library does not have I2C hardware implementations for all 
  * microcontrollers. If a hardware implementation is unavailable, this function 
- * will return <code>false</code> and will assign a bit-banged implementation 
+ * will return `false` and will assign a bit-banged implementation 
  * instead.
  * 
- * @return <code>true</code> if hardware implementations have been assigned to 
+ * @return `true` if hardware implementations have been assigned to 
  *      the CowPi's I2C function pointers
- * @return <code>false</code> if hardware implementations have not been assigned
+ * @return `false` if hardware implementations have not been assigned
  *      to the CowPi's I2C function pointers
  */
 bool cowpi_use_i2c_hardware();

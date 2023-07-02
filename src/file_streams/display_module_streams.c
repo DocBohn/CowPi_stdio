@@ -2,9 +2,13 @@
  *
  * @file display_module_streams.c
  *
- * @brief @copybrief cowpi_add_display_module
+ * @brief Functions that generate and use `FILE` streams for display
+ *      modules.
  *
- * @copydetails cowpi_add_display_module
+ * Implements the central `cowpi_add_display_module` function that generates
+ * FILE streams which can be used with `fprintf`. These FILE streams can also
+ * used to perform common manipulations of the display modules using other
+ * public functions implemented in this file.
  *
  ******************************************************************************/
 
@@ -33,18 +37,36 @@
 #include "../max7219/max7219.h"
 #include "../translations/translations.h"
 
+#define MAXIMUM_NUMBER_OF_STREAMS (5)
 int8_t number_of_streams;
 stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
 
 #if defined(__AVR__)
 
-static int cowpi_display_module_putc(char c, FILE *filestream);
+/**
+ * @brief The `put` function that AVR-libc expects for output FILE streams.
+ *
+ * This function is a wrapper for the more-generally-defined `put` function that
+ * glibc and newlib expect for output FILE streams. This function satisfies the
+ * AVR-libc `put` interface but simply calls the appropriate display module's
+ * newlib `put` function.
+ *
+ * *n.b.*, This function satisfies the `put` argument expected by `fdevopen` and
+ * `fdev_setup-stream` -- specifically, it returns 0 on success. This is in
+ * contrast with AVR-libc's `putc` and `fputc` which have the same signature but
+ * return the character on success.
+ *
+ * @param c the character to be displayed
+ * @param filestream the FILE stream for the display module
+ * @return 0 if the character is successfully sent to the display module;
+ *      non-zero otherwise
+ */
+static int cowpi_display_module_put(char c, FILE *filestream);
 
 #endif //__AVR__
 
 FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_display_module_protocol_t configuration) {
     if (number_of_streams == MAXIMUM_NUMBER_OF_STREAMS) return NULL;
-    if (configuration.protocol == I2C && configuration.i2c_address == 0) return NULL;
     FILE *stream;
     stream_data_t *stream_data = streams + number_of_streams;
     memcpy(&stream_data->display_module, &display_module, sizeof(cowpi_display_module_t));
@@ -56,13 +78,29 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             cowpi_pin_mode(stream_data->configuration.data_pin, OUTPUT);
             break;
         case SPI:
+            if ((stream_data->configuration.data_pin == 0)
+                && (stream_data->configuration.data_pin == stream_data->configuration.select_pin)) {
+                stream_data->configuration.select_pin = SS;
+            }
+            if ((stream_data->configuration.data_pin == 0)
+                && (stream_data->configuration.data_pin == stream_data->configuration.clock_pin)) {
+                stream_data->configuration.data_pin = MOSI;
+                stream_data->configuration.clock_pin = SCK;
+            }
             cowpi_pin_mode(stream_data->configuration.data_pin, OUTPUT);
             cowpi_pin_mode(stream_data->configuration.clock_pin, OUTPUT);
             cowpi_pin_mode(stream_data->configuration.select_pin, OUTPUT);
             break;
         case I2C:
+            if ((stream_data->configuration.data_pin == 0)
+                && (stream_data->configuration.data_pin == stream_data->configuration.clock_pin)) {
+                stream_data->configuration.data_pin = SDA;
+                stream_data->configuration.clock_pin = SCL;
+            }
             cowpi_pin_mode(stream_data->configuration.data_pin, INPUT);
             cowpi_pin_mode(stream_data->configuration.clock_pin, INPUT);
+            if (!stream_data->configuration.i2c_address) return NULL;           // general call
+            if (stream_data->configuration.i2c_address & 0x80) return NULL;     // invalid address
             break;
         default:
             return NULL;
@@ -108,7 +146,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             stream_data->put = cowpi_led_matrix_scrolling_put;
             break;
         case LCD_CHARACTER:
-            // default to the "native" LCD1602
+            // default to LCD1602
             if (!stream_data->display_module.width) stream_data->display_module.width = 16;
             if (!stream_data->display_module.height) stream_data->display_module.height = 2;
             // must be LCD1602 or LCD2004
@@ -133,7 +171,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
     }
 #if defined(__AVR__)
     stream = &(streams[number_of_streams].stream);
-    fdev_setup_stream(stream, cowpi_display_module_putc, NULL, _FDEV_SETUP_WRITE);
+    fdev_setup_stream(stream, cowpi_display_module_put, NULL, _FDEV_SETUP_WRITE);
 #elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__)
     stream = funopen(stream_data, NULL, stream_data->put, NULL, NULL);
     // I suppose we should make line buffering an option, but not today
@@ -148,11 +186,14 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
 
 #if defined(__AVR__)
 
-static int cowpi_display_module_putc(char c, FILE *filestream) {
-    // because the file stream is the first element in the struct,
-    // the address of that element is also the base address of the struct
+static int cowpi_display_module_put(char c, FILE *filestream) {
     stream_data_t *stream_data = cowpi_file_to_cookie(filestream);
-    return !stream_data->put(stream_data, &c, 1);
+    int returned_value = stream_data->put(stream_data, &c, 1);
+    if (returned_value == -1 || returned_value == 0) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
 #endif //__AVR__
