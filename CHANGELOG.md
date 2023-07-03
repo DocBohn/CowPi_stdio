@@ -23,8 +23,7 @@ and this project adheres to
 
 <!--
 ## [TODO]
-- Update keywords.txt
-- Add conformity for PlatformIO: `include/`, `library.json`
+- Add `include/` directory? (more conformal to PlatformIO)
 - Code for controlling SSD1306-based display modules
 - File stream for OLED matrix (SSD1306)
 - File stream for arbitrary Arduino Stream
@@ -38,7 +37,7 @@ and this project adheres to
 - Rename stdio setup
 -->
 
-## [Unreleased]
+## [0.5.0] - 2023-07-03
 
 ### Added
 
