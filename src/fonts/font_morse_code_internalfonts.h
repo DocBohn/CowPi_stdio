@@ -46,14 +46,14 @@ extern "C" {
  *  @{
  */
 
-static const uint8_t cowpi_font_morse_skip[]                        PROGMEM = {END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_error[]                       PROGMEM = {DIT, DIT, DIT, DIT, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_skip[]                        PROGMEM = {CHARACTER_SPACE, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_error[]                       PROGMEM = {CHARACTER_SPACE, DIT, DIT, DIT, DIT, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
 
-static const uint8_t cowpi_font_morse_newparagraph[]      /* BT */  PROGMEM = {DAH, DIT, DIT, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_nextline[]          /* AA */  PROGMEM = {DIT, DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_break[]             /* BK */  PROGMEM = {DAH, DIT, DIT, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_start_of_message[]  /* KA */  PROGMEM = {DAH, DIT, DAH, DIT, DAH, END_OF_CHARACTER};
-static const uint8_t cowpi_font_morse_end_of_message[]    /* AR */  PROGMEM = {DIT, DAH, DIT, DAH, DIT, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_newparagraph[]      /* BT */  PROGMEM = {WORD_SPACE, DAH, DIT, DIT, DIT, DAH, WORD_SPACE, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_nextline[]          /* AA */  PROGMEM = {WORD_SPACE, DIT, DAH, DIT, DAH, WORD_SPACE, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_break[]             /* BK */  PROGMEM = {WORD_SPACE, DAH, DIT, DIT, DIT, DAH, DIT, DAH, WORD_SPACE, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_start_of_message[]  /* KA */  PROGMEM = {WORD_SPACE, DAH, DIT, DAH, DIT, DAH, WORD_SPACE, END_OF_CHARACTER};
+static const uint8_t cowpi_font_morse_end_of_message[]    /* AR */  PROGMEM = {WORD_SPACE, DIT, DAH, DIT, DAH, DIT, WORD_SPACE, END_OF_CHARACTER};
 
 static const uint8_t cowpi_font_morse_space[]                       PROGMEM = {WORD_SPACE, END_OF_CHARACTER};
 
@@ -132,7 +132,7 @@ static const uint8_t cowpi_font_morse_Z[]                           PROGMEM = {D
 //static const uint8_t cowpi_font_morse_tilde[]                       PROGMEM = {END_OF_CHARACTER};
 
 
-#define MAXIMUM_MORSE_CODE_LENGTH (9)   /* except for percent sign */
+#define MAXIMUM_MORSE_CODE_LENGTH (10)  /* except for percent sign */
 #define PERCENT_MORSE_CODE_LENGTH (18)
 
 

@@ -18,12 +18,11 @@ void setup(void) {
         printf("multiple devices detected\n");
     } else {
         printf("device detected at %#04x\n", address);
-        if ((0x20 <= address && address <= 0x27) || (0x3A <= address && address <= 0x3F)) {
-            printf("This probably is an HD44780 LCD character display.\n");
-        }
-        if (0x38 <= address && address <= 0x39) {
+        if (0x3C <= address && address <= 0x3D) {
             printf("This probably is an SSD13xx OLED dot matrix display, "
                    "but it might be an HD44780 LCD character display.\n");
+        } else if ((0x20 <= address && address <= 0x27) || (0x3A <= address && address <= 0x3F)) {
+            printf("This probably is an HD44780 LCD character display.\n");
         }
     }
 }

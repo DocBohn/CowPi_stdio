@@ -29,7 +29,7 @@ flips (`HEADS` or `TAILS`) will produce correct-looking text on your display.
 
 In C++, use the `cowpi_configure_led_matrix_display(_words_per_minute_, _display_orientation_, _character_flip_)`
 function to generate the appropriate `cowpi_display_module_t` variable.
-In C, use 
+In C, use
 `(cowpi_display_module_t) {.display_module = LED_MATRIX, .words_per_minute = _words_per_minute_, .display_orientation = _display_orientation_, .character_flip = _character_flip_}`.
 The scroll rate is expressed as an approximate number of words per minute that should pass along the display.
 If you omit the display orientation and character flip, the default values of `EAST` and `HEADS` will be assumed;
@@ -60,8 +60,7 @@ The MAX7219 natively supports SPI.
 (Technically, there is a small deviation, but not one that you'll notice.)
 At a minimum, you need to specify the pin used to indicate which peripheral should latch the data in.
 In C++, use the `cowpi_configure_spi(_select_pin_)` function to generate the
-appropriate `cowpi_display_module_protocol_t`
-variable.
+appropriate `cowpi_display_module_protocol_t` variable.
 In C, use `(cowpi_display_module_protocol_t) {.protocol = SPI, .select_pin = _select_pin_}`.
 By default, the data pin and the clock pin are those used by the SPI hardware, even if you use the library's bit-banged
 SPI implementation.
@@ -77,7 +76,7 @@ in C.
 The *max7219_dotmatrix* example demonstrates sending both text and literal bytes to the display module.
 
 ```c++
-FILE *no_scroll_display, *display;
+FILE *display;
 
 void setup(void) {
     // The C++ approach

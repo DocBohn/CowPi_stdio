@@ -9,7 +9,7 @@
 
 #endif //__AVR__
 
-FILE *no_scroll_display, *display;
+FILE *display;
 
 void setup(void) {
     // The C++ approach

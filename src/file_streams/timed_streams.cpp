@@ -50,6 +50,10 @@ ISR(TIMER0_COMPB_vect) {
 
 static mbed::Ticker displayTicker;
 
+#else
+
+#warning Timer for buffered display modules will not be enabled.
+
 #endif //architecture
 
 
