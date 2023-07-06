@@ -3,9 +3,8 @@
 [![GitHub Release](https://img.shields.io/github/release/DocBohn/CowPi_stdio)](https://github.com/DocBohn/CowPi_stdio/releases)
 [![GitHub License](https://img.shields.io/github/license/DocBohn/CowPi_stdio)](https://github.com/DocBohn/CowPi_stdio/blob/main/LICENSE)
 
-[//]: # ([![Arduino Library]&#40;https://www.ardu-badge.com/badge/CowPi_stdio.svg?&#41;]&#40;https://www.ardu-badge.com/CowPi_stdio&#41;)
-
-[//]: # ([![PlatformIO Registry]&#40;https://badges.registry.platformio.org/packages/DocBohn/library/CowPi_stdio.svg&#41;]&#40;https://registry.platformio.org/libraries/DocBohn/CowPi_stdio&#41;)
+[![Arduino Library](https://www.ardu-badge.com/badge/CowPi_stdio.svg)](https://www.ardu-badge.com/CowPi_stdio)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/docbohn/library/CowPi_stdio.svg)](https://registry.platformio.org/libraries/docbohn/CowPi_stdio)
 
 [![See also CowPi](https://img.shields.io/badge/🐮_𝜋_see_also-CowPi-crimson)](https://github.com/DocBohn/CowPi)
 
@@ -25,6 +24,22 @@ Our plans for upcoming releases include:
 - File streams for UART devices that are not (necessarily) connected to USB
 - File streams for additional display modules
 
+## How to use the CowPi_stdio library
+
+See [the documentation](extras/doc/FileStreams.md) for details.
+The short version, assuming you're using C++ (to include Arduino's `.ino` files) is:
+
+- To set up `stdout` and `stdin`, call the `cowpi_stdio_setup()` function with the desired bit rate.
+- For the display modules, call `cowpi_add_display_module()` and assign the pointer it returns to a `FILE *` variable.
+  The first argument has the configuration details for the display module, and the second argument has the configuration
+  details for the communication protocol used to send data to the display module.
+  ```c++
+  FILE *display = cowpi_add_display_module(
+      cowpi_configure_XXX(...arguments...),   // XXX is the type of display module
+      cowpi_configure_YYY(...arguments...)    // YYY is the communication protocol
+    );
+  ```
+
 ## Status
 
 | MCU                        | `printf`/`scanf` | SPI bitbang | SPI hardware | I2C bitbang | I2C hardware |   Buffer Timer    | Notes                                                                                                                             |
@@ -39,6 +54,7 @@ Our plans for upcoming releases include:
 [//]: # (| RA4M1                      |        ⁇         |      ⁇      |      ❌       |      ⁇      |      ❌       |         ⁇         |                                                                                                                                   |)
 
 [//]: # (&#40;It looks like *some* of the ICSP pins on the Arduino Mega 2560 aren't connected to the SPI pins &#40;50-53&#41; even though)
+
 [//]: # (schematic indicates they are -- this just might be my particular board&#41;)
 
 | Display Module                                                      | AVR | megaAVR | MBED | SAMD |
@@ -84,7 +100,6 @@ Our plans for upcoming releases include:
 [//]: # (  - RENESAS)
 
 [//]: # (    - [ ] Renesas RA4M1: Arduino Uno R4)
-
 
 ## The tradeoffs
 
@@ -159,7 +174,10 @@ uses 3054 bytes of Flash memory and 218 bytes of SRAM.
   is slower than chaining `Serial.print`/`println` calls.
   The `Serial.print` and `Serial.println` statements in the first snippet require 276µs (±4µs) to execute, and
   the `printf` statement in the second snippet requires 212µs (±4µs) to execute.
-
+- Unsurprisingly, the display modules will demand a little more memory.
+  Some display modules, such as scrolling text on the LED dot matrix display will demand a significant fraction of the
+  available memory.
+  You are unlikely to save much memory by implementing the equivalent functionality without the stdio framework.
 
 ## Limitations
 
@@ -205,7 +223,6 @@ Another implementation is available that will support floating point conversions
 - Variable width or precision fields is not supported on AVR architectures.
   Using `*` to specify the width or precision will abort the output.
   Lines 105-108 and 119-122 of *hd44780_blinky* have code that must work around this limitation.
-
 
 ## About the name
 

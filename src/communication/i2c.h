@@ -36,8 +36,12 @@ extern "C" {
 #include <Arduino.h>
 #include "communication.h"
 
+/** \ingroup protocol
+ * @{
+ */
+
 /**
- * An implementation of cowpi_i2c_initialize() that supports
+ * @brief An implementation of cowpi_i2c_initialize() that supports
  * cowpi_i2c_transmit_bitbang().
  *
  * @param configuration the microcontroller pins, adapter mapping, and possibly
@@ -47,7 +51,7 @@ extern "C" {
 bool cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configuration);
 
 /**
- * A bit-banged implementation of cowpi_spi_transmit().
+ * @brief A bit-banged implementation of cowpi_spi_transmit().
  *
  * @param byte the byte to be transmitted to the peripheral
  * @return `true` if ACK received; `false` otherwise
@@ -55,13 +59,13 @@ bool cowpi_i2c_initialize_bitbang(const cowpi_display_module_protocol_t *configu
 bool cowpi_i2c_transmit_bitbang(uint8_t byte);
 
 /**
- * An implementation of cowpi_i2c_finalize() that supports
+ * @brief An implementation of cowpi_i2c_finalize() that supports
  * cowpi_i2c_transmit_bitbang().
  */
 void cowpi_i2c_finalize_bitbang(void);
 
 /**
- * An implementation of cowpi_i2c_initialize() that supports
+ * @brief An implementation of cowpi_i2c_initialize() that supports
  * cowpi_i2c_transmit_hardware().
  *
  * @param configuration the microcontroller pins, adapter mapping, and possibly
@@ -71,8 +75,8 @@ void cowpi_i2c_finalize_bitbang(void);
 bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *configuration);
 
 /**
- * An implementation of cowpi_i2c_transmit() that uses the microcontroller's
- * hardware.
+ * @brief An implementation of cowpi_i2c_transmit() that uses the
+ * microcontroller's hardware.
  *
  * @param byte the byte to be transmitted to the peripheral
  * @return `true` if ACK received; `false` otherwise
@@ -80,10 +84,12 @@ bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *config
 bool cowpi_i2c_transmit_hardware(uint8_t byte);
 
 /**
- * An implementation of cowpi_i2c_finalize() that supports
+ * @brief An implementation of cowpi_i2c_finalize() that supports
  * cowpi_i2c_transmit_hardware().
  */
 void cowpi_i2c_finalize_hardware(void);
+
+/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

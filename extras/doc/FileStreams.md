@@ -58,7 +58,7 @@ FILE *display = cowpi_add_display_module(
 - [MAX7219-driven Seven Segment Display](seven_segment.md)
 - [MAX7219-driven LED Dot Matrix Display](led_matrix.md)
 - [HD44780-driven LCD Character Display](lcd_character.md)
-- Morse Code
+- [Morse Code](morse_code.md)
 
 ### Communication Protocols
 

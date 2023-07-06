@@ -40,8 +40,8 @@ extern "C" {
 #include <stdint.h>
 #include "../typedefs.h"
 
-/** @addtogroup display
- *  @{
+/** @ingroup display
+ * @{
  */
 
 

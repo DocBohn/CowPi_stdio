@@ -37,9 +37,8 @@ extern "C" {
 
 #endif //__AVR__
 
-
-/** @addtogroup font
- *  @{
+/** @ingroup font
+ * @{
  */
 
 static const uint8_t cowpi_font_7segment[0x80]

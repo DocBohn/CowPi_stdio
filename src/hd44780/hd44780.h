@@ -51,8 +51,8 @@
 extern "C" {
 #endif
 
-/** @addtogroup display
- *  @{
+/** @ingroup display
+ * @{
  */
 
 /**
@@ -232,8 +232,8 @@ void cowpi_hd44780_set_backlight(const cowpi_display_module_protocol_t *configur
 #endif
 
 
-/** @addtogroup display
- *  @{
+/** @ingroup display
+ * @{
  */
 
 /* Entry Mode Commands */
@@ -260,8 +260,8 @@ void cowpi_hd44780_set_backlight(const cowpi_display_module_protocol_t *configur
 
 
 /** @var cowpi_hd44780_send_halfbyte_t cowpi_hd44780_send_halfbyte
- *  @copydoc cowpi_hd44780_send_halfbyte_t
- *  @ingroup display
+ * @copydoc cowpi_hd44780_send_halfbyte_t
+ * @ingroup display
  */
 
 #endif //COWPI_STDIO_HD44780_H

@@ -54,9 +54,11 @@ extern "C" {
 #endif //ARCHITECTURE
 
 /**
- * Configures the specified pin to behave either as an input or an output and,
- * if as an input, then whether it is high-impedance or uses an internal pullup
- * (or pulldown) resistor.
+ * @brief Configures the specified pin to behave either as an input or an output
+ * and, if as an input, then whether it is high-impedance or uses an internal
+ * pullup (or pulldown) resistor.
+ *
+ * @ingroup configuration
  *
  * @param pin the pin whose mode is to be set
  * @param mode INPUT, OUTPUT, INPUT_PULLUP, or (if supported) INPUT_PULLDOWN

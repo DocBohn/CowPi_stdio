@@ -43,11 +43,15 @@
 #ifndef COWPI_STDIO_FONT_7SEGMENT_H
 #define COWPI_STDIO_FONT_7SEGMENT_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdint.h>
+/** @ingroup font
+ * @{
+ */
 
 /**
  * @brief Provides the 7-segment bit vector for an ASCII character or for a
@@ -62,8 +66,6 @@ extern "C" {
  * The bit vector is guaranteed to work for a 7-segment display whose segments
  * are mapped to bits in the manner specified in the MAX7219/MAX7221 datasheet
  * (MSB DP-A-B-C-D-E-F-G LSB).
- *
- * @addtogroup font
  *
  * @param c the ASCII character whose 7-segment bit vector is to be provided
  * @return  a 7-segment bit vector
@@ -82,14 +84,14 @@ uint8_t cowpi_font_ascii_to_7segment(char c);
  *
  * @note The array of bit vectors will *not* be NUL-terminated.
  *
- * @addtogroup font
- *
  * @param destination   an empty array of sufficient size to hold the bit
  *      vectors
  * @param s             the string to be converted into 7-segment bit vectors
  * @return              `destination`, with the requested bit vectors
  */
 uint8_t *cowpi_font_string_to_7segment(uint8_t *destination, const char *s);
+
+/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

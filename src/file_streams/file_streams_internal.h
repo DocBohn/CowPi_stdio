@@ -34,7 +34,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#
+
+/** \ingroup stream
+ * @{
+ */
+
 // assumes the modulus is a power-of-two
 #define INCREMENT_MODULO(value, modulus) (((value) + 1) & ((modulus) - 1))
 
@@ -214,6 +218,8 @@ int cowpi_lcd_character_put(void *cookie, const char *buffer, int size);
  *      -1 on failure
  */
 int cowpi_morse_code_put(void *cookie, const char *buffer, int size);
+
+/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

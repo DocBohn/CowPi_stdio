@@ -28,18 +28,20 @@
 #ifndef COWPI_STDIO_FONT_DOTMATRIX_H
 #define COWPI_STDIO_FONT_DOTMATRIX_H
 
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
+/** @ingroup font
+ * @{
+ */
 
 /**
  * @brief Provides the minimum number of columns needed to represent a character
  *      in the dot matrix font.
- *
- * @ingroup font
  *
  * @param   c the character whose width is to be determined
  * @return  the dot matrix width of the character
@@ -60,8 +62,6 @@ int8_t cowpi_font_get_dotmatrix_width(char c);
  *
  * @sa cowpi_font_ascii_to_5wide_dotmatrix
  * @sa cowpi_font_ascii_to_8wide_dotmatrix
- *
- * @ingroup font
  *
  * @param destination   an empty 8-byte array
  * @param c             the ASCII character whose dot matrix representation is
@@ -85,8 +85,6 @@ uint8_t *cowpi_font_ascii_to_narrow_dotmatrix(uint8_t *destination, char c);
  * @sa cowpi_font_ascii_to_narrow_dotmatrix
  * @sa cowpi_font_ascii_to_8wide_dotmatrix
  *
- * @ingroup font
- *
  * @param destination   an empty 8-byte array
  * @param c             the ASCII character whose dot matrix representation is
  *      to be provided
@@ -108,8 +106,6 @@ uint8_t *cowpi_font_ascii_to_5wide_dotmatrix(uint8_t *destination, char c);
  * @sa cowpi_font_ascii_to_narrow_dotmatrix
  * @sa cowpi_font_ascii_to_5wide_dotmatrix
  *
- * @ingroup font
- *
  * @param destination   an empty 8-byte array
  * @param c             the ASCII character whose dot matrix representation is
  *      to be provided
@@ -125,8 +121,6 @@ uint8_t *cowpi_font_ascii_to_8wide_dotmatrix(uint8_t *destination, char c);
  *
  * This is an in-place transposition; that is, the original matrix is
  * overwritten.
- *
- * @ingroup font
  *
  * @param matrix    the dot matrix to be transposed
  * @return          `matrix` after the transposition
@@ -144,8 +138,6 @@ uint8_t *cowpi_font_transpose_dotmatrix(uint8_t *matrix);
  * The `destination` array is assumed to point to a block of memory with
  * sufficient space allocated to hold the full string's dot matrix
  * representation; `6 * strlen(s)` is guaranteed to be sufficient.
- *
- * @ingroup font
  *
  * @param destination   an empty array to hold the dot matrix representation
  * @param s             the ASCII string whose dot matrix representation is to
@@ -168,8 +160,6 @@ int cowpi_font_string_to_horizontal_dotmatrix(uint8_t *destination, const char *
  * sufficient space allocated to hold the full string's dot matrix
  * representation; `9 * strlen(s)` is guaranteed to be sufficient.
  *
- * @ingroup font
- *
  * @param destination   an empty array to hold the dot matrix representation
  * @param s             the ASCII string whose dot matrix representation is to
  *      be provided
@@ -179,6 +169,8 @@ int cowpi_font_string_to_horizontal_dotmatrix(uint8_t *destination, const char *
  *      representation
  */
 int cowpi_font_string_to_vertical_dotmatrix(uint8_t *destination, const char *s, bool kerned);
+
+/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

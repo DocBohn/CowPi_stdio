@@ -16,10 +16,10 @@
  *  - Microcontrollers
  *      - ATmega328P    (Arduino Uno, Arduino Nano)
  *      - ATmega2560    (Arduino Mega 2560)
- *      - ATmega4809    (Arduino Uno Wifi Rev 2, Arduino Nano Every)
+ *      - ATmega4809    (Arduino Uno Wifi Rev 2, Arduino Nano Every) -- limited support
  *      - RP2040        (Raspberry Pi Pico (Arduino Framework),
  *                       Arduino Nano RP2040 Connect)
- *      - SAM D21       (Arduino Zero, Arduino Nano 33 IoT)
+ *      - SAM D21       (Arduino Zero, Arduino Nano 33 IoT) -- limited support
  *  - Inputs/Outputs
  *      - USB connection to host computer (`stdin`/`stdout`)
  *      - Morse Code to output pin (LED or buzzer with oscillator crystal)
@@ -65,6 +65,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+/** @defgroup configuration Configuration Functions and Constants
+ *  @brief Functions, datatypes, and constants used to configure the
+ *          microcontroller and display module
+ */
+/** @defgroup display Display Modules
+ *  @brief Functions, variables, and constants for display modules
+ */
+/**
+ * @defgroup font Displayable Fonts
+ * @brief Character fonts for display modules
+ */
+/** @defgroup protocol Communication Protocols
+ *  @brief Functions, variables, and constants that are used to interface the
+ *          microcontroller with displays
+ */
+/** @defgroup stream File Streams
+ *  @brief Functions, datatypes, variables, and constants used to establish and
+ *          manage file streams with peripherals
  */
 
 #ifndef COWPI_STDIO_H

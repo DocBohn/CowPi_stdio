@@ -35,8 +35,12 @@ extern "C" {
 
 #include "communication.h"
 
+/** \ingroup protocol
+ * @{
+ */
+
 /**
- * An implementation of cowpi_spi_initialize() that supports
+ * @brief An implementation of cowpi_spi_initialize() that supports
  * cowpi_spi_transmit_bitbang().
  *
  * @param configuration the pins used for SPI
@@ -46,20 +50,20 @@ extern "C" {
 void cowpi_spi_initialize_bitbang(const cowpi_display_module_protocol_t *configuration, bit_order_t bit_order);
 
 /**
- * A bit-banged implementation of cowpi_spi_transmit().
+ * @brief A bit-banged implementation of cowpi_spi_transmit().
  *
  * @param byte the byte to be transmitted to the peripheral
  */
 void cowpi_spi_transmit_bitbang(uint8_t byte);
 
 /**
- * An implementation of cowpi_spi_finalize() that supports
+ * @brief An implementation of cowpi_spi_finalize() that supports
  * cowpi_spi_transmit_bitbang().
  */
 void cowpi_spi_finalize_bitbang(void);
 
 /**
- * An implementation of cowpi_spi_initialize() that supports
+ * @brief An implementation of cowpi_spi_initialize() that supports
  * cowpi_spi_transmit_hardware().
  *
  * @param configuration the pins used for SPI
@@ -69,18 +73,20 @@ void cowpi_spi_finalize_bitbang(void);
 void cowpi_spi_initialize_hardware(const cowpi_display_module_protocol_t *configuration, bit_order_t bit_order);
 
 /**
- * An implementation of cowpi_spi_transmit() that uses the microcontroller's
- * hardware.
+ * @brief An implementation of cowpi_spi_transmit() that uses the
+ * microcontroller's hardware.
  *
  * @param byte the byte to be transmitted to the peripheral
  */
 void cowpi_spi_transmit_hardware(uint8_t byte);
 
 /**
- * An implementation of cowpi_spi_finalize() that supports
+ * @brief An implementation of cowpi_spi_finalize() that supports
  * cowpi_spi_initialize_hardware().
  */
 void cowpi_spi_finalize_hardware(void);
+
+/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

@@ -40,9 +40,8 @@ extern "C" {
 #define PROGMEM
 #endif //__AVR__
 
-
-/** @addtogroup font
- *  @{
+/** @ingroup font
+ * @{
  */
 
 static const uint8_t cowpi_font_dotmatrix_fuzz[8]           PROGMEM = {0x15, 0x0A, 0x15, 0x0A, 0x15, 0x0A, 0x15, 0x0A};

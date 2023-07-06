@@ -25,12 +25,19 @@
 #ifndef COWPI_STDIO_FONT_MORSE_CODE_H
 #define COWPI_STDIO_FONT_MORSE_CODE_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdint.h>
+/** @ingroup font
+ * @{
+ */
 
+/**
+ * @brief Symbols used in Morse Code.
+ */
 enum {
     END_OF_CHARACTER = 0,
     SYMBOL_SPACE,       // 1 unit
@@ -53,8 +60,6 @@ enum {
  * if `c` is a percent sign (`'\%'`) then 18 bytes will be required for the
  * `destination` array.
  *
- * @ingroup font
- *
  * @param destination   an empty 8-byte array
  * @param c             the ASCII character whose Morse Code representation is
  *      to be provided
@@ -62,6 +67,8 @@ enum {
  *      symbols
  */
 uint8_t *cowpi_font_ascii_to_morse_code(uint8_t *destination, char c);
+
+/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

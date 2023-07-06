@@ -37,6 +37,12 @@ and this project adheres to
 - Rename stdio setup
 -->
 
+## [Unreleased]
+
+### Fixed
+
+- Improved Doxygen comments
+
 ## [0.5.0] - 2023-07-03
 
 ### Added

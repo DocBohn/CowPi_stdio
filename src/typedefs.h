@@ -25,14 +25,18 @@
 #ifndef COWPI_STDIO_TYPEDEFS_H
 #define COWPI_STDIO_TYPEDEFS_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdint.h>
+/** @ingroup configuration
+ * @{
+ */
 
 /**
- * Choices of display modules.
+ * @brief Choices of display modules.
  */
 enum display_modules {
     NO_MODULE = 0,
@@ -76,7 +80,7 @@ enum flips {
 };
 
 /**
- * Communication protocols used to send data to a display module.
+ * @brief Communication protocols used to send data to a display module.
  */
 enum protocols {
     NO_PROTOCOL = 0,
@@ -102,7 +106,7 @@ enum adapter_mappings {
 };
 
 /**
- * Structure that consolidates all information needed about a display module.
+ * @brief Structure that consolidates all information needed about a display module.
  */
 typedef struct {
     enum display_modules display_module;
@@ -114,7 +118,7 @@ typedef struct {
 } cowpi_display_module_t;
 
 /**
- * Structure that consolidates all information needed to determine how data
+ * @brief Structure that consolidates all information needed to determine how data
  * should be sent to a display module.
  */
 typedef struct {
@@ -126,6 +130,8 @@ typedef struct {
     uint8_t i2c_address;                    // used only for I2C
     enum adapter_mappings adapter_mapping;  // used only for HD44780
 } cowpi_display_module_protocol_t;
+
+/** @} */
 
 #ifdef __cplusplus
 } // extern "C"
@@ -169,9 +175,14 @@ typedef struct {
 
 #endif //microcontroller boards
 
+/** @ingroup configuration
+ * @{
+ */
+
 /**
- * Produces a `cowpi_display_module_protocol_t` instantiation for a "display"
- * that doesn't require a communication protocol, such as `MORSE_CODE`.
+ * @brief Produces a `cowpi_display_module_protocol_t` instantiation for a
+ * "display" that doesn't require a communication protocol, such as
+ * `MORSE_CODE`.
  *
  * @param data_pin the pin used to send data to the "display"
  * @return a `cowpi_display_module_protocol_t` instantiation initialized for
@@ -189,7 +200,7 @@ static inline cowpi_display_module_protocol_t cowpi_configure_single_pin(uint8_t
 }
 
 /**
- * Produces a `cowpi_display_module_protocol_t` instantiation for the
+ * @brief Produces a `cowpi_display_module_protocol_t` instantiation for the
  * Serial-Parallel Interface (SPI) protocol.
  *
  * @param data_pin the data output pin, possibly called SDO, COPI, PICO,
@@ -217,7 +228,7 @@ static inline cowpi_display_module_protocol_t cowpi_configure_spi(uint8_t select
 }
 
 /**
- * Produces a `cowpi_display_module_protocol_t` instantiation for the
+ * @brief Produces a `cowpi_display_module_protocol_t` instantiation for the
  * Inter-Integrated Circuit (I2C, or IIC), aka the Two-Wire Interface (TWI),
  * protocol.
  *
@@ -244,8 +255,8 @@ static inline cowpi_display_module_protocol_t cowpi_configure_i2c(uint8_t i2c_ad
 }
 
 /**
- * Produces a `cowpi_display_module_t` instantiation for a MAX7219-controlled
- * 8-digit/7-segment display module.
+ * @brief Produces a `cowpi_display_module_t` instantiation for a
+ * MAX7219-controlled 8-digit/7-segment display module.
  *
  * @return a `cowpi_display_module_t` instantiation initialized for an
  *      8-digit/7-segment display
@@ -262,8 +273,9 @@ static inline cowpi_display_module_t cowpi_configure_seven_segment_display() {
 }
 
 /**
- * Produces a `cowpi_display_module_t` instantiation for a MAX7219-controlled
- * 8-digit/7-segment display module that has text scrolling from right-to-left.
+ * @brief Produces a `cowpi_display_module_t` instantiation for a
+ * MAX7219-controlled 8-digit/7-segment display module that has text scrolling
+ * from right-to-left.
  *
  * @param words_per_minute the approximate rate at which the text scrolls across
  *      the display
@@ -313,8 +325,8 @@ static inline cowpi_display_module_t cowpi_configure_led_matrix_display(uint8_t 
 }
 
 /**
- * Produces a `cowpi_display_module_t` instantiation for an HD44780-controlled
- * LCD character display.
+ * @brief Produces a `cowpi_display_module_t` instantiation for an
+ * HD44780-controlled LCD character display.
  *
  * @param width the number of characters per row; 16 is the default, and 20 is
  *      an option
@@ -355,6 +367,8 @@ static inline cowpi_display_module_t cowpi_configure_morse_code(uint8_t words_pe
             .character_flip = HEADS
     };
 }
+
+/** @} */
 
 #endif //__CPLUSPLUS
 
