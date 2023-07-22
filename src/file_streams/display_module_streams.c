@@ -37,6 +37,36 @@
 #include "../max7219/max7219.h"
 #include "../translations/translations.h"
 
+
+
+/* Unlike the setup in the monolithic CowPi library (through v0.4.1), the 
+ * compiler can't conclude when the custom-defined fonts aren't in use.
+ * I'm not worried about the 7-segment font -- that's only 128 bytes for the
+ * font plus some reasonable amount for the `put` function. However, eliminating
+ * the Morse Code font (and its `put`) shaves a little over 1KB, and eliminating
+ * the Matrix font (plus the LED Matrix `put`) shaves well over 2KB. */
+#if defined (__AVR_ATmega328P__)
+
+#if !defined(MORSE_FONT)
+#define NO_MORSE_FONT
+#endif //MORSE_FONT
+#if !defined(MATRIX_FONT)
+#define NO_MATRIX_FONT
+#endif //MATRIX_FONT
+
+#else
+
+#if !defined(NO_MORSE_FONT)
+#define MORSE_FONT
+#endif //NO_MORSE_FONT
+#if !defined(NO_MATRIX_FONT)
+#define MATRIX_FONT
+#endif //NO_MATRIX_FONT
+
+#endif //Allowing/prohibiting memory-expensive display modules
+
+
+
 #define MAXIMUM_NUMBER_OF_STREAMS (5)
 int8_t number_of_streams;
 stream_data_t streams[MAXIMUM_NUMBER_OF_STREAMS];
@@ -117,14 +147,17 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             // if 0wpm (the default), no scrolling
             if (!words_per_minute) {
                 stream_data->put = cowpi_seven_segment_noscroll_put;
+#if !defined (NO_TIMED_DISPLAYS)
             } else {
                 cowpi_enable_buffer_timer();
                 // minimum 6wpm (2000ms per letter), maximum 255wpm (47ms per letter) when scrolling
                 if (words_per_minute < 6) words_per_minute = 6;
                 stream_data->ms_per_signal = 60000 /* ms per minute */ / 5 /* letters per "PARIS" word */ / words_per_minute;
                 stream_data->put = cowpi_seven_segment_scrolling_put;
+#endif //NO_TIMED_DISPLAYS
             }
             break;
+#if defined (MATRIX_FONT) && !defined (NO_TIMED_DISPLAYS)
         case LED_MATRIX:
             cowpi_enable_buffer_timer();
             // default to a single 8x8 module (which is good because we're not handling chained modules yet)
@@ -145,6 +178,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             stream_data->ms_per_signal = 60000 /* ms per minute */ / 30 /* columns per "PARIS" word */ / words_per_minute;
             stream_data->put = cowpi_led_matrix_scrolling_put;
             break;
+#endif //MATRIX FONT
         case LCD_CHARACTER:
             // default to LCD1602
             if (!stream_data->display_module.width) stream_data->display_module.width = 16;
@@ -157,6 +191,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             cowpi_hd44780_set_backlight(&stream_data->configuration, 1);
             stream_data->put = cowpi_lcd_character_put;
             break;
+#if defined (MORSE_FONT) && !defined (NO_TIMED_DISPLAYS)
         case MORSE_CODE:
             cowpi_enable_buffer_timer();
             // default to 5wpm
@@ -166,6 +201,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             stream_data->ms_per_signal = 60000 /* ms per minute */ / 50 /* units per "PARIS" word */ / words_per_minute;
             stream_data->put = cowpi_morse_code_put;
             break;
+#endif //MORSE_FONT
         default:
             return NULL;
     }

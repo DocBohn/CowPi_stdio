@@ -6,7 +6,9 @@
 [![Arduino Library](https://www.ardu-badge.com/badge/CowPi_stdio.svg)](https://www.ardu-badge.com/CowPi_stdio)
 [![PlatformIO Registry](https://badges.registry.platformio.org/packages/docbohn/library/CowPi_stdio.svg)](https://registry.platformio.org/libraries/docbohn/CowPi_stdio)
 
-[![See also CowPi](https://img.shields.io/badge/🐮_𝜋_see_also-CowPi-crimson)](https://github.com/DocBohn/CowPi)
+[//]: # ([![See also CowPi]&#40;https://img.shields.io/badge/🐮_𝜋_see_also-CowPi-crimson&#41;]&#40;https://github.com/DocBohn/CowPi&#41;)
+[//]: # (scarlet)
+[![See also CowPi](https://img.shields.io/badge/🐮_𝜋_see_also-CowPi-rgb(255,36,0))](https://github.com/DocBohn/CowPi)
 
 ## What the CowPi_stdio library has to offer
 
@@ -33,12 +35,53 @@ The short version, assuming you're using C++ (to include Arduino's `.ino` files)
 - For the display modules, call `cowpi_add_display_module()` and assign the pointer it returns to a `FILE *` variable.
   The first argument has the configuration details for the display module, and the second argument has the configuration
   details for the communication protocol used to send data to the display module.
+
   ```c++
   FILE *display = cowpi_add_display_module(
       cowpi_configure_XXX(...arguments...),   // XXX is the type of display module
       cowpi_configure_YYY(...arguments...)    // YYY is the communication protocol
     );
   ```
+
+## Enabling/Disabling Memory-Expensive Display Modules
+
+While the library is written for run-time configuration, there are some portions that you may wish to eliminate at compile-time to reduce the memory used.
+You can do so by passing compile-time arguments that are discussed below:
+
+### Matrix Font
+
+The dot matrix font defined in the library is sizable indeed.
+Removing the dot matrix font will eliminate a little over 2KB -- on AVR devices, this savings will be in flash memory; on ARM devices, this savings will be in RAM
+
+- `-DNO_MATRIX_FONT` explicitly excludes the dot matrix font and any display modules that depend upon it;
+  this is the default for the ATmega328P (Arudino Uno, Arduino Nano)
+- `-DMATRIX_FONT` explicitly includes the dot matrix font;
+  this is the default for all other microcontrollers
+
+### Morse Code Font
+
+The Morse Code font defined in the library is smaller than the dot matrix font but large enough to consider excluding.
+Removing the Morse Code font will eliminate a little over 1KB -- on AVR devices, this savings will be in flash memory; on ARM devices, this savings will be in RAM
+
+- `-DNO_MORSE_FONT` explicitly excludes the Morse Code font and the Morse Code display;
+  this is the default for the ATmega328P (Arudino Uno, Arduino Nano)
+- `-DMORSE_FONT` explicitly includes the Morse Code font;
+  this is the default for all other microcontrollers
+
+### Timed Displays
+
+There are some displays that update based on a timer, such as the scrolling 7-segment display, the LED matrix display, and the Morse Code display.
+Passing the compiler argument `-DNO_TIMED_DISPLAYS` will disable these displays and will elimate 880 bytes from flash memory.
+This argument is *not* the default on any microcontrollers.
+
+### Which displays are disabled
+
+- The scrolling 7-segment display is disabled when `NO_TIMED_DISPLAYS` is defined
+- The LED matrix display is disabled when either `NO_TIMED_DISPLAYS` or `NO_MATRIX_FONT` is defined
+- The Morse Code display is disabled when either `NO_TIMED_DISPLAYS` or `NO_MORSE_FONT` is defined
+- All other displays are always enabled
+
+If you attempt to configure a disabled display module, then the `FILE *` variable that `add_display_module()` returns will be `NULL`, the same as would happen for any other configuration error.
 
 ## Status
 
@@ -75,27 +118,27 @@ The short version, assuming you're using C++ (to include Arduino's `.ino` files)
 ### Tested on...
 
 - AVR
-    - AVR
-        - Atmel ATmega328P
-            - [x] Arduino Uno R3
-            - [x] Arduino Nano
-        - Atmel ATmega2560:
-            - [x] Arduino Mega 2560
-    - megaAVR
-        - Atmel ATmega4809
-            - [ ] Arduino Uno Wifi Rev 2
-            - [x] Arduino Nano Every
+  - AVR
+    - Atmel ATmega328P
+      - [x] Arduino Uno R3
+      - [x] Arduino Nano
+    - Atmel ATmega2560:
+      - [x] Arduino Mega 2560
+  - megaAVR
+    - Atmel ATmega4809
+      - [ ] Arduino Uno Wifi Rev 2
+      - [x] Arduino Nano Every
 - ARM
-    - Mbed OS
-        - Nordic nRF52840
-            - [x] Arduino Nano 33 BLE (see notes, above)
-        - Raspberry Pi RP2040
-            - [ ] Arduino Nano RP2040 Connect
-            - [x] Raspberry Pi Pico (Arduino platform)
-    - SAMD
-        - Atmel SAM D21:
-            - [x] Arduino Nano 33 IoT
-            - [ ] Arduino Zero
+  - Mbed OS
+    - Nordic nRF52840
+      - [x] Arduino Nano 33 BLE (see notes, above)
+    - Raspberry Pi RP2040
+      - [ ] Arduino Nano RP2040 Connect
+      - [x] Raspberry Pi Pico (Arduino platform)
+  - SAMD
+    - Atmel SAM D21:
+      - [x] Arduino Nano 33 IoT
+      - [ ] Arduino Zero
 
 [//]: # (  - RENESAS)
 
@@ -156,6 +199,7 @@ uses 3054 bytes of Flash memory and 218 bytes of SRAM.
 - Even without using the CowPi_stdio library, you can create formatted output by using `sprintf` (or, better
   yet, `snprintf`).
   This, however, still brings the code for format conversions into the program:
+
   ```cpp
   void setup(void) {
       Serial.begin(9600);
@@ -168,6 +212,7 @@ uses 3054 bytes of Flash memory and 218 bytes of SRAM.
   void loop(void) {
   }
   ```
+
   uses 3066 bytes of Flash memory and 200 bytes of SRAM.
 - Conventional wisdom is that format conversions are very slow.
   While it is true that using `printf` is slower than not printing to a terminal, it is *not* true that using `printf`
@@ -195,9 +240,11 @@ On ARM (SAMD) architectures, the output is an unprintable character.
 Another implementation is available that will support floating point conversions.
 
 - For AVR architectures, the richer implementation is available through a compiler (linker) option:
+
   ```
   -Wl,-u,vfprintf -lprintf_flt -lm
   ```
+
   If you're using the Arduino IDE, you'll need to set up a `platform.local.txt` file;
   if you're using PlatformIO, you can add the build flags to your `platform.ini` file.
   ***Note**: the richer implementation will add about 1.4KB to your executable.*

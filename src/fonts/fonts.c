@@ -29,7 +29,7 @@
 #include "font_7segment_internalfonts.h"
 #include "font_dotmatrix.h"
 #include "font_dotmatrix_internalfonts.h"
-
+#include "font_morse_code.h"
 #include "font_morse_code_internalfonts.h"
 
 #ifdef __AVR__

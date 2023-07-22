@@ -1,7 +1,7 @@
 /*!
  * @mainpage CowPi_stdio Library
  *
- * @version 0.5.0
+ * @version 0.5.1
  *
  * @copyright (c) 2022-23 Christopher A. Bohn
  *
@@ -105,7 +105,7 @@ extern "C" {
 #include "hd44780/hd44780.h"
 #include "max7219/max7219.h"
 
-#define COWPI_STDIO_VERSION ("0.5.0")
+#define COWPI_STDIO_VERSION ("0.5.1")
 
 #ifdef __cplusplus
 } // extern "C"

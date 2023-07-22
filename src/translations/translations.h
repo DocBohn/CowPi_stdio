@@ -53,6 +53,8 @@ extern "C" {
 #define SCL PIN_WIRE_SCL
 #endif //ARCHITECTURE
 
+// borrowing cowpi_pin_mode from CowPi_stdio -- in an upcoming release, we'll have to figure out how to do this cleaner
+
 /**
  * @brief Configures the specified pin to behave either as an input or an output
  * and, if as an input, then whether it is high-impedance or uses an internal
