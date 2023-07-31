@@ -31,10 +31,6 @@ extern "C" {
 #include <stdio.h>
 #include "typedefs.h"
 
-/** \ingroup stream
- * @{
- */
-
 /**
  * @brief Configures the "Serial Monitor" for `printf()` and `scanf()`.
  *
@@ -87,8 +83,6 @@ void cowpi_sleep_display(FILE *filestream);
  *      be brought out of a low-power state
  */
 void cowpi_wake_display(FILE *filestream);
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

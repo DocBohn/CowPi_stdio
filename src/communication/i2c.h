@@ -36,10 +36,6 @@ extern "C" {
 #include <Arduino.h>
 #include "communication.h"
 
-/** \ingroup protocol
- * @{
- */
-
 /**
  * @brief An implementation of cowpi_i2c_initialize() that supports
  * cowpi_i2c_transmit_bitbang().
@@ -88,8 +84,6 @@ bool cowpi_i2c_transmit_hardware(uint8_t byte);
  * cowpi_i2c_transmit_hardware().
  */
 void cowpi_i2c_finalize_hardware(void);
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

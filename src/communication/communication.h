@@ -29,10 +29,6 @@ extern "C" {
 #include <stdbool.h>
 #include "../typedefs.h"
 
-/** \ingroup protocol
- * @{
- */
-
 /**
  * @brief Indicates whether a byte's bits should be transmitted least- or
  * most-significant bit first.
@@ -205,8 +201,6 @@ bool cowpi_use_i2c_hardware();
  * clock pins.
  */
 void cowpi_use_i2c_bitbang();
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

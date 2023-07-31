@@ -31,10 +31,6 @@
 extern "C" {
 #endif
 
-/** @ingroup font
- * @{
- */
-
 /**
  * @brief Symbols used in Morse Code.
  */
@@ -67,8 +63,6 @@ enum {
  *      symbols
  */
 uint8_t *cowpi_font_ascii_to_morse_code(uint8_t *destination, char c);
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

@@ -67,26 +67,6 @@
  * limitations under the License.
  */
 
-/** @defgroup configuration Configuration Functions and Constants
- *  @brief Functions, datatypes, and constants used to configure the
- *          microcontroller and display module
- */
-/** @defgroup display Display Modules
- *  @brief Functions, variables, and constants for display modules
- */
-/**
- * @defgroup font Displayable Fonts
- * @brief Character fonts for display modules
- */
-/** @defgroup protocol Communication Protocols
- *  @brief Functions, variables, and constants that are used to interface the
- *          microcontroller with displays
- */
-/** @defgroup stream File Streams
- *  @brief Functions, datatypes, variables, and constants used to establish and
- *          manage file streams with peripherals
- */
-
 #ifndef COWPI_STDIO_H
 #define COWPI_STDIO_H
 

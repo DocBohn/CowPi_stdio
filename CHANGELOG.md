@@ -41,7 +41,7 @@ and this project adheres to
 
 n/a
 
-## [0.5.1 - 2023-07-22]
+## [0.5.1] - 2023-07-22
 
 ### Added
 

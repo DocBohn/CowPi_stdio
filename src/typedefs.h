@@ -31,10 +31,6 @@
 extern "C" {
 #endif
 
-/** @ingroup configuration
- * @{
- */
-
 /**
  * @brief Choices of display modules.
  */
@@ -131,8 +127,6 @@ typedef struct {
     enum adapter_mappings adapter_mapping;  // used only for HD44780
 } cowpi_display_module_protocol_t;
 
-/** @} */
-
 #ifdef __cplusplus
 } // extern "C"
 
@@ -174,10 +168,6 @@ typedef struct {
 #warning No default SPI/I2C pins are defined!
 
 #endif //microcontroller boards
-
-/** @ingroup configuration
- * @{
- */
 
 /**
  * @brief Produces a `cowpi_display_module_protocol_t` instantiation for a
@@ -367,8 +357,6 @@ static inline cowpi_display_module_t cowpi_configure_morse_code(uint8_t words_pe
             .character_flip = HEADS
     };
 }
-
-/** @} */
 
 #endif //__CPLUSPLUS
 

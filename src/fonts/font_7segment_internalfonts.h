@@ -37,10 +37,6 @@ extern "C" {
 
 #endif //__AVR__
 
-/** @ingroup font
- * @{
- */
-
 static const uint8_t cowpi_font_7segment[0x80]
 #ifdef __AVR__
         PROGMEM
@@ -63,8 +59,6 @@ static const uint8_t cowpi_font_7segment[0x80]
 //      70  p   71  q   72  r   73  s   74  t   75  u   76  v   77  w   78  x   79  y   7a  z   7b  {   7c  |   7d  }   7e  ~   7f del
         0x67,   0x73,   0x05,   0x5B,   0x0F,   0x3E,   0x27,   0x3F,   0x55,   0x3B,   0x6D,   0x4C,   0x06,   0x58,   0x40,   0xFF
 };
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

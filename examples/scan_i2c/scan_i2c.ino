@@ -20,9 +20,10 @@ void setup(void) {
         printf("device detected at %#04x\n", address);
         if (0x3C <= address && address <= 0x3D) {
             printf("This probably is an SSD13xx OLED dot matrix display, "
-                   "but it might be an HD44780 LCD character display.\n");
+                   "but it might be an HD44780 LCD character display with a PCF8574AT adapter.\n");
         } else if ((0x20 <= address && address <= 0x27) || (0x3A <= address && address <= 0x3F)) {
-            printf("This probably is an HD44780 LCD character display.\n");
+            // PCF8574T has address range 0x20-0x27; PCF8574AT has address range 0x3A-0x3F
+            printf("This probably is an HD44780 LCD character display with a PCF8574 adapter.\n");
         }
     }
 }

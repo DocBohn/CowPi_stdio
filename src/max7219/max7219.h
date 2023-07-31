@@ -40,10 +40,6 @@ extern "C" {
 #include <stdint.h>
 #include "../typedefs.h"
 
-/** @ingroup display
- * @{
- */
-
 
 /**
  * @brief Configures the MAX7219 to nominal settings
@@ -132,8 +128,6 @@ void cowpi_max7219_bcd_decode(const cowpi_display_module_protocol_t *configurati
  * @param intensity the desired brightness level
  */
 void cowpi_max7219_set_intensity(const cowpi_display_module_protocol_t *configuration, uint8_t intensity);
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

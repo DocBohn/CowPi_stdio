@@ -49,10 +49,6 @@
 extern "C" {
 #endif
 
-/** @ingroup font
- * @{
- */
-
 /**
  * @brief Provides the 7-segment bit vector for an ASCII character or for a
  *      hexadecimal numeral.
@@ -90,8 +86,6 @@ uint8_t cowpi_font_ascii_to_7segment(char c);
  * @return              `destination`, with the requested bit vectors
  */
 uint8_t *cowpi_font_string_to_7segment(uint8_t *destination, const char *s);
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

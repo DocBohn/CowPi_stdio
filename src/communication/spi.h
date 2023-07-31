@@ -35,10 +35,6 @@ extern "C" {
 
 #include "communication.h"
 
-/** \ingroup protocol
- * @{
- */
-
 /**
  * @brief An implementation of cowpi_spi_initialize() that supports
  * cowpi_spi_transmit_bitbang().
@@ -85,8 +81,6 @@ void cowpi_spi_transmit_hardware(uint8_t byte);
  * cowpi_spi_initialize_hardware().
  */
 void cowpi_spi_finalize_hardware(void);
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

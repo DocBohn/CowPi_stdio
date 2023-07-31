@@ -41,10 +41,6 @@ extern "C" {
 #define PROGMEM
 #endif //__AVR__
 
-/** @ingroup font
- * @{
- */
-
 static const uint8_t cowpi_font_morse_skip[]                        PROGMEM = {CHARACTER_SPACE, END_OF_CHARACTER};
 static const uint8_t cowpi_font_morse_error[]                       PROGMEM = {CHARACTER_SPACE, DIT, DIT, DIT, DIT, DIT, DIT, DIT, DIT, END_OF_CHARACTER};
 
@@ -153,8 +149,6 @@ static const uint8_t *const cowpi_font_morse_code[] PROGMEM = {
         cowpi_font_morse_P,             cowpi_font_morse_Q,             cowpi_font_morse_R,             cowpi_font_morse_S,             cowpi_font_morse_T,             cowpi_font_morse_U,             cowpi_font_morse_V,             cowpi_font_morse_W,
         cowpi_font_morse_X,             cowpi_font_morse_Y,             cowpi_font_morse_Z,             cowpi_font_morse_leftparen,     cowpi_font_morse_skip,          cowpi_font_morse_rightparen,    cowpi_font_morse_skip,          cowpi_font_morse_error
 };
-
-/** @} */
 
 #ifndef __AVR__
 #undef PROGMEM

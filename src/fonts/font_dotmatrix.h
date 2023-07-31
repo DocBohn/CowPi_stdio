@@ -35,10 +35,6 @@
 extern "C" {
 #endif
 
-/** @ingroup font
- * @{
- */
-
 /**
  * @brief Provides the minimum number of columns needed to represent a character
  *      in the dot matrix font.
@@ -169,8 +165,6 @@ int cowpi_font_string_to_horizontal_dotmatrix(uint8_t *destination, const char *
  *      representation
  */
 int cowpi_font_string_to_vertical_dotmatrix(uint8_t *destination, const char *s, bool kerned);
-
-/** @} */
 
 #ifdef __cplusplus
 } // extern "C"

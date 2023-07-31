@@ -40,10 +40,6 @@ extern "C" {
 #define PROGMEM
 #endif //__AVR__
 
-/** @ingroup font
- * @{
- */
-
 static const uint8_t cowpi_font_dotmatrix_fuzz[8]           PROGMEM = {0x15, 0x0A, 0x15, 0x0A, 0x15, 0x0A, 0x15, 0x0A};
 
 static const uint8_t cowpi_font_dotmatrix_space[8]          PROGMEM = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -184,8 +180,6 @@ static const uint8_t *const cowpi_font_dotmatrix[] PROGMEM = {
         cowpi_font_dotmatrix_lower_p,      cowpi_font_dotmatrix_lower_q,      cowpi_font_dotmatrix_lower_r,      cowpi_font_dotmatrix_lower_s,      cowpi_font_dotmatrix_lower_t,      cowpi_font_dotmatrix_lower_u,      cowpi_font_dotmatrix_lower_v,      cowpi_font_dotmatrix_lower_w,
         cowpi_font_dotmatrix_lower_x,      cowpi_font_dotmatrix_lower_y,      cowpi_font_dotmatrix_lower_z,      cowpi_font_dotmatrix_leftbrace,    cowpi_font_dotmatrix_pipe,         cowpi_font_dotmatrix_rightbrace,   cowpi_font_dotmatrix_tilde,        cowpi_font_dotmatrix_fuzz
 };
-
-/** @} */
 
 #ifndef __AVR__
 #undef PROGMEM
