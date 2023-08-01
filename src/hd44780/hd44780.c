@@ -32,7 +32,7 @@ static uint8_t last_entry_mode = ENTRY_MODE_MARKER;
 static bool is_backlit = false;
 
 
-cowpi_hd44780_send_halfbyte_t cowpi_lcd1602_send_halfbyte = NULL;
+cowpi_hd44780_send_halfbyte_t cowpi_hd44780_send_halfbyte = NULL;
 
 static void cowpi_hd44780_set_4bit_mode(const cowpi_display_module_protocol_t *configuration);
 
@@ -67,7 +67,7 @@ void cowpi_setup_hd44780(const cowpi_display_module_protocol_t *configuration) {
 void cowpi_hd44780_set_send_halfbyte_function(
         void (*send_halfbyte_function)(const cowpi_display_module_protocol_t *configuration,
                                        uint8_t halfbyte, bool is_command)) {
-    cowpi_lcd1602_send_halfbyte = send_halfbyte_function;
+    cowpi_hd44780_send_halfbyte = send_halfbyte_function;
 }
 
 void cowpi_hd44780_place_character(const cowpi_display_module_protocol_t *configuration,
@@ -81,8 +81,8 @@ void cowpi_hd44780_place_cursor(const cowpi_display_module_protocol_t *configura
 }
 
 void cowpi_hd44780_send_command(const cowpi_display_module_protocol_t *configuration, uint8_t command) {
-    cowpi_lcd1602_send_halfbyte(configuration, (command >> 4) & 0xF, true);
-    cowpi_lcd1602_send_halfbyte(configuration, command & 0xF, true);
+    cowpi_hd44780_send_halfbyte(configuration, (command >> 4) & 0xF, true);
+    cowpi_hd44780_send_halfbyte(configuration, command & 0xF, true);
     if (command & ENTRY_MODE_MARKER) {
         last_entry_mode = command;
     }
@@ -91,8 +91,8 @@ void cowpi_hd44780_send_command(const cowpi_display_module_protocol_t *configura
 }
 
 void cowpi_hd44780_send_character(const cowpi_display_module_protocol_t *configuration, uint8_t character) {
-    cowpi_lcd1602_send_halfbyte(configuration, (character >> 4) & 0xF, false);
-    cowpi_lcd1602_send_halfbyte(configuration, character & 0xF, false);
+    cowpi_hd44780_send_halfbyte(configuration, (character >> 4) & 0xF, false);
+    cowpi_hd44780_send_halfbyte(configuration, character & 0xF, false);
     delayMicroseconds(
             50);      // HD44780U datasheet says 41us (37+4) needed until character is updated and ddram address is updated; SPLC780D simply says 38us
 }
@@ -108,8 +108,9 @@ void cowpi_hd44780_create_character(const cowpi_display_module_protocol_t *confi
 
 void cowpi_hd44780_clear_display(const cowpi_display_module_protocol_t *configuration) {
     cowpi_hd44780_send_command(configuration, 0x01);
-    delayMicroseconds(
-            5000);    // tom alby says 5ms; adafruit uses 2ms; HD44780U datasheet simply says that 0x20 is written to each position; SPLC780D datasheet says 1.52ms
+    delayMicroseconds(5000);    // tom alby says 5ms; adafruit uses 2ms;
+                                    // HD44780U datasheet simply says that 0x20 is written to each position;
+                                    // SPLC780D datasheet says 1.52ms
 }
 
 void cowpi_hd44780_return_home(const cowpi_display_module_protocol_t *configuration) {
@@ -123,26 +124,26 @@ void cowpi_hd44780_set_backlight(const cowpi_display_module_protocol_t *configur
 }
 
 void cowpi_hd44780_set_4bit_mode(const cowpi_display_module_protocol_t *configuration) {
-    if (!cowpi_lcd1602_send_halfbyte) {
+    if (!cowpi_hd44780_send_halfbyte) {
         if (configuration->protocol == SPI) {
-            cowpi_hd44780_set_send_halfbyte_function(cowpi_hd44780_send_halfbyte_spi);
+            cowpi_hd44780_send_halfbyte = cowpi_hd44780_send_halfbyte_spi;
         } else if (configuration->protocol == I2C) {
             assert(8 <= configuration->i2c_address || configuration->i2c_address < 128);
-            cowpi_hd44780_set_send_halfbyte_function(cowpi_hd44780_send_halfbyte_i2c);
+            cowpi_hd44780_send_halfbyte = cowpi_hd44780_send_halfbyte_i2c;
         } else {}
     }
     /* If initial state is:     8-bit mode      4-bit mode interbyte    4-bit mode intrabyte
      *      then LCD sees...                                                                */
-    cowpi_lcd1602_send_halfbyte(configuration, 0x3, true);
+    cowpi_hd44780_send_halfbyte(configuration, 0x3, true);
     /*                                                                  0x3 finishes byte   */
     delayMicroseconds(5000);    // HD44780U datasheet says wait > 4.1ms -- worst case if display was intrabyte
-    cowpi_lcd1602_send_halfbyte(configuration, 0x3, true);
+    cowpi_hd44780_send_halfbyte(configuration, 0x3, true);
     /*                          0x33: 8-bit mode    0x33: 8-bit mode                        */
     delayMicroseconds(200);     // HD44780U datasheet says wait more than 100us
-    cowpi_lcd1602_send_halfbyte(configuration, 0x3, true);
+    cowpi_hd44780_send_halfbyte(configuration, 0x3, true);
     /*                          0x30: 8-bit mode    0x30: 8-bit mode    0x33: 8-bit mode    */
     delayMicroseconds(200);     // not in the datasheets, but we determined experimentally that 100us is needed
-    cowpi_lcd1602_send_halfbyte(configuration, 0x2, true);
+    cowpi_hd44780_send_halfbyte(configuration, 0x2, true);
     /*                          0x20: 4-bit mode    0x20: 4-bit mode    0x20: 4-bit mode    */
     delayMicroseconds(200);     // doesn't seem to be needed ¯\_(ツ)_/¯
 }

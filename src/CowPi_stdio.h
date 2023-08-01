@@ -84,6 +84,7 @@ extern "C" {
 #include "fonts/fonts.h"
 #include "hd44780/hd44780.h"
 #include "max7219/max7219.h"
+#include "display_functions.h"
 
 #define COWPI_STDIO_VERSION ("0.5.1")
 

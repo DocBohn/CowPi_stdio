@@ -29,11 +29,11 @@
 static uint8_t data_pin;
 static uint8_t clock_pin;
 
-bool (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *configuration) = cowpi_i2c_initialize_bitbang;
+bool (*cowpi_i2c_initialize)(const cowpi_display_module_protocol_t *configuration) = cowpi_i2c_initialize_hardware;
 
-bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_bitbang;
+bool (*cowpi_i2c_transmit)(uint8_t byte) = cowpi_i2c_transmit_hardware;
 
-void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_bitbang;
+void (*cowpi_i2c_finalize)(void) = cowpi_i2c_finalize_hardware;
 
 
 #define WRITE_LOW(pin)  do { cowpi_pin_mode((pin), OUTPUT); } while(0)

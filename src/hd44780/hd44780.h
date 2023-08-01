@@ -246,9 +246,4 @@ void cowpi_hd44780_set_backlight(const cowpi_display_module_protocol_t *configur
 #define LCDSHIFT_CURSORLEFT         0x10    //!< Shifts the cursor to the left
 #define LCDSHIFT_CURSORRIGHT        0x14    //!< Shifts the cursor to the right
 
-
-/** @var cowpi_hd44780_send_halfbyte_t cowpi_hd44780_send_halfbyte
- * @copydoc cowpi_hd44780_send_halfbyte_t
- */
-
 #endif //COWPI_STDIO_HD44780_H
