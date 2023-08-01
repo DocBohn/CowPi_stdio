@@ -39,7 +39,18 @@ and this project adheres to
 
 ## [Unreleased]
 
-n/a
+### Changed
+
+- Externalized the `cowpi_hd44780_send_halfbyte` function pointer for custom implementations in memory-mapped I/O lab assignments
+
+### Deprecated
+
+- `cowpi_hd44780_set_send_halfbyte_function()`
+  Assign custom `send_halfbyte` functions directly to `cowpi_hd44780_send_halfbyte`
+
+### Fixed
+
+- Default SPI chip select / latch pin corrected for Arduino Mega 2560
 
 ## [0.5.1] - 2023-07-22
 

@@ -24,10 +24,14 @@ void setup(void) {
 
     // **********
     // CHOOSE SPI OR I2C
-    // cowpi_display_module_protocol_t pins = cowpi_configure_spi(SS, MOSI, SCK, adapter_mapping);
-    cowpi_display_module_protocol_t pins = cowpi_configure_i2c(cowpi_discover_i2c_address(SDA, SCL),
-                                                               SDA,
-                                                               SCL,
+    // cowpi_display_module_protocol_t pins = cowpi_configure_spi(COWPI_DEFAULT_SPI_SELECT_PIN,
+    //                                                            COWPI_DEFAULT_SPI_DATA_PIN,
+    //                                                            COWPI_DEFAULT_SPI_CLOCK_PIN,
+    //                                                            adapter_mapping);
+    cowpi_display_module_protocol_t pins = cowpi_configure_i2c(cowpi_discover_i2c_address(COWPI_DEFAULT_I2C_DATA_PIN,
+                                                                                          COWPI_DEFAULT_I2C_CLOCK_PIN),
+                                                               COWPI_DEFAULT_I2C_DATA_PIN,
+                                                               COWPI_DEFAULT_I2C_CLOCK_PIN,
                                                                adapter_mapping);
     // **********
 

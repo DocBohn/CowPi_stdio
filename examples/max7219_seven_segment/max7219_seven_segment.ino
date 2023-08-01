@@ -15,11 +15,11 @@ void setup(void) {
     // The C++ approach
     no_scroll_display = cowpi_add_display_module(
             cowpi_configure_seven_segment_display(),
-            cowpi_configure_spi(SS, MOSI, SCK)
+            cowpi_configure_spi(COWPI_DEFAULT_SPI_SELECT_PIN, COWPI_DEFAULT_SPI_DATA_PIN, COWPI_DEFAULT_SPI_CLOCK_PIN)
     );
     scrolling_display = cowpi_add_display_module(
             cowpi_configure_scrolling_seven_segment_display(30),
-            cowpi_configure_spi(SS, MOSI, SCK)
+            cowpi_configure_spi(COWPI_DEFAULT_SPI_SELECT_PIN, COWPI_DEFAULT_SPI_DATA_PIN, COWPI_DEFAULT_SPI_CLOCK_PIN)
     );
 
     // The C approach
@@ -30,9 +30,9 @@ void setup(void) {
             },
             (cowpi_display_module_protocol_t) {
                     .protocol = SPI,
-                    .data_pin = MOSI,
-                    .clock_pin = SCK,
-                    .select_pin = SS
+                    .data_pin = COWPI_DEFAULT_SPI_DATA_PIN,
+                    .clock_pin = COWPI_DEFAULT_SPI_CLOCK_PIN,
+                    .select_pin = COWPI_DEFAULT_SPI_SELECT_PIN
             }
     );
     scrolling_display = cowpi_add_display_module(
@@ -42,9 +42,9 @@ void setup(void) {
             },
             (cowpi_display_module_protocol_t) {
                     .protocol = SPI,
-                    .data_pin = MOSI,
-                    .clock_pin = SCK,
-                    .select_pin = SS
+                    .data_pin = COWPI_DEFAULT_SPI_DATA_PIN,
+                    .clock_pin = COWPI_DEFAULT_SPI_CLOCK_PIN,
+                    .select_pin = COWPI_DEFAULT_SPI_SELECT_PIN
             }
     );
     */

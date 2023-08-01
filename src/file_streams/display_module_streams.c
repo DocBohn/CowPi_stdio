@@ -110,12 +110,12 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
         case SPI:
             if ((stream_data->configuration.data_pin == 0)
                 && (stream_data->configuration.data_pin == stream_data->configuration.select_pin)) {
-                stream_data->configuration.select_pin = SS;
+                stream_data->configuration.select_pin = COWPI_DEFAULT_SPI_SELECT_PIN;
             }
             if ((stream_data->configuration.data_pin == 0)
                 && (stream_data->configuration.data_pin == stream_data->configuration.clock_pin)) {
-                stream_data->configuration.data_pin = MOSI;
-                stream_data->configuration.clock_pin = SCK;
+                stream_data->configuration.data_pin = COWPI_DEFAULT_SPI_DATA_PIN;
+                stream_data->configuration.clock_pin = COWPI_DEFAULT_SPI_CLOCK_PIN;
             }
             cowpi_pin_mode(stream_data->configuration.data_pin, OUTPUT);
             cowpi_pin_mode(stream_data->configuration.clock_pin, OUTPUT);
@@ -124,8 +124,8 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
         case I2C:
             if ((stream_data->configuration.data_pin == 0)
                 && (stream_data->configuration.data_pin == stream_data->configuration.clock_pin)) {
-                stream_data->configuration.data_pin = SDA;
-                stream_data->configuration.clock_pin = SCL;
+                stream_data->configuration.data_pin = COWPI_DEFAULT_I2C_DATA_PIN;
+                stream_data->configuration.clock_pin = COWPI_DEFAULT_I2C_CLOCK_PIN;
             }
             cowpi_pin_mode(stream_data->configuration.data_pin, INPUT);
             cowpi_pin_mode(stream_data->configuration.clock_pin, INPUT);

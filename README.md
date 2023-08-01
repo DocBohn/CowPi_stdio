@@ -28,7 +28,7 @@ Our plans for upcoming releases include:
 
 ## How to use the CowPi_stdio library
 
-See [the documentation](extras/doc/FileStreams.md) for details.
+See [the documentation](https://cow-pi.readthedocs.io/en/latest/stdio.html) for details.
 The short version, assuming you're using C++ (to include Arduino's `.ino` files) is:
 
 - To set up `stdout` and `stdin`, call the `cowpi_stdio_setup()` function with the desired bit rate.
@@ -95,10 +95,6 @@ If you attempt to configure a disabled display module, then the `FILE *` variabl
 | SAM D21                    |        ✅         |      ⁇      |      ❌       |      ⁇      |      ❌       |         ❌         | Still need to resolve floating point conversions                                                                                  |
 
 [//]: # (| RA4M1                      |        ⁇         |      ⁇      |      ❌       |      ⁇      |      ❌       |         ⁇         |                                                                                                                                   |)
-
-[//]: # (&#40;It looks like *some* of the ICSP pins on the Arduino Mega 2560 aren't connected to the SPI pins &#40;50-53&#41; even though)
-
-[//]: # (schematic indicates they are -- this just might be my particular board&#41;)
 
 | Display Module                                                      | AVR | megaAVR | MBED | SAMD |
 |:--------------------------------------------------------------------|:---:|:-------:|:----:|:----:|

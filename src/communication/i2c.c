@@ -184,7 +184,11 @@ int8_t cowpi_discover_i2c_address(uint8_t i2c_data_pin, uint8_t i2c_clock_pin) {
     };
     cowpi_i2c_initialize_bitbang(&detail);  // clear-out an ACK that might be lingering on the line after a reset
     for (int8_t address = 1; address > 0; address++) {
-        detail = (cowpi_display_module_protocol_t) {.data_pin=SDA, .clock_pin=SCL, .i2c_address = address};
+        detail = (cowpi_display_module_protocol_t) {
+                .data_pin = COWPI_DEFAULT_I2C_DATA_PIN,
+                .clock_pin = COWPI_DEFAULT_I2C_CLOCK_PIN,
+                .i2c_address = address
+        };
         int ack = cowpi_i2c_initialize_bitbang(&detail);
         cowpi_i2c_finalize_bitbang();
         if (ack) {

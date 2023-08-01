@@ -15,7 +15,7 @@ void setup(void) {
     // The C++ approach
     display = cowpi_add_display_module(
             cowpi_configure_led_matrix_display(25, SOUTH, HEADS),
-            cowpi_configure_spi(SS, MOSI, SCK)
+            cowpi_configure_spi(COWPI_DEFAULT_SPI_SELECT_PIN, COWPI_DEFAULT_SPI_DATA_PIN, COWPI_DEFAULT_SPI_CLOCK_PIN)
     );
 
     // The C approach
@@ -29,9 +29,9 @@ void setup(void) {
             },
             (cowpi_display_module_protocol_t) {
                     .protocol = SPI,
-                    .data_pin = MOSI,
-                    .clock_pin = SCK,
-                    .select_pin = SS
+                    .data_pin = COWPI_DEFAULT_SPI_DATA_PIN,
+                    .clock_pin = COWPI_DEFAULT_SPI_CLOCK_PIN,
+                    .select_pin = COWPI_DEFAULT_SPI_SELECT_PIN
             }
     );
     */
