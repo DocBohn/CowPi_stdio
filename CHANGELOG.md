@@ -46,11 +46,12 @@ and this project adheres to
 ### Deprecated
 
 - `cowpi_hd44780_set_send_halfbyte_function()`
-  Assign custom `send_halfbyte` functions directly to `cowpi_hd44780_send_halfbyte`
+  - Assign custom `send_halfbyte` functions directly to `cowpi_hd44780_send_halfbyte`
 
 ### Fixed
 
 - Default SPI chip select / latch pin corrected for Arduino Mega 2560
+- Hardware-based I2C (for ATmega328P) now works in simulator
 
 ## [0.5.1] - 2023-07-22
 

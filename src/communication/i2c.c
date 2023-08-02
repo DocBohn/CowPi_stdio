@@ -150,6 +150,8 @@ bool cowpi_i2c_transmit_hardware(uint8_t byte) {
 void cowpi_i2c_finalize_hardware(void) {
     // stop bit
     TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
+    // need a timed-wait for stop bit to transmit (TWINT does not get set) -- 8 bits / 100000 bps = 80us.
+    delayMicroseconds(100);
 }
 
 #else
