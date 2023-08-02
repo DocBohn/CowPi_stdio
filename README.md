@@ -295,6 +295,7 @@ Version 0.3 of the CowPi library saw many improvements, including being able to 
 serial terminal and abstractions for controlling MAX7219- and HH44780-based display modules.
 Plans for v0.5 included abstractions for SSD1306-based display modules and to further abstract the display modules by
 creating file streams for them that can be used with `fprintf()`.
+(The `fprintf()` code is in CowPi_stdio; the SSD1306 code will probably be in CowPi_stdio v0.7.)
 As we were making initial forays into what this display code would look like, we realized that the code that controls
 the displays depends on the displays but not on any of the other hardware on the Cow Pi development board, and we
 realized that it might be useful for projects that don't use the Cow Pi development board.

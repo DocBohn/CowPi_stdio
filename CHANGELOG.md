@@ -29,7 +29,6 @@ and this project adheres to
 - File stream for arbitrary Arduino Stream
 - File stream for arbitrary UART
 - Fix printf on Nano 33 BLE
-- Fix hardware I2C on simulator (works fine on actual hardware)
 - Code for chained MAX7219 modules
 - tweak configuration code
 - port to Raspberry Pi Pico SDK framework
@@ -37,7 +36,7 @@ and this project adheres to
 - Rename stdio setup
 -->
 
-## [Unreleased]
+## [0.6.0] -- 2023-08-02
 
 ### Changed
 
