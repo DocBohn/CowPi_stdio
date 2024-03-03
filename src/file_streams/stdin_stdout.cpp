@@ -10,7 +10,7 @@
  *
  ******************************************************************************/
 
-/* CowPi_stdio (c) 2022-23 Christopher A. Bohn
+/* CowPi_stdio (c) 2022-24 Christopher A. Bohn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,19 +114,27 @@ static int cowpi_arduinostream_put(void *cookie, const char *buffer, int size);
 
 void cowpi_stdio_setup(unsigned long bitrate) {
     Serial.begin(bitrate);
+    unsigned int attempts = 500;    // five seconds until it gives up
     do {
         delay(10);
-    } while (!Serial);
+    } while (!Serial && --attempts);
     delay(10);
     FILE *serial_monitor;
+    if (!attempts) {
+        if (stderr != NULL) {
+            fprintf(stderr, "NO SERIAL");   // keep it short for Morse Code
+        }
+        serial_monitor = NULL;
+    } else {
 #if defined (__AVR__)
-    // use `fdev_setup_stream` instead of `fdevopen` to avoid `malloc`
-    serial_monitor = &serial_monitor_allocation;
-    fdev_setup_stream(serial_monitor, cowpi_stdout_put, cowpi_stdin_get, _FDEV_SETUP_RW);
+        // use `fdev_setup_stream` instead of `fdevopen` to avoid `malloc`
+        serial_monitor = &serial_monitor_allocation;
+        fdev_setup_stream(serial_monitor, cowpi_stdout_put, cowpi_stdin_get, _FDEV_SETUP_RW);
 #elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__)
-    serial_monitor = funopen(&Serial, cowpi_arduinostream_get, cowpi_arduinostream_put, NULL, NULL);
-    setlinebuf(serial_monitor);
+        serial_monitor = funopen(&Serial, cowpi_arduinostream_get, cowpi_arduinostream_put, NULL, NULL);
+        setlinebuf(serial_monitor);
 #endif //architecture
+    }
     stdin = serial_monitor;
     stdout = serial_monitor;
 }

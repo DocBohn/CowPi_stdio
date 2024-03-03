@@ -36,6 +36,16 @@ and this project adheres to
 - Rename stdio setup
 -->
 
+## [Unreleased]
+
+n/a
+
+## [0.6.1] -- 2024-03-02
+
+### Changed
+
+- Setting up stdin/stdout times-out after 5 seconds of failed attempts to connect to serial terminal
+
 ## [0.6.0] -- 2023-08-02
 
 ### Changed

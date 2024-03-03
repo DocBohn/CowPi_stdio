@@ -1,11 +1,11 @@
 {
   "name": "CowPi_stdio",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Originally part of the CowPi library, the CowPi_stdio library extracts out a portion that is more-broadly applicable. The CowPi_stdio library allows printing to a serial terminal emulator connected through the microcontroller board's USB port by using printf(), and reading from that serial terminal emulator using scanf(). The CowPi_stdio library also provides file streams that can be used with fprintf() to print to a display module such as an LCD character display or an OLED dot matrix display.",
   "keywords": [
     "display",
     "cowpi",
-    "cow_pi",
+    "cow-pi",
     "printf",
     "scanf",
     "fprintf",
@@ -13,16 +13,16 @@
     "stdin",
     "stdout",
     "displays",
-    "display_modules",
+    "display-modules",
     "max7219",
-    "led_matrix",
-    "seven_segment",
+    "led-matrix",
+    "seven-segment",
     "hd44780",
     "lcd1602",
     "lcd2004",
     "spi",
     "i2c",
-    "morse_code"
+    "morse-code"
   ],
   "repository": {
     "type": "git",
