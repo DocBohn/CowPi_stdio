@@ -27,7 +27,7 @@
 #include "../communication/communication.h"
 
 void cowpi_setup_max7219(const cowpi_display_module_protocol_t *configuration) {
-    assert(configuration->protocol == SPI);
+    assert(configuration->protocol == COWPI_SPI);
     /* Clear all digit registers */
     for (int i = 1; i <= 8; i++) {
         cowpi_max7219_send(configuration, i, 0);

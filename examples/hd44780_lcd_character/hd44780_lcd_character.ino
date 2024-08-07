@@ -22,7 +22,7 @@ void setup(void) {
     // **********
     // CHOOSE SERIAL-TO-PARALLEL MAPPING (typically can omit adapter mapping if using COWPI_DEFAULT)
     enum adapter_mappings adapter_mapping = COWPI_DEFAULT;
-    // enum adapter_mappings adapter_mapping = ADAFRUIT;
+    // enum adapter_mappings adapter_mapping = ADAFRUIT_MAPPING;
     // **********
 
     // **********

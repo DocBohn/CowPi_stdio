@@ -65,8 +65,8 @@ FILE *display = cowpi_add_display_module(
 #### No Protocol
 
 Principally, the `NO_PROTOCOL` choice is there to be a default value to detect that the application programmer failed to
-chose `SPI` or `I2C`.
-The `MORSE_CODE` "display," however, legitimately uses neither SPI nor SPI.
+chose `COWPI_SPI` or `COWPI_I2C`.
+The `MORSE_CODE` "display," however, legitimately uses neither COWPI_SPI nor COWPI_I2C.
 If the protocol is `NO_PROTOCOL` and the display module is any option other than `MORSE_CODE`,
 then `cowpi_add_display_module()` will return `NULL`.
 

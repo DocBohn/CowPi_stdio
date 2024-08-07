@@ -87,11 +87,11 @@ without being provided 5V power.
 
 ### Communication Protocol
 
-Because you have choices for a serial adapter, you can use I2C or SPI with a HD44780-based display module, whichever is
+Because you have choices for a serial adapter, you can use COWPI_I2C or COWPI_SPI with a HD44780-based display module, whichever is
 appropriate for your serial adapter.
 Also because you have choices for a serial adapter, you may have to specify the bit mapping.
 
-#### I2C
+#### COWPI_I2C
 
 At a minimum, you need to specify the I2C address to indicate which peripheral should receive and acknowledge that data.
 If you have only one I2C peripheral on the bus, you can use `cowpi_discover_i2c_address()` to do so.
@@ -104,9 +104,9 @@ appropriate `cowpi_display_module_protocol_t` using the default pins,
 or `cowpi_configure_spi(cowpi_discover_i2c_address(_data_pin_, _clock_pin_), _data_pin_, _clock_pin_)` to use
 non-default pins.
 
-In C, use `(cowpi_display_module_protocol_t) {.protocol = I2C, .i2c_address = cowpi_discover_i2c_address(SDA, SCL)}` to
+In C, use `(cowpi_display_module_protocol_t) {.protocol = COWPI_I2C, .i2c_address = cowpi_discover_i2c_address(SDA, SCL)}` to
 use the default pins, or
-`(cowpi_display_module_protocol_t) {.protocol = I2C, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .i2c_address = cowpi_discover_i2c_address(_data_pin_, _clock_pin_)}`
+`(cowpi_display_module_protocol_t) {.protocol = COWPI_I2C, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .i2c_address = cowpi_discover_i2c_address(_data_pin_, _clock_pin_)}`
 to use non-default pins.
 
 By default, the `COWPI_DEFAULT` bit mapping is used.
@@ -115,23 +115,23 @@ If you wish to use the `ADAFRUIT` bit mapping then specify so with
 Note that in C++, if you wish to specify a non-default bit mapping then you *must* specify the data pin and clock pin,
 even if you use the default pins.
 In C, however, you can omit the data pin and clock pin if you use their defaults, and so you can use
-`(cowpi_display_module_protocol_t) {.protocol = I2C, .i2c_address = cowpi_discover_i2c_address(SDA, SCL), .adapter_mapping = ADAFRUIT}`
+`(cowpi_display_module_protocol_t) {.protocol = COWPI_I2C, .i2c_address = cowpi_discover_i2c_address(SDA, SCL), .adapter_mapping = ADAFRUIT}`
 or
-`(cowpi_display_module_protocol_t) {.protocol = I2C, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .i2c_address = cowpi_discover_i2c_address(_data_pin_, _clock_pin_), .adapter_mapping = ADAFRUIT}`.
+`(cowpi_display_module_protocol_t) {.protocol = COWPI_I2C, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .i2c_address = cowpi_discover_i2c_address(_data_pin_, _clock_pin_), .adapter_mapping = ADAFRUIT}`.
 
-#### SPI
+#### COWPI_SPI
 
 At a minimum, you need to specify the pin used to indicate which peripheral should latch the data in.
 In C++, use the `cowpi_configure_spi(_select_pin_)` function to generate the
 appropriate `cowpi_display_module_protocol_t`
 variable.
-In C, use `(cowpi_display_module_protocol_t) {.protocol = SPI, .select_pin = _select_pin_}`.
+In C, use `(cowpi_display_module_protocol_t) {.protocol = COWPI_SPI, .select_pin = _select_pin_}`.
 
 By default, the data pin and the clock pin are those used by the SPI hardware, even if you use the library's bit-banged
 SPI implementation.
 If you wish to use other pins, then specify them with `cowpi_configure_spi(_select_pin_, _data_pin_, _clock_pin_)` in
 C++, or
-`(cowpi_display_module_protocol_t) {.protocol = SPI, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .select_pin = _select_pin_}`
+`(cowpi_display_module_protocol_t) {.protocol = COWPI_SPI, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .select_pin = _select_pin_}`
 in C.
 
 By default, the `COWPI_DEFAULT` bit mapping is used.
@@ -140,8 +140,8 @@ If you wish to use the `ADAFRUIT` bit mapping then specify so with
 Note that in C++, if you wish to specify a non-default bit mapping then you *must* specify the data pin and clock pin,
 even if you use the default pins.
 In C, however, you can omit the data pin and clock pin if you use their defaults, and so you can use
-`(cowpi_display_module_protocol_t) {.protocol = SPI, .select_pin = _select_pin_, .adapter_mapping = ADAFRUIT}` or
-`(cowpi_display_module_protocol_t) {.protocol = SPI, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .select_pin = _select_pin_, .adapter_mapping = ADAFRUIT}`.
+`(cowpi_display_module_protocol_t) {.protocol = COWPI_SPI, .select_pin = _select_pin_, .adapter_mapping = ADAFRUIT}` or
+`(cowpi_display_module_protocol_t) {.protocol = COWPI_SPI, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .select_pin = _select_pin_, .adapter_mapping = ADAFRUIT}`.
 
 ## Examples
 
@@ -172,7 +172,7 @@ void setup(void) {
     // **********
 
     // **********
-    // CHOOSE SPI OR I2C
+    // CHOOSE COWPI_SPI OR COWPI_I2C
     // cowpi_display_module_protocol_t pins = cowpi_configure_spi(SS, MOSI, SCK, adapter_mapping);
     cowpi_display_module_protocol_t pins = cowpi_configure_i2c(cowpi_discover_i2c_address(SDA, SCL),
                                                                SDA,
@@ -304,7 +304,7 @@ void setup(void) {
     // **********
 
     // **********
-    // CHOOSE SPI OR I2C
+    // CHOOSE COWPI_SPI OR COWPI_I2C
     // cowpi_display_module_protocol_t pins = cowpi_configure_spi(SS, MOSI, SCK, adapter_mapping);
     cowpi_display_module_protocol_t pins = cowpi_configure_i2c(cowpi_discover_i2c_address(SDA, SCL),
                                                                SDA,

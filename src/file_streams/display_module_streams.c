@@ -107,7 +107,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             if (display_module.display_module != MORSE_CODE) return NULL;
             cowpi_pin_mode(stream_data->configuration.data_pin, OUTPUT);
             break;
-        case SPI:
+        case COWPI_SPI:
             if ((stream_data->configuration.data_pin == 0)
                 && (stream_data->configuration.data_pin == stream_data->configuration.select_pin)) {
                 stream_data->configuration.select_pin = COWPI_DEFAULT_SPI_SELECT_PIN;
@@ -121,7 +121,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             cowpi_pin_mode(stream_data->configuration.clock_pin, OUTPUT);
             cowpi_pin_mode(stream_data->configuration.select_pin, OUTPUT);
             break;
-        case I2C:
+        case COWPI_I2C:
             if ((stream_data->configuration.data_pin == 0)
                 && (stream_data->configuration.data_pin == stream_data->configuration.clock_pin)) {
                 stream_data->configuration.data_pin = COWPI_DEFAULT_I2C_DATA_PIN;
@@ -140,7 +140,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             // default to a single module of 8 digits (which is good because we're not handling chained modules yet)
             if (!stream_data->display_module.width) stream_data->display_module.width = 8;
             // must use SPI
-            if (stream_data->configuration.protocol != SPI) return NULL;
+            if (stream_data->configuration.protocol != COWPI_SPI) return NULL;
             // number of digits must be multiple of 8
             if (display_module.width & 0x7) return NULL;
             cowpi_setup_max7219(&stream_data->configuration);
@@ -164,7 +164,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
             if (!stream_data->display_module.width) stream_data->display_module.width = 8;
             if (!stream_data->display_module.height) stream_data->display_module.height = 8;
             // must use SPI
-            if (stream_data->configuration.protocol != SPI) return NULL;
+            if (stream_data->configuration.protocol != COWPI_SPI) return NULL;
             // number of rows and columns must each be multiple of 8
             if (display_module.width & 0x7) return NULL;
             if (display_module.height & 0x7) return NULL;

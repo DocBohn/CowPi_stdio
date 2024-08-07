@@ -130,12 +130,12 @@ bool cowpi_i2c_initialize_hardware(const cowpi_display_module_protocol_t *config
     // start bit
     TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTA);
     while (!(TWCR & (1 << TWINT))) {}
-//    if ((TWSR & 0xF8) != 0x08) cowpi_error("Controller did not send I2C start!");
-    // I2C address + /w
+//    if ((TWSR & 0xF8) != 0x08) cowpi_error("Controller did not send COWPI_I2C start!");
+    // COWPI_I2C address + /w
     TWDR = configuration->i2c_address << 1;
     TWCR = (1 << TWINT) | (1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}
-//    if ((TWSR & 0xF8) != 0x18) cowpi_error("I2C peripheral did not receive address!");
+//    if ((TWSR & 0xF8) != 0x18) cowpi_error("COWPI_I2C peripheral did not receive address!");
     return ((TWSR & 0xF8) == 0x18);
 }
 
@@ -143,7 +143,7 @@ bool cowpi_i2c_transmit_hardware(uint8_t byte) {
     TWDR = byte;
     TWCR = (1 << TWINT) | (1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}
-//    if ((TWSR & 0xF8)!= 0x28) cowpi_error("I2C peripheral did not receive byte!");
+//    if ((TWSR & 0xF8)!= 0x28) cowpi_error("COWPI_I2C peripheral did not receive byte!");
     return ((TWSR & 0xF8) == 0x28);
 }
 

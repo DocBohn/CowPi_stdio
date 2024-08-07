@@ -9,7 +9,7 @@
  *
  ******************************************************************************/
 
-/* CowPi_stdio (c) 2022-23 Christopher A. Bohn
+/* CowPi_stdio (c) 2022-24 Christopher A. Bohn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,8 +80,8 @@ enum flips {
  */
 enum protocols {
     NO_PROTOCOL = 0,
-    I2C,
-    SPI
+    COWPI_I2C,
+    COWPI_SPI
 };
 
 /**
@@ -93,12 +93,12 @@ enum protocols {
  * Where they differ is which bits correspond to which lines.
  *
  * The default mapping is that used by the ubiquitous PCF8574-based modules that
- * sell for a couple of dollars. The ADAFRUIT mapping is that used by
+ * sell for a couple of dollars. The ADAFRUIT_MAPPING is that used by
  * [Adafruit's I2C/SPI character LCD backpack](https://www.adafruit.com/product/292).
  */
 enum adapter_mappings {
     COWPI_DEFAULT = 0,
-    ADAFRUIT
+    ADAFRUIT_MAPPING
 };
 
 /**
@@ -122,8 +122,8 @@ typedef struct {
     enum protocols protocol;
     uint8_t data_pin;                       // used by all protocols (including NO_PROTOCOL)
     uint8_t clock_pin;                      // not used by NO_PROTOCOL
-    uint8_t select_pin;                     // used only for SPI
-    uint8_t i2c_address;                    // used only for I2C
+    uint8_t select_pin;                     // used only for COWPI_SPI
+    uint8_t i2c_address;                    // used only for COWPI_I2C
     enum adapter_mappings adapter_mapping;  // used only for HD44780
 } cowpi_display_module_protocol_t;
 
@@ -191,7 +191,7 @@ static inline cowpi_display_module_protocol_t cowpi_configure_single_pin(uint8_t
 
 /**
  * @brief Produces a `cowpi_display_module_protocol_t` instantiation for the
- * Serial-Parallel Interface (SPI) protocol.
+ * Serial-Parallel Interface (COWPI_SPI) protocol.
  *
  * @param data_pin the data output pin, possibly called SDO, COPI, PICO,
  *      DAT (data), TX, or (deprecated) MOSI
@@ -201,14 +201,14 @@ static inline cowpi_display_module_protocol_t cowpi_configure_single_pin(uint8_t
  * @param adapter_mapping (optional) the mapping of transmitted bits to HD44780
  *      lines
  * @return a `cowpi_display_module_protocol_t` instantiation initialized for
- *      `SPI`
+ *      `COWPI_SPI`
  */
 static inline cowpi_display_module_protocol_t cowpi_configure_spi(uint8_t select_pin,
                                                                   uint8_t data_pin = COWPI_DEFAULT_SPI_DATA_PIN,
                                                                   uint8_t clock_pin = COWPI_DEFAULT_SPI_CLOCK_PIN,
                                                                   enum adapter_mappings adapter_mapping = COWPI_DEFAULT) {
     return (cowpi_display_module_protocol_t) {
-            .protocol = SPI,
+            .protocol = COWPI_SPI,
             .data_pin = data_pin,
             .clock_pin = clock_pin,
             .select_pin = select_pin,
@@ -228,14 +228,14 @@ static inline cowpi_display_module_protocol_t cowpi_configure_spi(uint8_t select
  * @param adapter_mapping (optional) the mapping of transmitted bits to HD44780
  *      lines
  * @return a `cowpi_display_module_protocol_t` instantiation initialized for
- *      `I2C`
+ *      `COWPI_I2C`
  */
 static inline cowpi_display_module_protocol_t cowpi_configure_i2c(uint8_t i2c_address,
                                                                   uint8_t data_pin = COWPI_DEFAULT_I2C_DATA_PIN,
                                                                   uint8_t clock_pin = COWPI_DEFAULT_I2C_CLOCK_PIN,
                                                                   enum adapter_mappings adapter_mapping = COWPI_DEFAULT) {
     return (cowpi_display_module_protocol_t) {
-            .protocol = I2C,
+            .protocol = COWPI_I2C,
             .data_pin = data_pin,
             .clock_pin = clock_pin,
             .select_pin = 0,

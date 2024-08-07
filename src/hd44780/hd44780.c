@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-/* CowPi_stdio (c) 2022-23 Christopher A. Bohn
+/* CowPi_stdio (c) 2022-24 Christopher A. Bohn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ static void cowpi_hd44780_send_halfbyte_i2c(const cowpi_display_module_protocol_
 
 
 void cowpi_setup_hd44780(const cowpi_display_module_protocol_t *configuration) {
-    assert(configuration->protocol == SPI || configuration->protocol == I2C);
+    assert(configuration->protocol == COWPI_SPI || configuration->protocol == COWPI_I2C);
     /* HD44780U datasheet says LCD needs 40ms after Vcc=2.7V, or 15ms after Vcc=4.5V */
     delayMicroseconds(12500);   // Don't want to use delay(50) just in case interrupts are disabled.
     delayMicroseconds(12500);   // Don't want to use delayMicroseconds(50000) because that's 3x longer than
@@ -125,9 +125,9 @@ void cowpi_hd44780_set_backlight(const cowpi_display_module_protocol_t *configur
 
 void cowpi_hd44780_set_4bit_mode(const cowpi_display_module_protocol_t *configuration) {
     if (!cowpi_hd44780_send_halfbyte) {
-        if (configuration->protocol == SPI) {
+        if (configuration->protocol == COWPI_SPI) {
             cowpi_hd44780_send_halfbyte = cowpi_hd44780_send_halfbyte_spi;
-        } else if (configuration->protocol == I2C) {
+        } else if (configuration->protocol == COWPI_I2C) {
             assert(8 <= configuration->i2c_address || configuration->i2c_address < 128);
             cowpi_hd44780_send_halfbyte = cowpi_hd44780_send_halfbyte_i2c;
         } else {}
@@ -160,7 +160,7 @@ static void cowpi_hd44780_send_halfbyte_spi(const cowpi_display_module_protocol_
         rs = is_command ? 0 : 1;
         en = 1 << 2;
         packet = rs | (halfbyte << 4) | (is_backlit ? 1 << 3 : 0);
-    } else if (configuration->adapter_mapping == ADAFRUIT) {
+    } else if (configuration->adapter_mapping == ADAFRUIT_MAPPING) {
         // this mapping is used with AdaFruit's SPI+I2C interface
         // https://github.com/adafruit/Adafruit_LiquidCrystal
         /* LSB    QH  QG  QF  QE  QD  QC  QB  QA  MSB *
@@ -203,7 +203,7 @@ static void cowpi_hd44780_send_halfbyte_i2c(const cowpi_display_module_protocol_
         rs = is_command ? 0 : 1;
         en = 1 << 2;
         packet = rs | (halfbyte << 4) | (is_backlit ? 1 << 3 : 0);
-    } else if (configuration->adapter_mapping == ADAFRUIT) {
+    } else if (configuration->adapter_mapping == ADAFRUIT_MAPPING) {
         // this mapping is used with AdaFruit's SPI+I2C interface
         // https://github.com/adafruit/Adafruit_LiquidCrystal
         /* MSB   GP7 GP6 GP5 GP4 GP3 GP2 GP1 GP0  LSB *

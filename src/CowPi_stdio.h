@@ -86,7 +86,7 @@ extern "C" {
 #include "max7219/max7219.h"
 #include "display_functions.h"
 
-#define COWPI_STDIO_VERSION ("0.6.1")
+#define COWPI_STDIO_VERSION ("0.6.x")
 
 #ifdef __cplusplus
 } // extern "C"

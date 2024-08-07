@@ -50,12 +50,12 @@ At a minimum, you need to specify the pin used to indicate which peripheral shou
 In C++, use the `cowpi_configure_spi(_select_pin_)` function to generate the
 appropriate `cowpi_display_module_protocol_t`
 variable.
-In C, use `(cowpi_display_module_protocol_t) {.protocol = SPI, .select_pin = _select_pin_}`.
+In C, use `(cowpi_display_module_protocol_t) {.protocol = COWPI_SPI, .select_pin = _select_pin_}`.
 By default, the data pin and the clock pin are those used by the SPI hardware, even if you use the library's bit-banged
 SPI implementation.
 If you wish to use other pins, then specify them with `cowpi_configure_spi(_select_pin_, _data_pin_, _clock_pin_)` in
 C++, or
-`(cowpi_display_module_protocol_t) {.protocol = SPI, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .select_pin = _select_pin_}`
+`(cowpi_display_module_protocol_t) {.protocol = COWPI_SPI, .data_pin = _data_pin_, .clock_pin = _clock_pin_, .select_pin = _select_pin_}`
 in C.
 
 ## Example
@@ -89,7 +89,7 @@ void setup(void) {
                     .display_module = SEVEN_SEGMENT
             },
             (cowpi_display_module_protocol_t) {
-                    .protocol = SPI,
+                    .protocol = COWPI_SPI,
                     .data_pin = MOSI,
                     .clock_pin = SCK,
                     .select_pin = SS
@@ -101,7 +101,7 @@ void setup(void) {
                     .words_per_minute = 30
             },
             (cowpi_display_module_protocol_t) {
-                    .protocol = SPI,
+                    .protocol = COWPI_SPI,
                     .data_pin = MOSI,
                     .clock_pin = SCK,
                     .select_pin = SS
