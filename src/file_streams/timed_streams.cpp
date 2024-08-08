@@ -50,6 +50,10 @@ ISR(TIMER0_COMPB_vect) {
 
 static mbed::Ticker displayTicker;
 
+#elif defined (COWPI_ARDUINO_PICO_SDK)
+
+#warning Timer for buffered display modules are not yet enabled for the Arduino-Pico-SDK core
+
 #else
 
 #warning Timer for buffered display modules will not be enabled.
@@ -70,6 +74,8 @@ void cowpi_enable_buffer_timer(void) {
         TIMSK0 |= (1 << OCIE0B);
 #elif defined(__MBED__)
         displayTicker.attach(timer_handler, std::chrono::milliseconds(1));
+#elif defined (COWPI_ARDUINO_PICO_SDK)
+#warning Timer for buffered display modules are not yet enabled for the Arduino-Pico-SDK core
 #else
 #warning Timer for buffered display modules will not be enabled.
 #endif //architecture

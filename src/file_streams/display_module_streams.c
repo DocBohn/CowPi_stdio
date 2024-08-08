@@ -12,7 +12,7 @@
  *
  ******************************************************************************/
 
-/* CowPi_stdio (c) 2022-23 Christopher A. Bohn
+/* CowPi_stdio (c) 2022-24 Christopher A. Bohn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -208,7 +208,7 @@ FILE *cowpi_add_display_module(cowpi_display_module_t display_module, cowpi_disp
 #if defined(__AVR__)
     stream = &(streams[number_of_streams].stream);
     fdev_setup_stream(stream, cowpi_display_module_put, NULL, _FDEV_SETUP_WRITE);
-#elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__)
+#elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__) || defined (COWPI_ARDUINO_PICO_SDK)
     stream = funopen(stream_data, NULL, stream_data->put, NULL, NULL);
     // I suppose we should make line buffering an option, but not today
     if (setvbuf(stream, NULL, _IONBF, 0)) return NULL;

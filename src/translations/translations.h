@@ -15,7 +15,7 @@
  *
  ******************************************************************************/
 
-/* CowPi_stdio (c) 2022-23 Christopher A. Bohn
+/* CowPi_stdio (c) 2022-24 Christopher A. Bohn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,11 @@ extern "C" {
 #elif defined(ARDUINO_ARCH_MEGAAVR)
 #define pin_number_t uint8_t
 #define pin_mode_t PinMode
-#elif defined(ARDUINO_ARCH_SAMD)
-#define pin_number_t pin_size_t
-#define pin_mode_t PinMode
-#elif defined (ARDUINO_ARCH_MBED)
+// #elif defined(ARDUINO_ARCH_SAMD)
+// #define pin_number_t pin_size_t
+// #define pin_mode_t PinMode
+// #elif defined (ARDUINO_ARCH_MBED)
+#else   // this seems to be the used in ARDUINO_ARCH_SAMD, ARDUINO_ARCH_MBED, and in Arduino-Pico (pico-sdk) -- probably will also be used in the upcoming Zephyr-based Arduino
 #define pin_number_t pin_size_t
 #define pin_mode_t PinMode
 #endif //ARCHITECTURE

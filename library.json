@@ -36,7 +36,7 @@
   },
   "license": "Apache-2.0",
   "frameworks": "Arduino",
-  "platforms": ["atmelavr", "atmelmegaavr", "atmelsam", "nordicnrf52", "raspberrypi"],
+  "platforms": ["atmelavr", "atmelmegaavr", "atmelsam", "nordicnrf52", "raspberrypi", "rp2040"],
   "headers": "CowPi_stdio.h",
   "examples": [
     {

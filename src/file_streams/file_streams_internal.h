@@ -12,7 +12,7 @@
  *
  ******************************************************************************/
 
-/* CowPi_stdio (c) 2022-23 Christopher A. Bohn
+/* CowPi_stdio (c) 2022-24 Christopher A. Bohn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,16 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+// There doesn't seem to be a well-defined way to distinctively identify that
+// we're using the earlephilhower arduino-pico core. Since the "official"
+// Arduino core is switching from MBED to Zephyr, we can't simply use
+// `defined (ARDUINO_ARCH_RP2040) && !defined (MBED)` without ambiguity.
+// Looking at what's defined for the "official" Arduino core and for the
+// earlephilhower arduino-pico core, let's go with this for now:
+#if defined (ARDUINO_ARCH_RP2040) && defined (ARDUINO_VARIANT) // && hope that ARDUINO_VARIANT is "rpipico"
+#define COWPI_ARDUINO_PICO_SDK
 #endif
 
 // assumes the modulus is a power-of-two

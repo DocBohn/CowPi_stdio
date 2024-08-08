@@ -130,7 +130,7 @@ void cowpi_stdio_setup(unsigned long bitrate) {
         // use `fdev_setup_stream` instead of `fdevopen` to avoid `malloc`
         serial_monitor = &serial_monitor_allocation;
         fdev_setup_stream(serial_monitor, cowpi_stdout_put, cowpi_stdin_get, _FDEV_SETUP_RW);
-#elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__)
+#elif defined (ARDUINO_ARCH_SAMD) || defined (__MBED__) || defined (COWPI_ARDUINO_PICO_SDK)
         serial_monitor = funopen(&Serial, cowpi_arduinostream_get, cowpi_arduinostream_put, NULL, NULL);
         setlinebuf(serial_monitor);
 #endif //architecture

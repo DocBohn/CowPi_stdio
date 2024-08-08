@@ -38,7 +38,13 @@ and this project adheres to
 
 ## [Unreleased]
 
-n/a
+### Added
+
+- Ported to [Arduino-Pico](https://arduino-pico.readthedocs.io/en/latest/index.html) core based on RPi Pico SDK
+
+### Changed
+
+- Renamed constants to deconflict with other libraries
 
 ## [0.6.1] -- 2024-03-02
 
