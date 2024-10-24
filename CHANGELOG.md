@@ -36,11 +36,12 @@ and this project adheres to
 - Rename stdio setup
 -->
 
-## [Unreleased]
+## [0.6.2] -- 2024-10-24
 
 ### Added
 
 - Ported to [Arduino-Pico](https://arduino-pico.readthedocs.io/en/latest/index.html) core based on RPi Pico SDK
+- "Extra" functions to drive SSD1306 with other libraries
 
 ### Changed
 
