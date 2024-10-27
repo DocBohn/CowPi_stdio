@@ -9,8 +9,8 @@
  *
  * These functions provide a way to display strings on SSD1306 displays before
  * SSD1306 file streams are implemented in the CowPi_stdio library. There are
- * also functions to display (on the Serial Monitor and on the display module)
- * diagnostic information about the compiler, libraries, and application code.
+ * also functions to display diagnostic information about the compiler,
+ * libraries, and application code.
  *
  ******************************************************************************/
 
@@ -111,6 +111,16 @@ void record_build_timestamp(char const filename[], char const date[], char const
  * @param only_most_recent
  */
 void print_build_timestamps(bool only_most_recent);
+
+/**
+ * Displays an 8-bit counter in the rightmost two columns of the specified row.
+ * The counter increments each time the function is called, providing a
+ * demonstration of liveness, or merely a demonstration that a code segment has
+ * executed.
+ *
+ * @param row The display row on which to show the counter
+ */
+void count_visits(int row);
 
 #ifdef __cplusplus
 } // extern "C"

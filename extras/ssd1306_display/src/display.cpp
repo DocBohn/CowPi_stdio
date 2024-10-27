@@ -1,12 +1,12 @@
 /**************************************************************************//**
  *
- * @file display.h
+ * @file display.cpp
  *
  * @author Christopher A. Bohn
  *
- * @brief  @copybrief max7219.h
+ * @brief  @copybrief display.h
  *
- * @copydetails max7219.h
+ * @copydetails display.h
  *
  ******************************************************************************/
 
@@ -59,7 +59,8 @@ static int character_width;
 static int character_height;
 
 static inline void library_specific_initialize_display(int number_of_columns);
-static inline void library_specific_print_line(int row, char const *buffer);
+
+static char rows[8][23] = {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}};
 
 #if defined ONEBIT
 
@@ -165,11 +166,10 @@ void draw_logo() {
     refresh_display();
 }
 
-static inline void library_specific_print_line(int row, char const *buffer) {
-    obdWriteString(&display, 0, 0, character_height * row, (char *) buffer, font, OBD_BLACK, 0);
-}
-
 void refresh_display(void) {
+    for (int row = 0; row < row_count; ++row) {
+        obdWriteString(&display, 0, 0, character_height * row, (char *) rows[row], font, OBD_BLACK, 0);
+    }
     obdDumpBuffer(&display, backbuffer);
 }
 
@@ -258,15 +258,15 @@ void clear_display(void) {
 
 void draw_logo() {
     display.drawBitmap(0, 0, logo, 128, 64, 1);
-    refresh_display();
-}
-
-static inline void library_specific_print_line(int row, char const *buffer) {
-    display.setCursor((int16_t) ((128 - (character_width * column_count)) / 2), (int16_t) (character_height * row));
-    display.print(buffer);
+    display.display();
 }
 
 void refresh_display(void) {
+    display.clearDisplay();
+    for (int row = 0; row < row_count; ++row) {
+        display.setCursor((int16_t) ((128 - (character_width * column_count)) / 2), (int16_t) (character_height * row));
+        display.print(rows[row]);
+    }
     display.display();
 }
 
@@ -295,32 +295,15 @@ void display_string(int row, char const string[]) {
     }
     if (string[string_length - 1] == '\n') {
         buffer[string_length - 1] = '\0';
-        library_specific_print_line(row, buffer);
+        memcpy(rows[row], buffer, 21);
         refresh_display();
     } else {
-        library_specific_print_line(row, buffer);
+        memcpy(rows[row], buffer, 21);
     }
 }
 
 
 void print_versions(void) {
-#if defined (ONEBIT)
-    char full_display_library[] = "OneBitDisplay";
-    char abbreviated_display_library[] = "OneBit";
-#elif defined (ADAFRUITSSD1306)
-    char full_display_library[] = "Adafruit_SSD106";
-    char abbreviated_display_library[] = "Adafruit";
-#else
-    char full_display_library[] = "none";
-    char abbreviated_display_library[] = "none";
-#endif
-    printf("\n\n");
-    printf("gcc                 version %2d.%d\n", __GNUC__, __GNUC_MINOR__);
-    printf("Core library: %20s\n", CORELIBRARY);
-    printf("CowPi library       version  %s\n", COWPI_VERSION);
-    printf("CowPi_stdio library version  %s\n", COWPI_STDIO_VERSION);
-    printf("Display library: %17s\n", full_display_library);
-    printf("\n\n");
     char message[22];
     if (column_count >= 16) {
         sprintf(message, "gcc %*d.%d", column_count - 8, __GNUC__, __GNUC_MINOR__);
@@ -331,8 +314,7 @@ void print_versions(void) {
         display_string(2, message);
         sprintf(message, "CowPi_stdio%*s", column_count - 11, COWPI_STDIO_VERSION);
         display_string(3, message);
-        sprintf(message, "Display %*s\n", column_count - 8, abbreviated_display_library);
-        display_string(4, message);
+        refresh_display();
     } else {
         sprintf(message, "gcc%*d", column_count - 3, __GNUC__);
         display_string(0, message);
@@ -340,8 +322,6 @@ void print_versions(void) {
         display_string(1, message);
         sprintf(message, "stdio%*.*s", column_count - 5, column_count - 5, COWPI_STDIO_VERSION);
         display_string(2, message);
-        sprintf(message, "%*.*s/%3.3s", column_count - 4, column_count - 4, CORELIBRARY, abbreviated_display_library);
-        display_string(3, message);
         refresh_display();
     }
 }
@@ -411,13 +391,12 @@ void print_build_timestamps(bool only_most_recent) {
     // sort the records, with the most-recent timestamp first
     qsort(records, number_of_records, sizeof(struct build_timestamp), compare_build_timestamps);
     char timestamp[17];
-    printf("\n\n");
     if (only_most_recent) {
-        printf("%-21s %8s/%6s\n", records[0].filename, records[0].date, records[0].time);
         switch (column_count) {
             case 16:
             case 21:
-                sprintf(timestamp, "%8.8s/%6.6s\n", records[0].date, records[0].time);
+//                sprintf(timestamp, "%8.8s/%6.6s\n", records[0].date, records[0].time);
+                sprintf(timestamp, "%8.8s/%4.4s\n", records[0].date, records[0].time);
                 break;
             case 10:
                 sprintf(timestamp, "%6.6s%4.4s\n", records[0].date + 2, records[0].time);
@@ -431,7 +410,6 @@ void print_build_timestamps(bool only_most_recent) {
         display_string(row_count - 1, timestamp);
     } else {
         for (int i = 0; i < min(number_of_records, row_count); i++) {
-            printf("%-21s %8s/%6s\n", records[i].filename, records[i].date, records[i].time);
             switch (column_count) {
                 case 16:
                 case 21:
@@ -451,6 +429,18 @@ void print_build_timestamps(bool only_most_recent) {
             display_string(i, timestamp);
         }
     }
-    printf("\n\n");
+    refresh_display();
+}
+
+// TODO: this will break without the rows being partially exposed
+void count_visits(int row) {
+    static uint8_t counter = 0;
+    int counter_position = column_count - 2;
+    for (int i = 0; i < counter_position; i++) {
+        if (!rows[row][i]) {
+            rows[row][i] = ' ';
+        }
+    }
+    sprintf(rows[row] + counter_position, "%02X", counter++);
     refresh_display();
 }

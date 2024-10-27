@@ -36,6 +36,12 @@ and this project adheres to
 - Rename stdio setup
 -->
 
+## [0.6.3] -- 2024-10-27
+
+### Fixed
+
+- New text replaces, instead of being placed on top of, old text when using Adafruit library
+
 ## [0.6.2] -- 2024-10-24
 
 ### Added

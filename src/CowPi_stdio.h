@@ -54,7 +54,7 @@
  *
  ******************************************************************************/
 
-/* CowPi_stdio (c) 2022-23 Christopher A. Bohn
+/* CowPi_stdio (c) 2022-24 Christopher A. Bohn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ extern "C" {
 #include "max7219/max7219.h"
 #include "display_functions.h"
 
-#define COWPI_STDIO_VERSION ("0.6.x")
+#define COWPI_STDIO_VERSION ("0.6.3")
 
 #ifdef __cplusplus
 } // extern "C"
